@@ -31,7 +31,7 @@ public class GameSettings : MonoBehaviour
     {
         heightValue.text = value.ToString("HEIGHT | 0");
         int currentHeightChosen = (int)value;
-        PlayerPrefs.SetInt("width", currentHeightChosen);
+        PlayerPrefs.SetInt("height", currentHeightChosen);
     }
 
     void OnDestroy()

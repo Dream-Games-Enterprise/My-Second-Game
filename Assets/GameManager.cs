@@ -6,7 +6,6 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
-        //width min 4 min height 6 
         public int maxHeight = 15;
         public int maxWidth = 17;
 
@@ -49,6 +48,8 @@ namespace RD
 
         void Start()
         {
+            maxWidth = PlayerPrefs.GetInt("width");
+            maxHeight = PlayerPrefs.GetInt("height");
             CreateMap();
             PlacePlayer();
             PlaceCamera();
