@@ -6,6 +6,7 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
+        //width min 4 min height 6 
         public int maxHeight = 15;
         public int maxWidth = 17;
 
@@ -119,7 +120,15 @@ namespace RD
             playerSprite = CreateSprite(playerColour);
             playerRenderer.sprite = playerSprite;
             playerRenderer.sortingOrder = 1;
-            playerNode = GetNode(3, 3);
+
+            // Select a random available node for the player
+            int randomIndex = Random.Range(0, availableNodes.Count);
+            playerNode = availableNodes[randomIndex];
+
+            // Remove the chosen node from the list of available nodes, as the player occupies it
+            availableNodes.Remove(playerNode);
+
+            // Place the player at the selected node's position
             PlacePlayerObject(playerObject, playerNode.worldPosition);
             playerObject.transform.localScale = Vector3.one * 1.2f;
 
