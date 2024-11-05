@@ -11,8 +11,13 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Slider widthSlider;
     [SerializeField] Slider heightSlider;
 
+    int widthInt;
+    int heightInt;
+
     void Start()
     {
+        LoadData();
+
         UpdateWidthText(widthSlider.value);
         UpdateHeightText(heightSlider.value);
 
@@ -32,6 +37,15 @@ public class GameSettings : MonoBehaviour
         heightValue.text = value.ToString("HEIGHT | 0");
         int currentHeightChosen = (int)value;
         PlayerPrefs.SetInt("height", currentHeightChosen);
+    }
+
+    void LoadData()
+    {
+        widthInt = PlayerPrefs.GetInt("width");
+        heightInt = PlayerPrefs.GetInt("height");
+
+        widthSlider.value = widthInt;
+        heightSlider.value = heightInt;
     }
 
     void OnDestroy()
