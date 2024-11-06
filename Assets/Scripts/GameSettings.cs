@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class GameSettings : MonoBehaviour
 {
     [SerializeField] TMP_Text widthValue;
     [SerializeField] TMP_Text heightValue;
+    [SerializeField] TMP_Text speedValue;
     [SerializeField] Slider widthSlider;
     [SerializeField] Slider heightSlider;
+    [SerializeField] Slider speedSlider;
 
     int widthInt;
     int heightInt;
+    int speedInt;
 
     void Start()
     {
@@ -20,9 +24,31 @@ public class GameSettings : MonoBehaviour
 
         UpdateWidthText(widthSlider.value);
         UpdateHeightText(heightSlider.value);
+        UpdateSpeedText(speedSlider.value);
 
         widthSlider.onValueChanged.AddListener(UpdateWidthText);
         heightSlider.onValueChanged.AddListener(UpdateHeightText);
+        speedSlider.onValueChanged.AddListener(UpdateSpeedText);
+    }
+
+
+
+    void LoadData()
+    {
+        widthInt = PlayerPrefs.GetInt("width");
+        heightInt = PlayerPrefs.GetInt("height");
+        speedInt = PlayerPrefs.GetInt("speed");
+
+        widthSlider.value = widthInt;
+        heightSlider.value = heightInt;
+        speedSlider.value = speedInt;
+    }
+
+    void OnDestroy()
+    {
+        widthSlider.onValueChanged.RemoveListener(UpdateWidthText);
+        heightSlider.onValueChanged.RemoveListener(UpdateHeightText);
+        speedSlider.onValueChanged.RemoveListener(UpdateSpeedText);
     }
 
     void UpdateWidthText(float value)
@@ -39,18 +65,10 @@ public class GameSettings : MonoBehaviour
         PlayerPrefs.SetInt("height", currentHeightChosen);
     }
 
-    void LoadData()
+    void UpdateSpeedText(float value)
     {
-        widthInt = PlayerPrefs.GetInt("width");
-        heightInt = PlayerPrefs.GetInt("height");
-
-        widthSlider.value = widthInt;
-        heightSlider.value = heightInt;
-    }
-
-    void OnDestroy()
-    {
-        widthSlider.onValueChanged.RemoveListener(UpdateWidthText);
-        heightSlider.onValueChanged.RemoveListener(UpdateHeightText);
+        speedValue.text = value.ToString("SPEED | 0");
+        int currentSpeedChosen = (int)value;
+        PlayerPrefs.SetInt("speed", currentSpeedChosen);
     }
 }
