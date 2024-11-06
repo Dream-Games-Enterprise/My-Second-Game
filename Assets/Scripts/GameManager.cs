@@ -223,19 +223,20 @@ namespace RD
             }
             else
             {
-                // If not the first input, check the direction and prevent reverse directions
+                // If not the first input, immediately change direction based on input
                 SetPlayerDirection();
 
-                // Handle player movement
+                // Handle player movement if it's time to move
                 timer += Time.deltaTime;
-                if (timer > moveRate)
+                if (timer >= moveRate)
                 {
-                    timer = 0;
+                    timer = 0f;
                     curDirection = targetDirection; // Move in the target direction
                     MovePlayer(); // Move the player based on the current direction
                 }
             }
         }
+
 
 
         void GetInput()
@@ -274,6 +275,7 @@ namespace RD
                 targetDirection = d;
             }
         }
+
 
 
         void MovePlayer()
@@ -401,7 +403,6 @@ namespace RD
                     return false;
             }
         }
-
 
         bool isTailNode(Node n)
         {
