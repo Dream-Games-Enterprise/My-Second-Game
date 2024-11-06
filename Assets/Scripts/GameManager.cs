@@ -46,6 +46,7 @@ namespace RD
 
         Direction targetDirection;
         Direction curDirection;
+        Direction prevDirection;
 
         public enum Direction
         {
@@ -277,7 +278,23 @@ namespace RD
             int x = 0;
             int y = 0;
 
-            switch (curDirection)
+            // Track the direction to move in (either current direction or previous direction in case of reversal)
+            Direction moveDirection = curDirection;
+
+            // If the player tries to reverse direction, use the previous direction
+            if (isOppositeDir(targetDirection))
+            {
+                moveDirection = prevDirection;
+            }
+            else
+            {
+                // Update prevDirection to the current direction before switching
+                prevDirection = curDirection;
+                curDirection = targetDirection;
+            }
+
+            // Set movement direction based on the chosen direction (moveDirection here)
+            switch (moveDirection)
             {
                 case Direction.up:
                     y = 1;
@@ -295,11 +312,9 @@ namespace RD
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
 
-            // Check if the targetNode is the last tail node, ignore movement if it is
             if (tail.Count > 0 && targetNode == tail[0].node)
             {
-                // Cancel this move to prevent collision with the last tail node
-                return;
+                return; //the player should carry on moving here just have their movement stopped
             }
 
             if (targetNode == null)
