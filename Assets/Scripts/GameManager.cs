@@ -265,12 +265,11 @@ namespace RD
             {
                 targetDirection = d;
             }
-            // Otherwise, only change direction if the new direction is not the opposite of the current direction.
             else if (!isOppositeDir(d))
             {
                 targetDirection = d;
             }
-            // If it is an opposite direction, just ignore the input (do nothing).
+            // If it is an opposite direction, just ignore the input (do nothing) - carry on in current direction...
         }
 
         void MovePlayer()
@@ -297,7 +296,7 @@ namespace RD
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
 
             // Check if the targetNode is the last tail node, ignore movement if it is
-            if (tail.Count > 0 && targetNode == tail[tail.Count - 1].node)
+            if (tail.Count > 0 && targetNode == tail[0].node)
             {
                 // Cancel this move to prevent collision with the last tail node
                 return;
@@ -353,7 +352,6 @@ namespace RD
                 }
             }
         }
-
 
         void MoveTail()
         {
