@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace RD
 {
@@ -33,6 +34,11 @@ namespace RD
 
         bool up, left, right, down;
 
+        int currentScore;    // probably won't have these and just complete a grid for victory
+        int highScore;       // probably won't have these and just complete a grid for victory
+
+        public bool isGameOver;
+        public bool isFirstInput;
         public float moveRate = 0.5f;
         float timer;
 
@@ -44,16 +50,49 @@ namespace RD
             up, left, right, down
         }
 
+        public UnityEvent onStart;
+        public UnityEvent onGameOver;
+        public UnityEvent firstInput;
+
         #region Init
 
         void Start()
         {
+            onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
+            StartNewGame();
+        }
+
+        public void StartNewGame()
+        {
+            ClearReferences();
             CreateMap();
             PlacePlayer();
             PlaceCamera();
             CreateFood();
+            //targetDirection = Direction.up;
+            isGameOver = false;
+        }
+
+        public void ClearReferences()
+        {
+            if (mapObject != null)
+                Destroy(mapObject);
+
+            if (playerObject != null)
+                Destroy(playerObject);
+
+            if (foodObject != null)
+                Destroy(foodObject);
+
+            foreach (var t in tail)
+            {
+                Destroy(t.obj);
+            }
+            tail.Clear();
+            availableNodes.Clear();
+            grid = null;
         }
 
         void CreateMap()
@@ -157,15 +196,37 @@ namespace RD
 
         void Update()
         {
-            GetInput();
-            SetPlayerDirection();
-
-            timer += Time.deltaTime;
-            if (timer > moveRate)
+            if (isGameOver)
             {
-                timer = 0;
-                curDirection = targetDirection;
-                MovePlayer();
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    onStart.Invoke();
+                }
+
+                return;
+            }
+
+            GetInput();
+
+            if (isFirstInput)
+            {
+                SetPlayerDirection();
+
+                timer += Time.deltaTime;
+                if (timer > moveRate)
+                {
+                    timer = 0;
+                    curDirection = targetDirection;
+                    MovePlayer();
+                }
+            }
+            else
+            {
+                if (up || down || left || right)
+                {
+                    isFirstInput = true;
+                    firstInput.Invoke();
+                }
             }
         }
         
@@ -230,12 +291,14 @@ namespace RD
             if (targetNode == null)
             {
                 //game over
+                onGameOver.Invoke();
             }
             else
             {
                 if (isTailNode(targetNode))
                 {
-                    //game over
+                    //game over.
+                    onGameOver.Invoke();
                 }
                 else
                 {
@@ -300,6 +363,12 @@ namespace RD
         }
 
         #region Utilities
+
+        public void GameOver()
+        {
+            isGameOver = true;
+            isFirstInput = false;
+        }
 
         bool isOppositeDir(Direction d)
         {
