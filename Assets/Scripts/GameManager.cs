@@ -7,6 +7,8 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
+        [SerializeField] UIHandler uiHandler;
+
         public int maxHeight = 15;
         public int maxWidth = 17;
 
@@ -68,6 +70,7 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
+            uiHandler.ResumeGame();
             PlacePlayer();
             PlaceCamera();
             CreateFood();
@@ -276,8 +279,6 @@ namespace RD
             }
         }
 
-
-
         void MovePlayer()
         {
             int x = 0;
@@ -379,12 +380,14 @@ namespace RD
         public void RestartGame()
         {
             onStart.Invoke();
+            Time.timeScale = 1;
         }
 
         public void GameOver()
         {
             isGameOver = true;
             isFirstInput = false;
+            uiHandler.GameEndMenu();
         }
 
         bool isOppositeDir(Direction d)
