@@ -1062,8 +1062,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHeight: 6
   maxWidth: 4
-  colour1: {r: 1, g: 1, b: 1, a: 1}
-  colour2: {r: 1, g: 1, b: 1, a: 1}
+  colour1: {r: 0.6713278, g: 0.7924528, b: 0.28034887, a: 1}
+  colour2: {r: 0.4408875, g: 0.8679245, b: 0.2988608, a: 1}
   foodColour: {r: 0.02441454, g: 0, b: 1, a: 1}
   playerColour: {r: 0, g: 0, b: 0, a: 1}
   cameraHolder: {fileID: 1867295740}
