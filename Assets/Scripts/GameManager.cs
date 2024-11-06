@@ -424,11 +424,31 @@ namespace RD
 
         void PlaceFood()
         {
-            int ran = Random.Range(0, availableNodes.Count);
-            Node n = availableNodes[ran];
-            PlacePlayerObject(foodObject, n.worldPosition);
-            foodNode = n;
+            // Remove nodes occupied by the player or tail from the available nodes list
+            List<Node> validNodes = new List<Node>(availableNodes);
+
+            // Remove the player node and tail nodes from the available nodes
+            validNodes.Remove(playerNode); // Remove the player's head
+            foreach (var t in tail)
+            {
+                validNodes.Remove(t.node); // Remove all tail nodes
+            }
+
+            // If there are valid nodes available, pick one at random
+            if (validNodes.Count > 0)
+            {
+                int ran = Random.Range(0, validNodes.Count);
+                Node n = validNodes[ran];
+                PlacePlayerObject(foodObject, n.worldPosition);
+                foodNode = n;
+            }
+            else
+            {
+                // If no valid nodes left, you can handle a win condition or other fallback logic here
+                // e.g., all space is occupied by the snake, the game is over or complete
+            }
         }
+
 
         Node GetNode(int x, int y)
         {
