@@ -439,6 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseButton: {fileID: 757223597}
+  pauseAndResume: {fileID: 1127402160}
   pauseIcon: {fileID: 21300000, guid: 7d7108180df9b9c4d8fbb229c1cb144a, type: 3}
   resumeIcon: {fileID: 21300000, guid: 4971cc11a1bb10449a77456aa796fa39, type: 3}
   pauseObject: {fileID: 1127402158}

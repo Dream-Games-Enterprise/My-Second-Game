@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIHandler : MonoBehaviour
 {
     [SerializeField] Button pauseButton;
+    [SerializeField] Image pauseAndResume;
     [SerializeField] Sprite pauseIcon;      
     [SerializeField] Sprite resumeIcon;
     [SerializeField] GameObject pauseObject;
@@ -40,9 +41,9 @@ public class UIHandler : MonoBehaviour
 
         pauseMenuButtons.SetActive(true);
 
-        if (pauseButton != null)
+        if (pauseAndResume != null)
         {
-            pauseButton.GetComponent<Image>().sprite = resumeIcon;
+            pauseAndResume.sprite = resumeIcon;
         }
     }
 
@@ -53,9 +54,9 @@ public class UIHandler : MonoBehaviour
         pauseMenuButtons.SetActive(false);
         pauseObject.SetActive(true);
 
-        if (pauseButton != null)
+        if (pauseAndResume != null)
         {
-            pauseButton.GetComponent<Image>().sprite = pauseIcon;
+            pauseAndResume.sprite = pauseIcon;
         }
     }
 

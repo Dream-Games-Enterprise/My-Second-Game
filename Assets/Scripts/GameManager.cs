@@ -240,8 +240,6 @@ namespace RD
             }
         }
 
-
-
         void GetInput()
         {
             up = Input.GetButtonDown("Up");
