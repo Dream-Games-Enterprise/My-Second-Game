@@ -198,11 +198,6 @@ namespace RD
         {
             if (isGameOver)
             {
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    onStart.Invoke();
-                }
-
                 return;
             }
 
@@ -363,6 +358,11 @@ namespace RD
         }
 
         #region Utilities
+
+        public void RestartGame()
+        {
+            onStart.Invoke();
+        }
 
         public void GameOver()
         {
