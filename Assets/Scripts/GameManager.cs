@@ -426,17 +426,14 @@ namespace RD
 
         void PlaceFood()
         {
-            // Remove nodes occupied by the player or tail from the available nodes list
             List<Node> validNodes = new List<Node>(availableNodes);
 
-            // Remove the player node and tail nodes from the available nodes
-            validNodes.Remove(playerNode); // Remove the player's head
+            validNodes.Remove(playerNode); 
             foreach (var t in tail)
             {
-                validNodes.Remove(t.node); // Remove all tail nodes
+                validNodes.Remove(t.node);
             }
 
-            // If there are valid nodes available, pick one at random
             if (validNodes.Count > 0)
             {
                 int ran = Random.Range(0, validNodes.Count);
