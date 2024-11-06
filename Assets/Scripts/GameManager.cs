@@ -10,7 +10,7 @@ namespace RD
         [SerializeField] UIHandler uiHandler;
 
         public Sprite customPlayerSprite;
-        public Sprite customTailSprite;    // For the tail
+        public Sprite customTailSprite;  
 
         public int maxHeight = 15;
         public int maxWidth = 17;
@@ -65,6 +65,16 @@ namespace RD
         void Start()
         {
             LoadSpeedSettings();
+            int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            //int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+
+            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
+
+            if (customisation != null)
+            {
+                customPlayerSprite = customisation.snakeSprites[snakeIndex];
+                //customTailSprite = customisation.tailSprites[tailIndex];
+            }
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
@@ -178,7 +188,7 @@ namespace RD
 
             availableNodes.Remove(playerNode);
             PlacePlayerObject(playerObject, playerNode.worldPosition);
-            playerObject.transform.localScale = Vector3.one * 1.2f;
+            playerObject.transform.localScale = Vector3.one * 1.05f;
 
             tailParent = new GameObject("TailParent");
         }
@@ -527,7 +537,7 @@ namespace RD
             s.obj = new GameObject();
             s.obj.transform.parent = tailParent.transform;
             s.obj.transform.position = s.node.worldPosition;
-            s.obj.transform.localScale = Vector3.one * 0.95f;
+            s.obj.transform.localScale = Vector3.one * 0.75f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
 
             // Use custom tail sprite
