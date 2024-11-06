@@ -218,15 +218,15 @@ namespace RD
             switch (speed)
             {
                 case 1:
-                    return 0.1f;
+                    return 0.3f;
                 case 2:
-                    return 0.15f;
+                    return 0.25f;
                 case 3:
                     return 0.2f;
                 case 4:
-                    return 0.25f;
+                    return 0.15f;
                 case 5:
-                    return 0.3f;
+                    return 0.1f;
                 default:
                     return 0.2f;  // Default speed if no valid value is found
             }
@@ -348,6 +348,7 @@ namespace RD
 
             if (tail.Count > 0 && targetNode == tail[0].node)
             {
+                //MAKE A BOOL TRUE HERE WHICH THEN RETURNS THIS ONE BUT HAVE A METHOD LISTENING FOR THIS BOOL CHANGE TO KICKSTART THE SNAKE TO START MOVING FORWARD AGAIN
                 return; //the player should carry on moving here just have their movement stopped
             }
 
