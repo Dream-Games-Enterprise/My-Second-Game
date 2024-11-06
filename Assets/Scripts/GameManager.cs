@@ -75,13 +75,10 @@ namespace RD
             PlaceCamera();
             CreateFood();
 
-            // Reset movement-related state variables
             isGameOver = false;
-            isFirstInput = false; // Ensure the first input is needed to start movement
-            curDirection = Direction.up; // Start by facing upwards (or any default direction)
-            targetDirection = curDirection; // Set the target direction to match the current direction at the start
-
-            // Any additional game state reset logic you need can go here
+            isFirstInput = false;
+            curDirection = Direction.up;
+            targetDirection = curDirection;
         }
 
 
@@ -142,7 +139,7 @@ namespace RD
                         }
                         else { txt.SetPixel(x, y, colour2); }
                     }
-                    else 
+                    else
                     {
                         if (y % 2 != 0)
                         {
@@ -171,14 +168,11 @@ namespace RD
             playerRenderer.sprite = playerSprite;
             playerRenderer.sortingOrder = 1;
 
-            // Select a random available node for the player
             int randomIndex = Random.Range(0, availableNodes.Count);
             playerNode = availableNodes[randomIndex];
 
-            // Remove the chosen node from the list of available nodes, as the player occupies it
             availableNodes.Remove(playerNode);
 
-            // Place the player at the selected node's position
             PlacePlayerObject(playerObject, playerNode.worldPosition);
             playerObject.transform.localScale = Vector3.one * 1.2f;
 
@@ -211,31 +205,27 @@ namespace RD
                 return;
             }
 
-            // Get input from the player
             GetInput();
 
-            // If this is the first input, start the game and allow any direction
             if (!isFirstInput)
             {
-                if (up || down || left || right) // If any direction is pressed, start the game
+                if (up || down || left || right)
                 {
                     isFirstInput = true;
-                    firstInput.Invoke(); // Trigger any first input logic if necessary
-                    SetPlayerDirection(); // Set the direction based on the first input
+                    firstInput.Invoke();
+                    SetPlayerDirection();
                 }
             }
             else
             {
-                // If not the first input, immediately change direction based on input
                 SetPlayerDirection();
 
-                // Handle player movement if it's time to move
                 timer += Time.deltaTime;
                 if (timer >= moveRate)
                 {
                     timer = 0f;
-                    curDirection = targetDirection; // Move in the target direction
-                    MovePlayer(); // Move the player based on the current direction
+                    curDirection = targetDirection;
+                    MovePlayer();
                 }
             }
         }
@@ -270,11 +260,17 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            // Allow any direction on the first move, or prevent reversing direction after that - 
-            if (isFirstInput || !isOppositeDir(d))
+            // If this is the first input, allow any direction.
+            if (isFirstInput)
             {
                 targetDirection = d;
             }
+            // Otherwise, only change direction if the new direction is not the opposite of the current direction.
+            else if (!isOppositeDir(d))
+            {
+                targetDirection = d;
+            }
+            // If it is an opposite direction, just ignore the input (do nothing).
         }
 
         void MovePlayer()
@@ -299,16 +295,24 @@ namespace RD
             }
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
+
+            // Check if the targetNode is the last tail node, ignore movement if it is
+            if (tail.Count > 0 && targetNode == tail[tail.Count - 1].node)
+            {
+                // Cancel this move to prevent collision with the last tail node
+                return;
+            }
+
             if (targetNode == null)
             {
-                //game over
+                // Game over due to going out of bounds
                 onGameOver.Invoke();
             }
             else
             {
                 if (isTailNode(targetNode))
                 {
-                    //game over.
+                    // Game over due to collision with own tail
                     onGameOver.Invoke();
                 }
                 else
@@ -341,11 +345,15 @@ namespace RD
                         {
                             PlaceFood();
                         }
-                        else { /*win */ }
+                        else
+                        {
+                            // Handle win condition here
+                        }
                     }
                 }
             }
         }
+
 
         void MoveTail()
         {
@@ -428,7 +436,8 @@ namespace RD
         {
             List<Node> validNodes = new List<Node>(availableNodes);
 
-            validNodes.Remove(playerNode); 
+            // Ensure that food does not spawn on the player or tail nodes
+            validNodes.Remove(playerNode);
             foreach (var t in tail)
             {
                 validNodes.Remove(t.node);
@@ -440,14 +449,14 @@ namespace RD
                 Node n = validNodes[ran];
                 PlacePlayerObject(foodObject, n.worldPosition);
                 foodNode = n;
+
+                foodObject.transform.localScale = Vector3.one * 0.75f; // Set to any desired scale factor
             }
             else
             {
-                // If no valid nodes left, you can handle a win condition or other fallback logic here
-                // e.g., all space is occupied by the snake, the game is over or complete
+                // Handle win condition or no available space logic here
             }
         }
-
 
         Node GetNode(int x, int y)
         {
@@ -459,7 +468,7 @@ namespace RD
             return grid[x, y];
         }
 
-        SpecialNode CreateTailNode(int x, int y )
+        SpecialNode CreateTailNode(int x, int y)
         {
             SpecialNode s = new SpecialNode();
             s.node = GetNode(x, y);
