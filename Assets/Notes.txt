@@ -1,5 +1,5 @@
 Add particle effects for when food is picked up.
 Figure out how (ask chatgpt) at which point of remaining available nodes should complete should count (victory)
 have restart and menu button show when game is paused - have pause button use arrow (resume) icon to toggle between
-make it so the input make it turn at next earliest possible chance so it feels responsive 
+MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
 HAVE DIFFERENT AMOUNT OF FOod depending on map size
