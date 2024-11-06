@@ -270,7 +270,7 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            // Allow any direction on the first move, or prevent reversing direction after that
+            // Allow any direction on the first move, or prevent reversing direction after that - 
             if (isFirstInput || !isOppositeDir(d))
             {
                 targetDirection = d;
