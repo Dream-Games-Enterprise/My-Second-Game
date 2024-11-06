@@ -71,9 +71,16 @@ namespace RD
             PlacePlayer();
             PlaceCamera();
             CreateFood();
-            //targetDirection = Direction.up;
+
+            // Reset movement-related state variables
             isGameOver = false;
+            isFirstInput = false; // Ensure the first input is needed to start movement
+            curDirection = Direction.up; // Start by facing upwards (or any default direction)
+            targetDirection = curDirection; // Set the target direction to match the current direction at the start
+
+            // Any additional game state reset logic you need can go here
         }
+
 
         public void ClearReferences()
         {
@@ -201,30 +208,36 @@ namespace RD
                 return;
             }
 
+            // Get input from the player
             GetInput();
 
-            if (isFirstInput)
+            // If this is the first input, start the game and allow any direction
+            if (!isFirstInput)
             {
-                SetPlayerDirection();
-
-                timer += Time.deltaTime;
-                if (timer > moveRate)
+                if (up || down || left || right) // If any direction is pressed, start the game
                 {
-                    timer = 0;
-                    curDirection = targetDirection;
-                    MovePlayer();
+                    isFirstInput = true;
+                    firstInput.Invoke(); // Trigger any first input logic if necessary
+                    SetPlayerDirection(); // Set the direction based on the first input
                 }
             }
             else
             {
-                if (up || down || left || right)
+                // If not the first input, check the direction and prevent reverse directions
+                SetPlayerDirection();
+
+                // Handle player movement
+                timer += Time.deltaTime;
+                if (timer > moveRate)
                 {
-                    isFirstInput = true;
-                    firstInput.Invoke();
+                    timer = 0;
+                    curDirection = targetDirection; // Move in the target direction
+                    MovePlayer(); // Move the player based on the current direction
                 }
             }
         }
-        
+
+
         void GetInput()
         {
             up = Input.GetButtonDown("Up");
@@ -255,11 +268,13 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            if (!isOppositeDir(d))
+            // Allow any direction on the first move, or prevent reversing direction after that
+            if (isFirstInput || !isOppositeDir(d))
             {
                 targetDirection = d;
             }
         }
+
 
         void MovePlayer()
         {
@@ -374,32 +389,19 @@ namespace RD
         {
             switch (d)
             {
-                default:
                 case Direction.up:
-                    if (curDirection == Direction.down)
-                        return true;
-                    else
-                        return false;
-
+                    return curDirection == Direction.down;
                 case Direction.down:
-                    if (curDirection == Direction.up)
-                        return true;
-                    else
-                        return false;
-
-                case Direction.right:
-                    if (curDirection == Direction.left)
-                        return true;
-                    else
-                        return false;
-
+                    return curDirection == Direction.up;
                 case Direction.left:
-                    if (curDirection == Direction.right)
-                        return true;
-                    else
-                        return false;
+                    return curDirection == Direction.right;
+                case Direction.right:
+                    return curDirection == Direction.left;
+                default:
+                    return false;
             }
         }
+
 
         bool isTailNode(Node n)
         {
