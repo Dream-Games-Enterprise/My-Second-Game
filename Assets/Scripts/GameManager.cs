@@ -218,17 +218,17 @@ namespace RD
             switch (speed)
             {
                 case 1:
-                    return 1f;
+                    return 0.1f;
                 case 2:
-                    return 1.5f;
+                    return 0.15f;
                 case 3:
-                    return 2f;
+                    return 0.2f;
                 case 4:
-                    return 2.5f;
+                    return 0.25f;
                 case 5:
-                    return 3f;
+                    return 0.3f;
                 default:
-                    return 2f;  // Default speed if no valid value is found
+                    return 0.2f;  // Default speed if no valid value is found
             }
         }
 
