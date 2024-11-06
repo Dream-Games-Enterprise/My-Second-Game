@@ -1110,6 +1110,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiHandler: {fileID: 389438042}
+  customPlayerSprite: {fileID: 21300000, guid: fa0bd7e9cc9894e40b619ed3d7e3d955, type: 3}
+  customTailSprite: {fileID: 21300000, guid: fa0bd7e9cc9894e40b619ed3d7e3d955, type: 3}
   maxHeight: 6
   maxWidth: 4
   colour1: {r: 0.6713278, g: 0.7924528, b: 0.28034887, a: 1}

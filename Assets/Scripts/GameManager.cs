@@ -10,7 +10,7 @@ namespace RD
         [SerializeField] UIHandler uiHandler;
 
         public Sprite customPlayerSprite;
-
+        public Sprite customTailSprite;    // For the tail
 
         public int maxHeight = 15;
         public int maxWidth = 17;
@@ -168,20 +168,21 @@ namespace RD
         {
             playerObject = new GameObject("Player");
             SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
-            playerSprite = CreateSprite(playerColour);
-            playerRenderer.sprite = playerSprite;
+
+            // Use custom player sprite
+            playerRenderer.sprite = customPlayerSprite != null ? customPlayerSprite : CreateSprite(playerColour);
             playerRenderer.sortingOrder = 1;
 
             int randomIndex = Random.Range(0, availableNodes.Count);
             playerNode = availableNodes[randomIndex];
 
             availableNodes.Remove(playerNode);
-
             PlacePlayerObject(playerObject, playerNode.worldPosition);
             playerObject.transform.localScale = Vector3.one * 1.2f;
 
             tailParent = new GameObject("TailParent");
         }
+
 
         void PlaceCamera()
         {
@@ -528,11 +529,14 @@ namespace RD
             s.obj.transform.position = s.node.worldPosition;
             s.obj.transform.localScale = Vector3.one * 0.95f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
-            r.sprite = playerSprite;
+
+            // Use custom tail sprite
+            r.sprite = customTailSprite != null ? customTailSprite : playerSprite;
             r.sortingOrder = 1;
 
             return s;
         }
+
 
         Sprite CreateSprite(Color targetColour)
         {
