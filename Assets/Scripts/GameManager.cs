@@ -9,6 +9,9 @@ namespace RD
     {
         [SerializeField] UIHandler uiHandler;
 
+        public Sprite customPlayerSprite;
+
+
         public int maxHeight = 15;
         public int maxWidth = 17;
 
