@@ -41,7 +41,7 @@ namespace RD
 
         public bool isGameOver;
         public bool isFirstInput;
-        public float moveRate = 0.5f;
+        public float moveRate = 0.2f;
         float timer;
 
         Direction targetDirection;
@@ -61,6 +61,7 @@ namespace RD
 
         void Start()
         {
+            LoadSpeedSettings();
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
@@ -81,7 +82,6 @@ namespace RD
             curDirection = Direction.up;
             targetDirection = curDirection;
         }
-
 
         public void ClearReferences()
         {
@@ -198,6 +198,40 @@ namespace RD
         }
 
         #endregion
+
+        void SetSpeed(float speed)
+        {
+            moveRate = speed;
+        }
+
+        void LoadSpeedSettings()
+        {
+            int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
+
+            float speedToUse = GetMoveRateFromSpeed(speedInt);
+
+            SetSpeed(speedToUse);
+        }
+
+        float GetMoveRateFromSpeed(int speed)
+        {
+            switch (speed)
+            {
+                case 1:
+                    return 1f;
+                case 2:
+                    return 1.5f;
+                case 3:
+                    return 2f;
+                case 4:
+                    return 2.5f;
+                case 5:
+                    return 3f;
+                default:
+                    return 2f;  // Default speed if no valid value is found
+            }
+        }
+
 
         void Update()
         {

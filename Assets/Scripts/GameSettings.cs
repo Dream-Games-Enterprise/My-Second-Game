@@ -31,8 +31,6 @@ public class GameSettings : MonoBehaviour
         speedSlider.onValueChanged.AddListener(UpdateSpeedText);
     }
 
-
-
     void LoadData()
     {
         widthInt = PlayerPrefs.GetInt("width");
@@ -70,5 +68,6 @@ public class GameSettings : MonoBehaviour
         speedValue.text = value.ToString("SPEED | 0");
         int currentSpeedChosen = (int)value;
         PlayerPrefs.SetInt("speed", currentSpeedChosen);
+        Debug.Log(currentSpeedChosen);
     }
 }
