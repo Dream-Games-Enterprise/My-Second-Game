@@ -56,5 +56,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 71aaa8df2789acc45b97a32a8736743c, type: 3}
   - {fileID: 21300000, guid: 1f64916b3bf067f4ba9db964852ccb74, type: 3}
   - {fileID: 21300000, guid: 4ba6fc2593284104fb25198e0d250a4e, type: 3}
+  foodSprites:
+  - {fileID: 21300000, guid: c3c276a5bbd5a474dba3e85f977a9164, type: 3}
+  - {fileID: 21300000, guid: aeee974fc80214b4dbf177a7c6adc52b, type: 3}
+  - {fileID: 21300000, guid: 21d385b6b7b307a4481bfe5ec7c29b11, type: 3}
+  - {fileID: 21300000, guid: 4203c0ec81be08646ae3db470a8f2865, type: 3}
+  - {fileID: 21300000, guid: 7ad7675b93e827b4d830b5286f8a7697, type: 3}
   snakePreview: {fileID: 0}
   tailPreview: {fileID: 0}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LoadCustomisationSettings : MonoBehaviour
 {
-    public Sprite customPlayerSprite;
+    /*public Sprite customPlayerSprite;
     public Sprite customTailSprite;
 
     void Start()
@@ -21,5 +21,5 @@ public class LoadCustomisationSettings : MonoBehaviour
         }
 
         // Use these sprites in PlacePlayer() and CreateTailNode() methods as described in the previous response
-    }
+    }*/
 }

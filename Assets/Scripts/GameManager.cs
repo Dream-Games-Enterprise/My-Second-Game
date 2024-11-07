@@ -10,7 +10,8 @@ namespace RD
         [SerializeField] UIHandler uiHandler;
 
         public Sprite customPlayerSprite;
-        public Sprite customTailSprite;  
+        public Sprite customTailSprite;
+        public Sprite customFoodSprite;
 
         public int maxHeight = 15;
         public int maxWidth = 17;
@@ -70,6 +71,7 @@ namespace RD
             LoadSpeedSettings();
             int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
             CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
 
@@ -77,6 +79,7 @@ namespace RD
             {
                 customPlayerSprite = customisation.snakeSprites[snakeIndex];
                 customTailSprite = customisation.tailSprites[tailIndex];
+                customFoodSprite = customisation.foodSprites[foodIndex];
             }
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
@@ -223,7 +226,8 @@ namespace RD
         {
             foodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
-            foodRenderer.sprite = CreateSprite(foodColour);
+            foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
+            //foodRenderer.sprite = CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
             PlaceFood();
         }
