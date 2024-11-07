@@ -440,7 +440,6 @@ namespace RD
             {
                 bool isScore = false;
 
-                // Check if the player has eaten food
                 if (targetNode == foodNode)
                 {
                     isScore = true;
@@ -574,20 +573,17 @@ namespace RD
         {
             List<Node> validNodes = new List<Node>(availableNodes);
 
-            // Ensure that food does not spawn on the player or tail nodes
-            validNodes.Remove(playerNode);  // Remove the player's current position
+            validNodes.Remove(playerNode);
             foreach (var t in tail)
             {
-                validNodes.Remove(t.node);  // Remove each segment of the tail
+                validNodes.Remove(t.node);
             }
 
-            // Also remove any nodes occupied by obstacles
             foreach (var obstacle in obstacleNodes)
             {
-                validNodes.Remove(obstacle);  // Remove obstacle nodes
+                validNodes.Remove(obstacle);
             }
 
-            // If there are no valid nodes left, handle it (you could trigger a win condition or reset)
             if (validNodes.Count > 0)
             {
                 int ran = Random.Range(0, validNodes.Count);
@@ -599,8 +595,8 @@ namespace RD
             }
             else
             {
-                // Handle the case where there's no valid space for food (e.g., win condition)
-                Debug.LogWarning("No valid space for food, need to handle this case!");
+                //Win Condition here...
+                //Debug.LogWarning("No valid space for food, need to handle this case!");
             }
         }
 

@@ -7,4 +7,4 @@ HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
 Obstacle nodes may need to check surrounding nodes for obstacles before spawning (check should be something like game over node (obstacle and null) should not have more than 1 next to it)
 Player spawns in obstacle, or obstacle spawns on player bug
-Game over doesn't happen when head collides with last tail node
+player can't die to obstacle with no tail - fix this
