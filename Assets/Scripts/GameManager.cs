@@ -98,7 +98,7 @@ namespace RD
             uiHandler.ResumeGame();
             PlacePlayer();
             PlaceCamera();
-            InitialFood(); // give this method too
+            
             CreateFood();
 
             isGameOver = false;
