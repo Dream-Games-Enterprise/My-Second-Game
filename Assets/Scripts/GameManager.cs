@@ -81,6 +81,7 @@ namespace RD
                 customTailSprite = customisation.tailSprites[tailIndex];
                 customFoodSprite = customisation.foodSprites[foodIndex];
             }
+
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
@@ -91,10 +92,13 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
-            CreateObstacles();  // Add this line
+            //method to calculate 10% of map 
+            //convert to int for amount of food to spawn at start
+            CreateObstacles(); 
             uiHandler.ResumeGame();
             PlacePlayer();
             PlaceCamera();
+            InitialFood(); // give this method too
             CreateFood();
 
             isGameOver = false;
@@ -365,7 +369,6 @@ namespace RD
             {
                 targetDirection = d;
             }
-            // If it is an opposite direction, just ignore the input (do nothing) - carry on in current direction...
         }
 
         float GetRotationForDirection(Direction direction)
@@ -392,9 +395,6 @@ namespace RD
 
             Direction moveDirection = curDirection;
 
-            // If the player is trying to reverse direction (e.g., moving down when already moving up), 
-            // ignore the input and continue moving in the previous direction. 
-            // If not, update the current direction.
             if (isOppositeDir(targetDirection))
             {
                 moveDirection = prevDirection; // Continue in the previous direction if reversing
@@ -427,6 +427,7 @@ namespace RD
             {
                 if (targetNode == tail[0].node)
                 {
+                    //carry on moving forward (prevdirection)
                     return;
                 }
                 else { onGameOver.Invoke(); }
@@ -438,36 +439,33 @@ namespace RD
             }
             else
             {
-                bool isScore = false;
+                bool isFood = false;
 
                 if (targetNode == foodNode)
                 {
-                    isScore = true;
+                    isFood = true;
                     Destroy(foodObject);
                 }
 
                 Node previousNode = playerNode;
                 availableNodes.Add(previousNode);
 
-                if (isScore)
+                if (isFood)
                 {
-                    // Add a new tail segment when the player eats food
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
-                    CreateFood();  // Spawn new food after pickup
+                    CreateFood();
                 }
 
                 MoveTail();
 
-                // Update player rotation and position based on movement direction
                 playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
                 PlacePlayerObject(playerObject, targetNode.worldPosition);
                 playerNode = targetNode;
                 availableNodes.Remove(playerNode);
 
-                if (isScore)
+                if (isFood)
                 {
-                    // Ensure food spawns again in a valid location
                     if (availableNodes.Count > 0)
                     {
                         PlaceFood();
@@ -591,12 +589,11 @@ namespace RD
                 PlacePlayerObject(foodObject, n.worldPosition);
                 foodNode = n;
 
-                foodObject.transform.localScale = Vector3.one * 0.75f; // Set to any desired scale factor
+                foodObject.transform.localScale = Vector3.one * 0.7f; // Set to any desired scale factor
             }
             else
             {
-                //Win Condition here...
-                //Debug.LogWarning("No valid space for food, need to handle this case!");
+                //No available space - Player wins!
             }
         }
 
