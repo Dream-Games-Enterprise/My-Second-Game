@@ -43,6 +43,7 @@ namespace RD
         List<Node> obstacleNodes = new List<Node>();
 
         bool up, left, right, down;
+        bool obstaclesToggle;
 
         int currentScore;    // probably won't have these and just complete a grid for victory
         int highScore;       // probably won't have these and just complete a grid for victory
@@ -96,13 +97,19 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
+
+            if (obstaclesToggle)
+            {
+                CreateObstacles();
+            }
+
+            CreateObstacles();
             int totalMapNodes = maxWidth * maxHeight;
             int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
             //int initialFoodCount = 3;
 
             SpawnInitialFood(initialFoodCount);
 
-            CreateObstacles(); 
             uiHandler.ResumeGame();
             PlacePlayer();
             PlaceCamera();
@@ -377,10 +384,11 @@ namespace RD
         void LoadSpeedSettings()
         {
             int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
-
             float speedToUse = GetMoveRateFromSpeed(speedInt);
-
             SetSpeed(speedToUse);
+
+            bool obstaclesEnabled = PlayerPrefs.GetInt("obstaclesEnabled", 1) == 0;  // Default is 1 (enabled)
+            obstaclesToggle = obstaclesEnabled;
         }
 
         float GetMoveRateFromSpeed(int speed)

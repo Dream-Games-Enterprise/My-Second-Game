@@ -13,10 +13,12 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Slider widthSlider;
     [SerializeField] Slider heightSlider;
     [SerializeField] Slider speedSlider;
+    [SerializeField] Toggle obstaclesToggle;
 
     int widthInt;
     int heightInt;
     int speedInt;
+    bool obstacles;
 
     void Start()
     {
@@ -29,6 +31,9 @@ public class GameSettings : MonoBehaviour
         widthSlider.onValueChanged.AddListener(UpdateWidthText);
         heightSlider.onValueChanged.AddListener(UpdateHeightText);
         speedSlider.onValueChanged.AddListener(UpdateSpeedText);
+
+        obstaclesToggle.onValueChanged.AddListener(OnObstaclesToggleChanged);
+        obstaclesToggle.isOn = obstacles;
     }
 
     void LoadData()
@@ -36,6 +41,7 @@ public class GameSettings : MonoBehaviour
         widthInt = PlayerPrefs.GetInt("width");
         heightInt = PlayerPrefs.GetInt("height");
         speedInt = PlayerPrefs.GetInt("speed");
+        obstacles = PlayerPrefs.GetInt("obstacles", 1) == 1; 
 
         widthSlider.value = widthInt;
         heightSlider.value = heightInt;
@@ -47,6 +53,7 @@ public class GameSettings : MonoBehaviour
         widthSlider.onValueChanged.RemoveListener(UpdateWidthText);
         heightSlider.onValueChanged.RemoveListener(UpdateHeightText);
         speedSlider.onValueChanged.RemoveListener(UpdateSpeedText);
+        obstaclesToggle.onValueChanged.RemoveListener(OnObstaclesToggleChanged);
     }
 
     void UpdateWidthText(float value)
@@ -69,5 +76,12 @@ public class GameSettings : MonoBehaviour
         int currentSpeedChosen = (int)value;
         PlayerPrefs.SetInt("speed", currentSpeedChosen);
         Debug.Log(currentSpeedChosen);
+    }
+
+    void OnObstaclesToggleChanged(bool isOn)
+    {
+        obstacles = isOn;
+        PlayerPrefs.SetInt("obstacles", isOn ? 1 : 0);
+        Debug.Log("Obstacles enabled: " + obstacles);
     }
 }
