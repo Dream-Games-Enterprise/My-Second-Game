@@ -321,6 +321,23 @@ namespace RD
             // If it is an opposite direction, just ignore the input (do nothing) - carry on in current direction...
         }
 
+        float GetRotationForDirection(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.up:
+                    return 0f;
+                case Direction.left:
+                    return 90f;
+                case Direction.down:
+                    return 180f;
+                case Direction.right:
+                    return 270f;
+                default:
+                    return 0f;
+            }
+        }
+
         void MovePlayer()
         {
             int x = 0;
@@ -360,10 +377,10 @@ namespace RD
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
 
+            // If the snake collides with its own tail, game over
             if (tail.Count > 0 && targetNode == tail[0].node)
             {
-                //MAKE A BOOL TRUE HERE WHICH THEN RETURNS THIS ONE BUT HAVE A METHOD LISTENING FOR THIS BOOL CHANGE TO KICKSTART THE SNAKE TO START MOVING FORWARD AGAIN
-                return; //the player should carry on moving here just have their movement stopped
+                return; // Keep moving without changing direction
             }
 
             if (targetNode == null)
@@ -398,6 +415,8 @@ namespace RD
 
                     MoveTail();
 
+                    // Set the player rotation based on the direction it's moving in
+                    playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
                     PlacePlayerObject(playerObject, targetNode.worldPosition);
                     playerNode = targetNode;
                     availableNodes.Remove(playerNode);
@@ -423,25 +442,31 @@ namespace RD
 
             for (int i = 0; i < tail.Count; i++)
             {
-                SpecialNode p = tail[i];
-                availableNodes.Add(p.node);
+                SpecialNode tailSegment = tail[i];
+                availableNodes.Add(tailSegment.node);
 
+                // Set the direction and rotation for the tail segment based on its position relative to the next segment
                 if (i == 0)
                 {
-                    prevNode = p.node;
-                    p.node = playerNode;
+                    prevNode = tailSegment.node;
+                    tailSegment.node = playerNode;
                 }
                 else
                 {
-                    Node prev = p.node;
-                    p.node = prevNode;
-                    prevNode = prev;
+                    Node previousSegmentNode = tailSegment.node;
+                    tailSegment.node = prevNode;
+                    prevNode = previousSegmentNode;
                 }
 
-                availableNodes.Remove(p.node);
-                PlacePlayerObject(p.obj, p.node.worldPosition);
+                // Calculate rotation for the tail segment based on its new position
+                Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
+                tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
+
+                availableNodes.Remove(tailSegment.node);
+                PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
             }
         }
+
 
         #region Utilities
 
