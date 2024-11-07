@@ -196,9 +196,6 @@ namespace RD
             }
         }
 
-
-
-
         void CreateMap()
         {
             mapObject = new GameObject("Map");
@@ -335,7 +332,6 @@ namespace RD
             return upBlocked && downBlocked && leftBlocked && rightBlocked;
         }
 
-        // Helper method to check if a node is blocked by an obstacle or snake tail
         bool IsBlocked(int x, int y)
         {
             Node targetNode = GetNode(x, y);
@@ -346,7 +342,6 @@ namespace RD
 
             return false; // Not blocked
         }
-
 
         void CreateObstacles()
         {
@@ -395,7 +390,6 @@ namespace RD
             // Set the state of the toggle based on the loaded value
             obstaclesToggle = obstaclesEnabled;
         }
-
 
         float GetMoveRateFromSpeed(int speed)
         {
@@ -625,7 +619,6 @@ namespace RD
             }
         }
 
-
         #region Utilities
 
         public void RestartGame()
@@ -637,7 +630,9 @@ namespace RD
         public void GameOver()
         {
             isGameOver = true;
+            Time.timeScale = 1f; //set to 0.3f once particle system of dying snake is added
             isFirstInput = false;
+            scoreManager.ApplyEndMultipliers();
             uiHandler.GameEndMenu();
         }
 
@@ -711,8 +706,6 @@ namespace RD
                 // No available space - Player wins!
             }
         }
-
-
 
         Node GetNode(int x, int y)
         {

@@ -12,7 +12,7 @@ moving obstacle nodes?
 CORE
 Figure out how (ask chatgpt) at which point of remaining available nodes should complete should count (victory) have map size score multiplier, and an obstacle score multiplier - have in settings/somewhere mentioning the multiplier
 MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
-
+Show multipliers at end
 
 WIDGET
 

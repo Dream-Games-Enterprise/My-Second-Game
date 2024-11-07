@@ -17,7 +17,7 @@ public class ScoreManager : MonoBehaviour
 
     public void AddScore()
     {
-        int baseScore = 2;
+        int baseScore = 5;
         currentScore += baseScore;
 
         Debug.Log("Score added: " + baseScore + ", Current Score: " + currentScore);
