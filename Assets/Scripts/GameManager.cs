@@ -424,67 +424,62 @@ namespace RD
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
 
-            // If the snake collides with its own tail, game over
-            if (tail.Count > 0 && targetNode == tail[0].node)
+            // If the snake collides with its own tail or an obstacle, game over
+            if (tail.Count > 0 && targetNode == tail[0].node || isObstacleNode(targetNode))
             {
-                return; // Keep moving without changing direction
+                onGameOver.Invoke();  // Trigger game over if player hits an obstacle or its own tail
             }
-
-            if (targetNode == null)
+            else if (targetNode == null)
             {
                 // Game over due to going out of bounds
                 onGameOver.Invoke();
             }
             else
             {
-                if (isObstacleNode(targetNode))  // Check for obstacle collision
+                bool isScore = false;
+
+                if (targetNode == foodNode)  // Correct food collision detection
                 {
-                    onGameOver.Invoke();  // Trigger game over if player hits an obstacle
+                    isScore = true;
+
+                    // Destroy the food object when it is picked up
+                    Destroy(foodObject); // This line destroys the food object
                 }
-                else if (isTailNode(targetNode))
+
+                Node previousNode = playerNode;
+                availableNodes.Add(previousNode);
+
+                if (isScore)
                 {
-                    onGameOver.Invoke();
+                    tail.Add(CreateTailNode(previousNode.x, previousNode.y));
+                    availableNodes.Remove(previousNode);
+                    CreateFood();  // Spawn new food after pickup
                 }
-                else
+
+                MoveTail();
+
+                // Set the player rotation based on the direction it's moving in
+                playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
+                PlacePlayerObject(playerObject, targetNode.worldPosition);
+                playerNode = targetNode;
+                availableNodes.Remove(playerNode);
+
+                if (isScore)
                 {
-                    bool isScore = false;
-
-                    if (targetNode == foodNode)
+                    // Ensure food spawns again in a valid location
+                    if (availableNodes.Count > 0)
                     {
-                        isScore = true;
+                        PlaceFood();
                     }
-
-                    Node previousNode = playerNode;
-                    availableNodes.Add(previousNode);
-
-                    if (isScore)
+                    else
                     {
-                        tail.Add(CreateTailNode(previousNode.x, previousNode.y));
-                        availableNodes.Remove(previousNode);
-                    }
-
-                    MoveTail();
-
-                    // Set the player rotation based on the direction it's moving in
-                    playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
-                    PlacePlayerObject(playerObject, targetNode.worldPosition);
-                    playerNode = targetNode;
-                    availableNodes.Remove(playerNode);
-
-                    if (isScore)
-                    {
-                        if (availableNodes.Count > 0)
-                        {
-                            PlaceFood();
-                        }
-                        else
-                        {
-                            // Handle win condition here
-                        }
+                        // Handle win condition if no available space
                     }
                 }
             }
         }
+
+
 
         void MoveTail()
         {
@@ -585,6 +580,13 @@ namespace RD
                 validNodes.Remove(t.node);
             }
 
+            // Also remove any nodes occupied by obstacles
+            foreach (var obstacle in obstacleNodes)
+            {
+                validNodes.Remove(obstacle);
+            }
+
+            // If there are no valid nodes left, handle it (you could trigger a win condition or reset)
             if (validNodes.Count > 0)
             {
                 int ran = Random.Range(0, validNodes.Count);
@@ -596,9 +598,11 @@ namespace RD
             }
             else
             {
-                // Handle win condition or no available space logic here
+                // Handle the case where there's no valid space for food (e.g., win condition)
+                Debug.LogWarning("No valid space for food, need to handle this case!");
             }
         }
+
 
         Node GetNode(int x, int y)
         {
