@@ -5,4 +5,4 @@ HAVE DIFFERENT AMOUNT OF FOod depending on map size
 MAKE IT NOT DO GAME OVER WHEN THE PLAYER TURNS ONTO IT'S TAIL JUST MAKE IT RETURN/IGNORE IT
 HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
-Obstacle nodes may need to check surrounding nodes for obstacles before spawning
+Obstacle nodes may need to check surrounding nodes for obstacles before spawning (check should be something like game over node (obstacle and null) should not have more than 1 next to it)
