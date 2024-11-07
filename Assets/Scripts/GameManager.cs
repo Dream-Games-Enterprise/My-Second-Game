@@ -66,14 +66,14 @@ namespace RD
         {
             LoadSpeedSettings();
             int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            //int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
 
             CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
 
             if (customisation != null)
             {
                 customPlayerSprite = customisation.snakeSprites[snakeIndex];
-                //customTailSprite = customisation.tailSprites[tailIndex];
+                customTailSprite = customisation.tailSprites[tailIndex];
             }
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");

@@ -17,7 +17,7 @@ public class CustomisationManager : MonoBehaviour
     {
         // Load saved selections from PlayerPrefs (if available)
         selectedSnakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-        //selectedTailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+        selectedTailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
 
         // Update the preview images based on saved selections
         //UpdatePreview();
@@ -43,7 +43,7 @@ public class CustomisationManager : MonoBehaviour
     public void ApplySettings()
     {
         PlayerPrefs.SetInt("SelectedSnakeIndex", selectedSnakeIndex);
-       // PlayerPrefs.SetInt("SelectedTailIndex", selectedTailIndex);
+        PlayerPrefs.SetInt("SelectedTailIndex", selectedTailIndex);
         PlayerPrefs.Save();
     }
 
