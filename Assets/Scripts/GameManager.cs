@@ -273,13 +273,41 @@ namespace RD
 
         void CreateFood()
         {
-            foodObject = new GameObject("Food");
-            SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+            // Create a new food object
+            GameObject newFoodObject = new GameObject("Food");
+            SpriteRenderer foodRenderer = newFoodObject.AddComponent<SpriteRenderer>();
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
-            //foodRenderer.sprite = CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
-            PlaceFood();
+
+            // Get valid node positions and place the food object
+            List<Node> validNodes = new List<Node>(availableNodes);
+            validNodes.Remove(playerNode);
+            foreach (var t in tail)
+            {
+                validNodes.Remove(t.node); // Don't place food where the tail is
+            }
+            foreach (var obstacle in obstacleNodes)
+            {
+                validNodes.Remove(obstacle); // Don't place food where obstacles are
+            }
+
+            if (validNodes.Count > 0)
+            {
+                int ran = Random.Range(0, validNodes.Count);
+                Node n = validNodes[ran];
+
+                // Place the food on a valid node
+                PlacePlayerObject(newFoodObject, n.worldPosition);
+
+                // Add the new food object and its corresponding node to the lists for tracking
+                foodObjects.Add(newFoodObject);  // Add the food object to the tracking list
+                foodNodes.Add(n);  // Add the food node to the tracking list
+
+                // Optionally set the scale of the new food object
+                newFoodObject.transform.localScale = Vector3.one * 0.7f; // Set size as needed
+            }
         }
+
 
         void CreateObstacles()
         {
@@ -446,8 +474,8 @@ namespace RD
             }
             else
             {
-                prevDirection = curDirection;  // Update previous direction
-                curDirection = targetDirection; // Set current direction to the target direction
+                prevDirection = curDirection;  
+                curDirection = targetDirection; 
             }
 
             switch (moveDirection)
@@ -486,16 +514,17 @@ namespace RD
             {
                 bool isFood = false;
 
-                // Check if the player has collected food
                 for (int i = 0; i < foodNodes.Count; i++)
                 {
                     if (foodNodes[i] == targetNode)
                     {
                         isFood = true;
-                        Destroy(foodObjects[i]); // Destroy the food object
-                        foodObjects.RemoveAt(i); // Remove the food object from the list
-                        foodNodes.RemoveAt(i); // Remove the food node from the list
-                        break; // Exit the loop after collecting the food
+
+                        Destroy(foodObjects[i]);
+                        foodObjects.RemoveAt(i);
+                        foodNodes.RemoveAt(i);
+
+                        break; 
                     }
                 }
 
@@ -506,10 +535,9 @@ namespace RD
                 {
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
-                    foodNodes.Remove(targetNode); // Remove food node from the list
-                    CreateFood(); // Create new food after collection
+                    foodNodes.Remove(targetNode); 
+                    CreateFood();
                 }
-
 
                 MoveTail();
 
@@ -522,6 +550,7 @@ namespace RD
 
 
 
+
         void MoveTail()
         {
             Node prevNode = null;
@@ -531,7 +560,6 @@ namespace RD
                 SpecialNode tailSegment = tail[i];
                 availableNodes.Add(tailSegment.node);
 
-                // Set the direction and rotation for the tail segment based on its position relative to the next segment
                 if (i == 0)
                 {
                     prevNode = tailSegment.node;
@@ -630,13 +658,13 @@ namespace RD
                 int ran = Random.Range(0, validNodes.Count);
                 Node n = validNodes[ran];
                 PlacePlayerObject(foodObject, n.worldPosition);
-                foodNode = n;
+                foodNode = n; // Store the node of the food for tracking
 
                 foodObject.transform.localScale = Vector3.one * 0.7f; // Set to any desired scale factor
             }
             else
             {
-                //No available space - Player wins!
+                // No available space - Player wins!
             }
         }
 
