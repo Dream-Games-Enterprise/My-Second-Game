@@ -19,12 +19,14 @@ namespace RD
         public Color colour2;
         public Color foodColour = Color.red;
         public Color playerColour;
+        public Color obstacleColor = Color.black;  // Color of the obstacles
 
         public Transform cameraHolder;
 
         GameObject playerObject;
         GameObject foodObject;
         GameObject tailParent;
+        GameObject obstacleParent;  // Parent object to hold all obstacles
         Node playerNode;
         Node prevPlayerNode;
         Node foodNode;
@@ -36,6 +38,7 @@ namespace RD
         Node[,] grid;
         List<Node> availableNodes = new List<Node>();
         List<SpecialNode> tail = new List<SpecialNode>();
+        List<Node> obstacleNodes = new List<Node>();
 
         bool up, left, right, down;
 
@@ -85,6 +88,7 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
+            CreateObstacles();  // Add this line
             uiHandler.ResumeGame();
             PlacePlayer();
             PlaceCamera();
@@ -95,7 +99,6 @@ namespace RD
             curDirection = Direction.up;
             targetDirection = curDirection;
         }
-
         public void ClearReferences()
         {
             if (mapObject != null)
@@ -112,9 +115,23 @@ namespace RD
                 Destroy(t.obj);
             }
             tail.Clear();
+
+            if (obstacleParent != null)
+            {
+                foreach (Transform obstacle in obstacleParent.transform)
+                {
+                    Destroy(obstacle.gameObject); 
+                }
+                Destroy(obstacleParent); 
+            }
+
             availableNodes.Clear();
+            availableNodes.AddRange(obstacleNodes); 
+            obstacleNodes.Clear(); 
+
             grid = null;
         }
+
 
         void CreateMap()
         {
@@ -209,6 +226,32 @@ namespace RD
             foodRenderer.sprite = CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
             PlaceFood();
+        }
+
+        void CreateObstacles()
+        {
+            obstacleParent = new GameObject("Obstacles");
+
+            // Calculate 10% of the map area
+            int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
+
+            for (int i = 0; i < obstacleCount; i++)
+            {
+                if (availableNodes.Count == 0) break;
+
+                int randomIndex = Random.Range(0, availableNodes.Count);
+                Node obstacleNode = availableNodes[randomIndex];
+                availableNodes.RemoveAt(randomIndex);
+                obstacleNodes.Add(obstacleNode);
+
+                GameObject obstacleObj = new GameObject("Obstacle");
+                obstacleObj.transform.parent = obstacleParent.transform;
+                PlacePlayerObject(obstacleObj, obstacleNode.worldPosition);
+
+                SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
+                obstacleRenderer.sprite = CreateSprite(obstacleColor);
+                obstacleRenderer.sortingOrder = 1;
+            }
         }
 
         #endregion
@@ -390,9 +433,12 @@ namespace RD
             }
             else
             {
-                if (isTailNode(targetNode))
+                if (isObstacleNode(targetNode))  // Check for obstacle collision
                 {
-                    // Game over due to collision with own tail
+                    onGameOver.Invoke();  // Trigger game over if player hits an obstacle
+                }
+                else if (isTailNode(targetNode))
+                {
                     onGameOver.Invoke();
                 }
                 else
@@ -511,6 +557,11 @@ namespace RD
             }
 
             return false;
+        }
+
+        bool isObstacleNode(Node node)
+        {
+            return obstacleNodes.Contains(node);
         }
 
         void PlacePlayerObject(GameObject obj, Vector3 pos)
