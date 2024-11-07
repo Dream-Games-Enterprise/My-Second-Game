@@ -102,8 +102,8 @@ namespace RD
             {
                 CreateObstacles();
             }
+            //else { return; }
 
-            CreateObstacles();
             int totalMapNodes = maxWidth * maxHeight;
             int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
             //int initialFoodCount = 3;
@@ -383,13 +383,19 @@ namespace RD
 
         void LoadSpeedSettings()
         {
+            // Load speed from PlayerPrefs
             int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
             float speedToUse = GetMoveRateFromSpeed(speedInt);
             SetSpeed(speedToUse);
 
-            bool obstaclesEnabled = PlayerPrefs.GetInt("obstaclesEnabled", 1) == 0;  // Default is 1 (enabled)
+            // Load obstacles state from PlayerPrefs
+            bool obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 1) == 1;  // Default is 1 (enabled)
+            Debug.Log("Obstacles Enabled: " + obstaclesEnabled);
+
+            // Set the state of the toggle based on the loaded value
             obstaclesToggle = obstaclesEnabled;
         }
+
 
         float GetMoveRateFromSpeed(int speed)
         {
@@ -409,7 +415,6 @@ namespace RD
                     return 0.2f;  // Default speed if no valid value is found
             }
         }
-
 
         void Update()
         {
@@ -587,9 +592,6 @@ namespace RD
                 availableNodes.Remove(playerNode);
             }
         }
-
-
-
 
         void MoveTail()
         {
