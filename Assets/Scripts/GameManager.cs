@@ -64,6 +64,9 @@ namespace RD
         public UnityEvent onGameOver;
         public UnityEvent firstInput;
 
+        public List<GameObject> foodObjects;
+        List<Node> foodNodes = new List<Node>();
+
         #region Init
 
         void Start()
@@ -92,8 +95,11 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
-            //method to calculate 10% of map 
-            //convert to int for amount of food to spawn at start
+            int totalMapNodes = maxWidth * maxHeight;
+            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
+
+            SpawnInitialFood(initialFoodCount);
+
             CreateObstacles(); 
             uiHandler.ResumeGame();
             PlacePlayer();
@@ -106,6 +112,7 @@ namespace RD
             curDirection = Direction.up;
             targetDirection = curDirection;
         }
+
         public void ClearReferences()
         {
             if (mapObject != null)
@@ -138,6 +145,45 @@ namespace RD
 
             grid = null;
         }
+
+        void SpawnInitialFood(int foodToSpawn)
+        {
+            // Clear any previous food data to ensure a fresh start
+            foodObjects.Clear();
+            foodNodes.Clear();
+
+            for (int i = 0; i < foodToSpawn; i++)
+            {
+                // Ensure there are available nodes to place food items
+                if (availableNodes.Count == 0)
+                {
+                    Debug.LogWarning("No available nodes to spawn more food items.");
+                    break;
+                }
+
+                int randomIndex = Random.Range(0, availableNodes.Count);
+                Node foodNode = availableNodes[randomIndex];
+
+                availableNodes.RemoveAt(randomIndex);
+
+                foodNodes.Add(foodNode); // Link the food node to the spawned food
+
+                // Create a new food GameObject and configure its appearance
+                GameObject foodObject = new GameObject("Food");
+                SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
+                foodRenderer.sortingOrder = 1;
+
+                // Place the food GameObject at the selected node's position
+                PlacePlayerObject(foodObject, foodNode.worldPosition);
+                foodObject.transform.localScale = Vector3.one * 0.7f; // Scale as needed
+
+                // Add this food GameObject to foodObjects list to manage later
+                foodObjects.Add(foodObject);
+            }
+        }
+
+
 
 
         void CreateMap()
@@ -422,12 +468,12 @@ namespace RD
             }
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
-            
+
             if (tail.Count > 0 && isTailNode(targetNode) || isObstacleNode(targetNode))
             {
                 if (targetNode == tail[0].node)
                 {
-                    //carry on moving forward (prevdirection)
+                    // Carry on moving forward (prevdirection)
                     return;
                 }
                 else { onGameOver.Invoke(); }
@@ -441,10 +487,17 @@ namespace RD
             {
                 bool isFood = false;
 
-                if (targetNode == foodNode)
+                // Check if the player has collected food
+                for (int i = 0; i < foodNodes.Count; i++)
                 {
-                    isFood = true;
-                    Destroy(foodObject);
+                    if (foodNodes[i] == targetNode)
+                    {
+                        isFood = true;
+                        Destroy(foodObjects[i]); // Destroy the food object
+                        foodObjects.RemoveAt(i); // Remove the food object from the list
+                        foodNodes.RemoveAt(i); // Remove the food node from the list
+                        break; // Exit the loop after collecting the food
+                    }
                 }
 
                 Node previousNode = playerNode;
@@ -454,8 +507,10 @@ namespace RD
                 {
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
-                    CreateFood();
+                    foodNodes.Remove(targetNode); // Remove food node from the list
+                    CreateFood(); // Create new food after collection
                 }
+
 
                 MoveTail();
 
@@ -463,20 +518,9 @@ namespace RD
                 PlacePlayerObject(playerObject, targetNode.worldPosition);
                 playerNode = targetNode;
                 availableNodes.Remove(playerNode);
-
-                if (isFood)
-                {
-                    if (availableNodes.Count > 0)
-                    {
-                        PlaceFood();
-                    }
-                    else
-                    {
-                        // Handle win condition if no available space
-                    }
-                }
             }
         }
+
 
 
         void MoveTail()
