@@ -11,9 +11,9 @@ public class CustomisationManager : MonoBehaviour
     public Image snakePreview; // Image to show the selected snake sprite
     public Image tailPreview;  // Image to show the selected tail sprite
 
-    private int selectedSnakeIndex = 0;
-    private int selectedTailIndex = 0;
-    private int selectedFoodIndex = 0;
+    int selectedSnakeIndex = 0;
+    int selectedTailIndex = 0;
+    int selectedFoodIndex = 0;
 
     void Start()
     {
@@ -59,7 +59,7 @@ public class CustomisationManager : MonoBehaviour
     }
 
     // Update preview images
-    private void UpdatePreview()
+    void UpdatePreview()
     {
         //snakePreview.sprite = snakeSprites[selectedSnakeIndex];
         //tailPreview.sprite = tailSprites[selectedTailIndex];

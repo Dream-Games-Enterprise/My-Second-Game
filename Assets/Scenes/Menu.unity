@@ -306,10 +306,10 @@ RectTransform:
   - {fileID: 458631315}
   m_Father: {fileID: 1147668020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 154.47925, y: -50}
-  m_SizeDelta: {x: 61.7917, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 61.7917, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &54568633
 MonoBehaviour:
@@ -3263,10 +3263,10 @@ RectTransform:
   - {fileID: 1977926646}
   m_Father: {fileID: 1147668020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 216.27094, y: -50}
-  m_SizeDelta: {x: 61.7917, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 61.7917, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &908325211
 MonoBehaviour:
@@ -3473,10 +3473,10 @@ RectTransform:
   - {fileID: 727766809}
   m_Father: {fileID: 1147668020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 278.06265, y: -50}
-  m_SizeDelta: {x: 61.7917, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 61.7917, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &999580494
 MonoBehaviour:
@@ -5256,10 +5256,10 @@ RectTransform:
   - {fileID: 1406142764}
   m_Father: {fileID: 1147668020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30.89585, y: -50}
-  m_SizeDelta: {x: 61.7917, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 61.7917, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1428383994
 MonoBehaviour:
@@ -7005,7 +7005,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2063619490}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: ChangeSnakeSprite
+        m_MethodName: ChangeFoodSprite
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7358,10 +7358,10 @@ RectTransform:
   - {fileID: 1349002818}
   m_Father: {fileID: 1147668020}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 92.687546, y: -50}
-  m_SizeDelta: {x: 61.7917, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 61.7917, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2036907054
 MonoBehaviour:
