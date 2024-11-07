@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 namespace RD
 {
@@ -281,7 +282,7 @@ namespace RD
 
             // Get valid node positions and place the food object
             List<Node> validNodes = new List<Node>(availableNodes);
-            validNodes.Remove(playerNode);
+            validNodes.Remove(playerNode); // Remove player position from valid positions
             foreach (var t in tail)
             {
                 validNodes.Remove(t.node); // Don't place food where the tail is
@@ -290,6 +291,9 @@ namespace RD
             {
                 validNodes.Remove(obstacle); // Don't place food where obstacles are
             }
+
+            // Filter out dead-end positions where the snake cannot move
+            validNodes = validNodes.Where(node => !IsDeadEnd(node)).ToList();
 
             if (validNodes.Count > 0)
             {
@@ -306,6 +310,34 @@ namespace RD
                 // Optionally set the scale of the new food object
                 newFoodObject.transform.localScale = Vector3.one * 0.7f; // Set size as needed
             }
+        }
+
+        // Check if a node is a dead end (i.e., no valid movement directions available)
+        bool IsDeadEnd(Node node)
+        {
+            int x = node.x;
+            int y = node.y;
+
+            // Check all four directions
+            bool upBlocked = IsBlocked(x, y + 1);  // Up
+            bool downBlocked = IsBlocked(x, y - 1);  // Down
+            bool leftBlocked = IsBlocked(x - 1, y);  // Left
+            bool rightBlocked = IsBlocked(x + 1, y);  // Right
+
+            // If all directions are blocked, it's a dead end
+            return upBlocked && downBlocked && leftBlocked && rightBlocked;
+        }
+
+        // Helper method to check if a node is blocked by an obstacle or snake tail
+        bool IsBlocked(int x, int y)
+        {
+            Node targetNode = GetNode(x, y);
+
+            if (targetNode == null) return true; // Out of bounds
+            if (obstacleNodes.Contains(targetNode)) return true; // Blocked by obstacle
+            if (tail.Exists(t => t.node == targetNode)) return true; // Blocked by tail
+
+            return false; // Not blocked
         }
 
 
