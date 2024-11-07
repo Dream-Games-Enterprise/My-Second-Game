@@ -390,22 +390,21 @@ namespace RD
             int x = 0;
             int y = 0;
 
-            // Track the direction to move in (either current direction or previous direction in case of reversal)
             Direction moveDirection = curDirection;
 
-            // If the player tries to reverse direction, use the previous direction
+            // If the player is trying to reverse direction (e.g., moving down when already moving up), 
+            // ignore the input and continue moving in the previous direction. 
+            // If not, update the current direction.
             if (isOppositeDir(targetDirection))
             {
-                moveDirection = prevDirection;
+                moveDirection = prevDirection; // Continue in the previous direction if reversing
             }
             else
             {
-                // Update prevDirection to the current direction before switching
-                prevDirection = curDirection;
-                curDirection = targetDirection;
+                prevDirection = curDirection;  // Update previous direction
+                curDirection = targetDirection; // Set current direction to the target direction
             }
 
-            // Set movement direction based on the chosen direction (moveDirection here)
             switch (moveDirection)
             {
                 case Direction.up:
@@ -423,24 +422,28 @@ namespace RD
             }
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
-
-            if (tail.Count > 0 && targetNode == tail[0].node || isObstacleNode(targetNode))
+            
+            if (tail.Count > 0 && isTailNode(targetNode) || isObstacleNode(targetNode))
             {
-                onGameOver.Invoke(); 
+                if (targetNode == tail[0].node)
+                {
+                    return;
+                }
+                else { onGameOver.Invoke(); }
             }
             else if (targetNode == null)
             {
-                // Game over due to going out of bounds
+                // If the player moves out of bounds (i.e., targetNode is null), game over.
                 onGameOver.Invoke();
             }
             else
             {
                 bool isScore = false;
 
-                if (targetNode == foodNode) 
+                // Check if the player has eaten food
+                if (targetNode == foodNode)
                 {
                     isScore = true;
-
                     Destroy(foodObject);
                 }
 
@@ -449,6 +452,7 @@ namespace RD
 
                 if (isScore)
                 {
+                    // Add a new tail segment when the player eats food
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
                     CreateFood();  // Spawn new food after pickup
@@ -456,7 +460,7 @@ namespace RD
 
                 MoveTail();
 
-                // Set the player rotation based on the direction it's moving in
+                // Update player rotation and position based on movement direction
                 playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
                 PlacePlayerObject(playerObject, targetNode.worldPosition);
                 playerNode = targetNode;
@@ -476,7 +480,6 @@ namespace RD
                 }
             }
         }
-
 
 
         void MoveTail()
