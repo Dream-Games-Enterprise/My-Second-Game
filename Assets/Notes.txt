@@ -3,11 +3,13 @@ Add particle effects for when food is picked up.
 MAKE IT NOT DO GAME OVER WHEN THE PLAYER TURNS ONTO IT'S TAIL JUST MAKE IT RETURN/IGNORE IT
 HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
+Tween the swipe text
+Tween food objects slightly
+Obstacle sprites
 
 CORE
 Figure out how (ask chatgpt) at which point of remaining available nodes should complete should count (victory)
 MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
-HAVE DIFFERENT AMOUNT OF FOod depending on map size
 Obstacle nodes may need to check surrounding nodes for obstacles before spawning (check should be something like game over node (obstacle and null) should not have more than 1 next to it)
 
 
