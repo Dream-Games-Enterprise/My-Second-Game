@@ -8,7 +8,7 @@ Tween food objects slightly
 Obstacle sprites
 
 CORE
-Figure out how (ask chatgpt) at which point of remaining available nodes should complete should count (victory)
+Figure out how (ask chatgpt) at which point of remaining available nodes should complete should count (victory) have map size score multiplier, and an obstacle score multiplier 
 MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
 Obstacle nodes may need to check surrounding nodes for obstacles before spawning (check should be something like game over node (obstacle and null) should not have more than 1 next to it)
 
