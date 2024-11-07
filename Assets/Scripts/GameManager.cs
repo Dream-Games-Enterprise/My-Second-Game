@@ -95,9 +95,9 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
-            /*int totalMapNodes = maxWidth * maxHeight;
-            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);*/
-            int initialFoodCount = 3;
+            int totalMapNodes = maxWidth * maxHeight;
+            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
+            //int initialFoodCount = 3;
 
             SpawnInitialFood(initialFoodCount);
 
