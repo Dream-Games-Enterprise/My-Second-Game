@@ -95,8 +95,9 @@ namespace RD
         {
             ClearReferences();
             CreateMap();
-            int totalMapNodes = maxWidth * maxHeight;
-            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
+            /*int totalMapNodes = maxWidth * maxHeight;
+            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);*/
+            int initialFoodCount = 3;
 
             SpawnInitialFood(initialFoodCount);
 
@@ -104,8 +105,6 @@ namespace RD
             uiHandler.ResumeGame();
             PlacePlayer();
             PlaceCamera();
-
-            CreateFood();
 
             isGameOver = false;
             isFirstInput = false;

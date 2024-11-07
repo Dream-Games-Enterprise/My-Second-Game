@@ -1180,8 +1180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e21b1a7e5305a40a28f67cd9706b64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customPlayerSprite: {fileID: 0}
-  customTailSprite: {fileID: 0}
 --- !u!1 &1447539184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1215,12 +1213,14 @@ MonoBehaviour:
   uiHandler: {fileID: 389438042}
   customPlayerSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customTailSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
+  customFoodSprite: {fileID: 0}
   maxHeight: 6
   maxWidth: 4
   colour1: {r: 0.7529412, g: 0.69411767, b: 0.5882353, a: 1}
   colour2: {r: 0.49803922, g: 0.38039216, b: 0.27450982, a: 1}
   foodColour: {r: 0.02441454, g: 0, b: 1, a: 1}
   playerColour: {r: 0, g: 0, b: 0, a: 1}
+  obstacleColor: {r: 0, g: 0, b: 0, a: 1}
   cameraHolder: {fileID: 1867295740}
   isGameOver: 0
   isFirstInput: 0
@@ -1240,18 +1240,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1447539185}
-        m_TargetAssemblyTypeName: RD.GameManager, Assembly-CSharp
-        m_MethodName: StartNewGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2125027034}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -1262,7 +1250,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
   onGameOver:
     m_PersistentCalls:
@@ -1306,6 +1294,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  foodObjects: []
 --- !u!4 &1447539186
 Transform:
   m_ObjectHideFlags: 0
