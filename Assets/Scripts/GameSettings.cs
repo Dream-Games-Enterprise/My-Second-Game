@@ -20,6 +20,8 @@ public class GameSettings : MonoBehaviour
     int speedInt;
     bool obstacles;
 
+    //2 input types: swipe/touch and arrow buttons
+
     void Start()
     {
         LoadData();

@@ -8,6 +8,7 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
+        ScoreManager scoreManager;
         [SerializeField] UIHandler uiHandler;
 
         public Sprite customPlayerSprite;
@@ -70,6 +71,11 @@ namespace RD
         List<Node> foodNodes = new List<Node>();
 
         #region Init
+
+        void Awake()
+        {
+            scoreManager = GetComponent<ScoreManager>();  
+        }
 
         void Start()
         {
@@ -281,25 +287,22 @@ namespace RD
 
         void CreateFood()
         {
-            // Create a new food object
             GameObject newFoodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = newFoodObject.AddComponent<SpriteRenderer>();
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
 
-            // Get valid node positions and place the food object
             List<Node> validNodes = new List<Node>(availableNodes);
             validNodes.Remove(playerNode); // Remove player position from valid positions
             foreach (var t in tail)
             {
-                validNodes.Remove(t.node); // Don't place food where the tail is
+                validNodes.Remove(t.node); 
             }
             foreach (var obstacle in obstacleNodes)
             {
-                validNodes.Remove(obstacle); // Don't place food where obstacles are
+                validNodes.Remove(obstacle);
             }
 
-            // Filter out dead-end positions where the snake cannot move
             validNodes = validNodes.Where(node => !IsDeadEnd(node)).ToList();
 
             if (validNodes.Count > 0)
@@ -307,19 +310,16 @@ namespace RD
                 int ran = Random.Range(0, validNodes.Count);
                 Node n = validNodes[ran];
 
-                // Place the food on a valid node
                 PlacePlayerObject(newFoodObject, n.worldPosition);
 
-                // Add the new food object and its corresponding node to the lists for tracking
-                foodObjects.Add(newFoodObject);  // Add the food object to the tracking list
-                foodNodes.Add(n);  // Add the food node to the tracking list
+                foodObjects.Add(newFoodObject); 
+                foodNodes.Add(n); 
 
                 // Optionally set the scale of the new food object
                 newFoodObject.transform.localScale = Vector3.one * 0.7f; // Set size as needed
             }
         }
 
-        // Check if a node is a dead end (i.e., no valid movement directions available)
         bool IsDeadEnd(Node node)
         {
             int x = node.x;
@@ -568,6 +568,8 @@ namespace RD
                         Destroy(foodObjects[i]);
                         foodObjects.RemoveAt(i);
                         foodNodes.RemoveAt(i);
+
+                        scoreManager.AddScore();
 
                         break; 
                     }
