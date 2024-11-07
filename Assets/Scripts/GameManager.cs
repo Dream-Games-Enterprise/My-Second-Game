@@ -424,10 +424,9 @@ namespace RD
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
 
-            // If the snake collides with its own tail or an obstacle, game over
             if (tail.Count > 0 && targetNode == tail[0].node || isObstacleNode(targetNode))
             {
-                onGameOver.Invoke();  // Trigger game over if player hits an obstacle or its own tail
+                onGameOver.Invoke(); 
             }
             else if (targetNode == null)
             {
@@ -438,12 +437,11 @@ namespace RD
             {
                 bool isScore = false;
 
-                if (targetNode == foodNode)  // Correct food collision detection
+                if (targetNode == foodNode) 
                 {
                     isScore = true;
 
-                    // Destroy the food object when it is picked up
-                    Destroy(foodObject); // This line destroys the food object
+                    Destroy(foodObject);
                 }
 
                 Node previousNode = playerNode;
@@ -574,16 +572,16 @@ namespace RD
             List<Node> validNodes = new List<Node>(availableNodes);
 
             // Ensure that food does not spawn on the player or tail nodes
-            validNodes.Remove(playerNode);
+            validNodes.Remove(playerNode);  // Remove the player's current position
             foreach (var t in tail)
             {
-                validNodes.Remove(t.node);
+                validNodes.Remove(t.node);  // Remove each segment of the tail
             }
 
             // Also remove any nodes occupied by obstacles
             foreach (var obstacle in obstacleNodes)
             {
-                validNodes.Remove(obstacle);
+                validNodes.Remove(obstacle);  // Remove obstacle nodes
             }
 
             // If there are no valid nodes left, handle it (you could trigger a win condition or reset)
@@ -602,6 +600,7 @@ namespace RD
                 Debug.LogWarning("No valid space for food, need to handle this case!");
             }
         }
+
 
 
         Node GetNode(int x, int y)
