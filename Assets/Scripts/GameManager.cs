@@ -69,6 +69,7 @@ namespace RD
 
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
+        bool isPaused = false;
 
         #region Init
 
@@ -161,40 +162,44 @@ namespace RD
 
         void SpawnInitialFood(int foodToSpawn)
         {
-            // Clear any previous food data to ensure a fresh start
+            // Clear previous food lists
             foodObjects.Clear();
             foodNodes.Clear();
 
             for (int i = 0; i < foodToSpawn; i++)
             {
-                // Ensure there are available nodes to place food items
+                // Check if there are available nodes
                 if (availableNodes.Count == 0)
                 {
-                    Debug.LogWarning("No available nodes to spawn more food items.");
+                    Debug.LogWarning("No valid nodes available to spawn more food items.");
                     break;
                 }
 
+                // Randomly select a node from availableNodes
                 int randomIndex = Random.Range(0, availableNodes.Count);
                 Node foodNode = availableNodes[randomIndex];
 
+                // Remove this node from availableNodes to prevent overlapping
                 availableNodes.RemoveAt(randomIndex);
 
-                foodNodes.Add(foodNode); // Link the food node to the spawned food
+                // Track this node as a food node
+                foodNodes.Add(foodNode);
 
-                // Create a new food GameObject and configure its appearance
+                // Create food object at the selected node
                 GameObject foodObject = new GameObject("Food");
                 SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
                 foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
                 foodRenderer.sortingOrder = 1;
 
-                // Place the food GameObject at the selected node's position
                 PlacePlayerObject(foodObject, foodNode.worldPosition);
-                foodObject.transform.localScale = Vector3.one * 0.7f; // Scale as needed
+                foodObject.transform.localScale = Vector3.one * 0.7f;
 
-                // Add this food GameObject to foodObjects list to manage later
+                // Add to list of food objects
                 foodObjects.Add(foodObject);
             }
         }
+
+
 
         void CreateMap()
         {
@@ -284,38 +289,57 @@ namespace RD
 
         void CreateFood()
         {
-            GameObject newFoodObject = new GameObject("Food");
-            SpriteRenderer foodRenderer = newFoodObject.AddComponent<SpriteRenderer>();
+            // Check if there are any available nodes
+            if (availableNodes.Count == 0)
+            {
+                Debug.LogWarning("No valid nodes available for food placement.");
+                return;
+            }
+
+            // Select a random node from availableNodes
+            int randomIndex = Random.Range(0, availableNodes.Count);
+            Node foodNode = availableNodes[randomIndex];
+
+            // Remove the selected node from availableNodes to prevent future food overlap
+            availableNodes.RemoveAt(randomIndex);
+
+            // Create food object at the chosen node
+            GameObject foodObject = new GameObject("Food");
+            SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
 
-            List<Node> validNodes = new List<Node>(availableNodes);
-            validNodes.Remove(playerNode); // Remove player position from valid positions
-            foreach (var t in tail)
-            {
-                validNodes.Remove(t.node); 
-            }
-            foreach (var obstacle in obstacleNodes)
-            {
-                validNodes.Remove(obstacle);
-            }
+            PlacePlayerObject(foodObject, foodNode.worldPosition);
+            foodObject.transform.localScale = Vector3.one * 0.7f;
 
-            validNodes = validNodes.Where(node => !IsDeadEnd(node)).ToList();
-
-            if (validNodes.Count > 0)
-            {
-                int ran = Random.Range(0, validNodes.Count);
-                Node n = validNodes[ran];
-
-                PlacePlayerObject(newFoodObject, n.worldPosition);
-
-                foodObjects.Add(newFoodObject); 
-                foodNodes.Add(n); 
-
-                // Optionally set the scale of the new food object
-                newFoodObject.transform.localScale = Vector3.one * 0.7f; // Set size as needed
-            }
+            // Track the food object and node
+            foodObjects.Add(foodObject);
+            foodNodes.Add(foodNode);
         }
+
+
+        void OnFoodEaten(Node eatenFoodNode)
+        {
+            // Find and remove the eaten food from lists
+            int foodIndex = foodNodes.IndexOf(eatenFoodNode);
+            if (foodIndex != -1)
+            {
+                Destroy(foodObjects[foodIndex]);
+                foodObjects.RemoveAt(foodIndex);
+                foodNodes.RemoveAt(foodIndex);
+            }
+
+            // Return the node to availableNodes
+            if (!availableNodes.Contains(eatenFoodNode))
+            {
+                availableNodes.Add(eatenFoodNode);
+            }
+
+            // Spawn a new food item
+            CreateFood();
+        }
+
+
 
         bool IsDeadEnd(Node node)
         {
@@ -416,6 +440,19 @@ namespace RD
             {
                 return;
             }
+
+            
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                isPaused = !isPaused;
+                if (isPaused)
+                {
+                    Time.timeScale = 0f;
+                }
+                else { Time.timeScale = 1f; }
+            }
+
+           
 
             GetInput();
 
