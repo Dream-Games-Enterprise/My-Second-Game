@@ -9,7 +9,6 @@ moving obstacle nodes?
 
 
 CORE
-Figure out how (ask chatgpt) at which point of remaining available nodes should complete should count (victory) 
 MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
 
 WIDGET

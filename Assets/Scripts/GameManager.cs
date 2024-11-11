@@ -724,15 +724,11 @@ namespace RD
             isGameOver = true;
             Time.timeScale = 0.3f; // Slow down time to celebrate the win
 
-            // First, apply all multipliers (speed, obstacle) and then the win multiplier
-            scoreManager.ApplyEndMultipliers(); // This applies speed and obstacle multipliers
-            scoreManager.AddWinMultiplier(); // This applies the 5x win multiplier
+            scoreManager.ApplyEndMultipliers(); 
+            scoreManager.AddWinMultiplier    (); 
 
-            // Display the game over UI with victory state
             gameOverUI.ActivateUI(true);
         }
-
-
 
         Node GetNode(int x, int y)
         {
