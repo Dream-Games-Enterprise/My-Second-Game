@@ -462,14 +462,19 @@ namespace RD
                 float cameraHorizontalLimit = halfWidth - cameraSize;
                 float cameraVerticalLimit = halfHeight - cameraSize;
 
-                // Ensure the camera stays within the bounds of the map
-                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+                // Adjust the camera position to allow a slight margin beyond the map
+                float cameraHorizontalBuffer = cameraSize * 0.2f;  // 20% buffer for edge visibility
+                float cameraVerticalBuffer = cameraSize * 0.2f;    // 20% buffer for edge visibility
+
+                // Ensure the camera stays within the bounds of the map and shows the void area beyond
+                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit - cameraHorizontalBuffer, halfWidth + cameraSize + cameraHorizontalBuffer);
+                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit - cameraVerticalBuffer, halfHeight + cameraSize + cameraVerticalBuffer);
 
                 // Smoothly move the camera towards the desired position
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
+
 
 
 
