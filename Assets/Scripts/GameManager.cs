@@ -45,6 +45,10 @@ namespace RD
         List<SpecialNode> tail = new List<SpecialNode>();
         List<Node> obstacleNodes = new List<Node>();
 
+        public Button upButton;
+        public Button downButton;
+        public Button leftButton;
+        public Button rightButton;
         bool up, left, right, down;
         bool obstaclesToggle;
 
@@ -101,6 +105,22 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
+
+            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+        }
+
+        void OnArrowButtonPressed(Direction direction)
+        {
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();  // Trigger first input event
+            }
+
+            SetDirection(direction);  // Change direction based on button press
         }
 
         public void StartNewGame()
@@ -421,6 +441,8 @@ namespace RD
                 }
                 else { Time.timeScale = 1f; }
             }
+
+
 
             GetInput();
 
