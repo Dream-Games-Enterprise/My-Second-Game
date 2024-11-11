@@ -6,7 +6,7 @@ using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI gameScoreText; // Reference to the UI text component
+    [SerializeField] TextMeshProUGUI gameScoreText;
     int currentScore;
 
     void Start()

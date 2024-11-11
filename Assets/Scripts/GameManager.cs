@@ -10,6 +10,7 @@ namespace RD
     {
         ScoreManager scoreManager;
         [SerializeField] UIHandler uiHandler;
+        GameOverUI gameOverUI;
 
         public Sprite customPlayerSprite;
         public Sprite customTailSprite;
@@ -75,7 +76,8 @@ namespace RD
 
         void Awake()
         {
-            scoreManager = GetComponent<ScoreManager>();  
+            scoreManager = GetComponent<ScoreManager>();
+            gameOverUI = GetComponent<GameOverUI>();
         }
 
         void Start()
@@ -162,31 +164,25 @@ namespace RD
 
         void SpawnInitialFood(int foodToSpawn)
         {
-            // Clear previous food lists
             foodObjects.Clear();
             foodNodes.Clear();
 
             for (int i = 0; i < foodToSpawn; i++)
             {
-                // Refresh the valid nodes by filtering out tail nodes
                 List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
 
-                // Check if there are any valid nodes left
                 if (validNodes.Count == 0)
                 {
                     Debug.LogWarning("No valid nodes available to spawn more food items.");
                     break;
                 }
 
-                // Randomly select a node from the filtered valid nodes
                 int randomIndex = Random.Range(0, validNodes.Count);
                 Node foodNode = validNodes[randomIndex];
 
-                // Remove this node from availableNodes and track it as a food node
                 availableNodes.Remove(foodNode);
                 foodNodes.Add(foodNode);
 
-                // Create and place the food object at the selected node
                 GameObject foodObject = new GameObject("Food");
                 SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
                 foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
@@ -195,7 +191,6 @@ namespace RD
                 PlacePlayerObject(foodObject, foodNode.worldPosition);
                 foodObject.transform.localScale = Vector3.one * 0.6f;
 
-                // Add to the list of food objects
                 foodObjects.Add(foodObject);
                 StartCoroutine(TweenFoodScale(foodObject));
             }
@@ -646,6 +641,7 @@ namespace RD
             isFirstInput = false;
             scoreManager.ApplyEndMultipliers();
             uiHandler.GameEndMenu();
+            gameOverUI.ActivateUI();
         }
 
         bool isOppositeDir(Direction d)
