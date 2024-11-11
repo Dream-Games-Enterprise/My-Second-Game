@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,11 +11,26 @@ public class SceneLoader : MonoBehaviour
 
     void Start()
     {
-        currentSceneInt = SceneManager.GetActiveScene().buildIndex;    
+        currentSceneInt = SceneManager.GetActiveScene().buildIndex;
+        SplashScreen();
+    }
+
+    void SplashScreen()
+    {
+        if (currentSceneInt == 0)
+        {
+            StartCoroutine("LoadMenu");
+        }
     }
 
     public void LoadScene(int sceneToLoad)
     {
         SceneManager.LoadScene(sceneToLoad);
+    }
+
+    IEnumerator LoadMenu()
+    {
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene(1);
     }
 }
