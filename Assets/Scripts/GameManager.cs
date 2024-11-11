@@ -77,6 +77,9 @@ namespace RD
         List<Node> foodNodes = new List<Node>();
         bool isPaused = false;
 
+        public float smoothSpeed = 0.1f;
+        private bool isCameraAdjusting = false;
+
         #region Init
 
         void Awake()
@@ -132,7 +135,6 @@ namespace RD
             {
                 CreateObstacles();
             }
-            //else { return; }
 
             int totalMapNodes = maxWidth * maxHeight;
             int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
@@ -141,14 +143,18 @@ namespace RD
             SpawnInitialFood(initialFoodCount);
 
             uiHandler.ResumeGame();
-            PlacePlayer();
-            PlaceCamera();
+
+            PlacePlayer();  // Place the player first
+            PlaceCamera();  // Now place the camera to center on the player
+
+            AdjustCameraSize();
 
             isGameOver = false;
             isFirstInput = false;
             curDirection = Direction.up;
             targetDirection = curDirection;
         }
+
 
         public void ClearReferences()
         {
@@ -426,7 +432,10 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            // Get the camera's orthographic size
+            // Adjust camera size based on map dimensions
+            AdjustCameraSize();
+
+            // Get the camera's orthographic size and position
             float cameraSize = Camera.main.orthographicSize;
 
             // Calculate the camera's desired position (centered on the player)
@@ -436,13 +445,34 @@ namespace RD
             float halfWidth = maxWidth * 0.5f;
             float halfHeight = maxHeight * 0.5f;
 
+            // Calculate the camera boundaries based on the map size and camera size
+            float cameraHorizontalLimit = halfWidth - cameraSize;
+            float cameraVerticalLimit = halfHeight - cameraSize;
+
             // Ensure the camera stays within the bounds of the map
-            desiredPosition.x = Mathf.Clamp(desiredPosition.x, halfWidth - cameraSize, halfWidth + cameraSize);
-            desiredPosition.y = Mathf.Clamp(desiredPosition.y, halfHeight - cameraSize, halfHeight + cameraSize);
+            desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+            desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
 
             // Smoothly move the camera towards the desired position
-            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, 0.1f);
+            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
         }
+
+
+        void AdjustCameraSize()
+        {
+            float cameraSize = Camera.main.orthographicSize;
+            // Calculate the camera size based on the map size and adjust the size accordingly.
+            // Ensure that this adjustment doesn't trigger any recursive calls to UpdateCameraPosition.
+            if (maxWidth > 20 && maxHeight > 20)
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 13, 0.1f);  // Example for larger maps.
+            }
+            else
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8, 0.1f);   // Example for smaller maps.
+            }
+        }
+
 
 
         void Update()
@@ -452,7 +482,13 @@ namespace RD
                 return;
             }
 
-            UpdateCameraPosition();
+            if (!isCameraAdjusting)
+            {
+                isCameraAdjusting = true; // Prevent recursive adjustments in the same frame.
+                UpdateCameraPosition();   // Adjust camera position.
+                AdjustCameraSize();       // Adjust camera size.
+                isCameraAdjusting = false;
+            }
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
