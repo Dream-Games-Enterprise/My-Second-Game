@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace RD
 {
@@ -405,17 +406,12 @@ namespace RD
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.V)) // Press 'V' to simulate a victory
-            {
-                TriggerVictory();
-            }
-
             if (isGameOver)
             {
                 return;
             }
 
-            
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 isPaused = !isPaused;
@@ -425,8 +421,6 @@ namespace RD
                 }
                 else { Time.timeScale = 1f; }
             }
-
-           
 
             GetInput();
 
@@ -524,8 +518,8 @@ namespace RD
             }
             else
             {
-                prevDirection = curDirection;  
-                curDirection = targetDirection; 
+                prevDirection = curDirection;
+                curDirection = targetDirection;
             }
 
             switch (moveDirection)
@@ -576,7 +570,7 @@ namespace RD
 
                         scoreManager.AddScore();
 
-                        break; 
+                        break;
                     }
                 }
 
@@ -587,7 +581,7 @@ namespace RD
                 {
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
-                    foodNodes.Remove(targetNode); 
+                    foodNodes.Remove(targetNode);
                     CreateFood();
                 }
 

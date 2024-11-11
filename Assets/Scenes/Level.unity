@@ -2272,6 +2272,10 @@ MonoBehaviour:
   playerColour: {r: 0, g: 0, b: 0, a: 1}
   obstacleColor: {r: 0, g: 0, b: 0, a: 1}
   cameraHolder: {fileID: 1867295740}
+  upButton: {fileID: 1529164099}
+  downButton: {fileID: 251471596}
+  leftButton: {fileID: 1516301358}
+  rightButton: {fileID: 613573457}
   isGameOver: 0
   isFirstInput: 0
   moveRate: 0.2
