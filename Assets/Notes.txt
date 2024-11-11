@@ -13,7 +13,7 @@ MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
 
 WIDGET
 Save best score
-If hgigher player speed then +1 to each map size camera size
+If hgigher player speed then +1 to each map size camera size so easier to see upcoming obstacles
 
 
 
