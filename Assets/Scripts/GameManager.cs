@@ -74,6 +74,10 @@ namespace RD
         public UnityEvent onGameOver;
         public UnityEvent firstInput;
 
+        private Vector2 touchStartPos;
+        private Vector2 touchEndPos;
+        private float minSwipeDistance = 50f;
+
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
         bool isPaused = false;
@@ -523,24 +527,19 @@ namespace RD
                 return;
             }
 
+            // Existing camera updates and other logic...
             if (!isCameraAdjusting)
             {
-                isCameraAdjusting = true; // Prevent recursive adjustments in the same frame.
-                UpdateCameraPosition(); 
-                AdjustCameraSize();       
+                isCameraAdjusting = true;
+                UpdateCameraPosition();
+                AdjustCameraSize();
                 isCameraAdjusting = false;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                isPaused = !isPaused;
-                if (isPaused)
-                {
-                    Time.timeScale = 0f;
-                }
-                else { Time.timeScale = 1f; }
-            }
+            // Get swipe input for mobile
+            HandleTouchInput();
 
+            // Continue with existing input logic
             GetInput();
 
             if (!isFirstInput)
@@ -562,6 +561,47 @@ namespace RD
                     timer = 0f;
                     curDirection = targetDirection;
                     MovePlayer();
+                }
+            }
+        }
+
+        void HandleTouchInput()
+        {
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        touchStartPos = touch.position;
+                        break;
+
+                    case TouchPhase.Ended:
+                        touchEndPos = touch.position;
+
+                        Vector2 swipeDirection = touchEndPos - touchStartPos;
+
+                        if (swipeDirection.magnitude >= minSwipeDistance)
+                        {
+                            swipeDirection.Normalize();
+
+                            if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+                            {
+                                if (swipeDirection.x > 0)
+                                    OnArrowButtonPressed(Direction.right);
+                                else
+                                    OnArrowButtonPressed(Direction.left);
+                            }
+                            else
+                            {
+                                if (swipeDirection.y > 0)
+                                    OnArrowButtonPressed(Direction.up);
+                                else
+                                    OnArrowButtonPressed(Direction.down);
+                            }
+                        }
+                        break;
                 }
             }
         }
@@ -596,13 +636,12 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            // If this is the first input, allow any direction
             if (isFirstInput)
             {
                 targetDirection = d;
-                curDirection = targetDirection;  // Set the current direction on the first move
+                curDirection = targetDirection;
             }
-            else if (!isOppositeDir(d))  // Don't allow the player to reverse direction
+            else if (!isOppositeDir(d))  
             {
                 targetDirection = d;
             }
