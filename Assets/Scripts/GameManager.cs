@@ -438,9 +438,9 @@ namespace RD
             Vector3 playerPosition = playerObject.transform.position;
 
             // Define thresholds for small, medium, and large maps
-            float smallMapThreshold = 8f;   // Map fits within this size
-            float mediumMapThreshold = 10f; // Requires dynamic adjustment but not full follow
-            float largeMapThreshold = 12f;  // Requires full camera follow
+            float smallMapThreshold = 6f; 
+            float mediumMapThreshold = 8f;
+            float largeMapThreshold = 10f;
 
             bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
             bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
@@ -504,17 +504,17 @@ namespace RD
             if (maxWidth > 20 && maxHeight > 20)
             {
                 // Large maps: set camera size to 12
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 12f, 0.1f);
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
             }
             else if (maxWidth > 8 && maxHeight > 8)
             {
                 // Medium maps: set camera size to 10
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
             }
             else
             {
                 // Small maps: set camera size to 8
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
             }
         }
 
