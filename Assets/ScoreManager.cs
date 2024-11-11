@@ -9,6 +9,10 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI gameScoreText;
     int currentScore;
 
+    public float ObstacleMultiplier { get; private set; } = 1.2f;
+    public float SpeedMultiplier { get; private set; } = 1.0f;
+    public float TotalMultiplier { get; private set; } = 1.0f;
+
     void Start()
     {
         currentScore = 0;
@@ -19,26 +23,19 @@ public class ScoreManager : MonoBehaviour
     {
         int baseScore = 5;
         currentScore += baseScore;
-
-        Debug.Log("Score added: " + baseScore + ", Current Score: " + currentScore);
-
         UpdateScoreText();
     }
 
     public void ApplyEndMultipliers()
     {
         bool obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 0) == 1;
-        int speedInt = PlayerPrefs.GetInt("speed", 1); // Default speed is set to 1
+        int speedInt = PlayerPrefs.GetInt("speed", 1);
 
-        float obstacleMultiplier = obstaclesEnabled ? 1.2f : 1.0f;
-        float speedMultiplier = 1.0f + (speedInt * 0.1f);
+        ObstacleMultiplier = obstaclesEnabled ? 1.2f : 1.0f;
+        SpeedMultiplier = 1.0f + (speedInt * 0.1f);
+        TotalMultiplier = ObstacleMultiplier * SpeedMultiplier;
 
-        float totalMultiplier = obstacleMultiplier * speedMultiplier;
-
-        currentScore = Mathf.RoundToInt(currentScore * totalMultiplier);
-
-        Debug.Log("End-game multiplier applied: " + totalMultiplier + ", Final Score: " + currentScore);
-
+        currentScore = Mathf.RoundToInt(currentScore * TotalMultiplier);
         UpdateScoreText();
     }
 
@@ -47,10 +44,6 @@ public class ScoreManager : MonoBehaviour
         if (gameScoreText != null)
         {
             gameScoreText.text = currentScore.ToString();
-        }
-        else
-        {
-            Debug.LogWarning("gameScoreText is not assigned in the inspector.");
         }
     }
 
