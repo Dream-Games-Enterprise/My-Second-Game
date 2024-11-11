@@ -13,6 +13,8 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] TMP_Text speedMultiText;
     [SerializeField] TMP_Text multipliers;
 
+    bool isVictory = false;
+
     void Awake()
     {
         scoreManager = GetComponent<ScoreManager>();
@@ -23,8 +25,9 @@ public class GameOverUI : MonoBehaviour
         gameOverUI.SetActive(false);    
     }
 
-    public void ActivateUI()
+    public void ActivateUI(bool victory = false)
     {
+        isVictory = victory;
         UpdateText();
         gameOverUI.SetActive(true);
     }
@@ -33,10 +36,8 @@ public class GameOverUI : MonoBehaviour
     {
         totalScoreText.text = "TOTAL SCORE\n" + scoreManager.GetScore().ToString();
 
-        // Initialize an empty string for the multipliers display
         string multiplierText = "MULTIPLIERS\n";
 
-        // Check if speed multiplier is active and add it to the display string
         if (scoreManager.SpeedMultiplier > 1.0f)
         {
             multiplierText += "Speed: x" + scoreManager.SpeedMultiplier.ToString("0.0") + "\n";
@@ -46,7 +47,6 @@ public class GameOverUI : MonoBehaviour
             multiplierText += "Speed: N/A\n";
         }
 
-        // Check if obstacle multiplier is active and add it to the display string
         if (scoreManager.ObstacleMultiplier > 1.0f)
         {
             multiplierText += "Obstacles: x" + scoreManager.ObstacleMultiplier.ToString("0.0") + "\n";
@@ -56,9 +56,11 @@ public class GameOverUI : MonoBehaviour
             multiplierText += "Obstacles: N/A\n";
         }
 
-        
+        if (isVictory)
+        {
+            multiplierText += "Win: x5\n";
+        }
 
-        // Set the combined multipliers text
         multipliers.text = multiplierText;
     }
 

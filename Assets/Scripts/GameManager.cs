@@ -721,13 +721,17 @@ namespace RD
 
         void TriggerVictory()
         {
-            isGameOver = true; //might need to make this different
-            //apply x5 Win multiplier
-            Time.timeScale = 0.3f;
+            isGameOver = true;
+            Time.timeScale = 0.3f; // Slow down time to celebrate the win
 
-            scoreManager.WinMultiplier();
-            uiHandler.WinMenu();
+            // First, apply all multipliers (speed, obstacle) and then the win multiplier
+            scoreManager.ApplyEndMultipliers(); // This applies speed and obstacle multipliers
+            scoreManager.AddWinMultiplier(); // This applies the 5x win multiplier
+
+            // Display the game over UI with victory state
+            gameOverUI.ActivateUI(true);
         }
+
 
 
         Node GetNode(int x, int y)
