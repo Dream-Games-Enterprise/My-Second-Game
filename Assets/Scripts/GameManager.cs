@@ -16,6 +16,7 @@ namespace RD
         public Sprite customPlayerSprite;
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
+        public Sprite customObstacleSprite; 
 
         public int maxHeight = 15;
         public int maxWidth = 17;
@@ -24,7 +25,7 @@ namespace RD
         public Color colour2;
         public Color foodColour = Color.red;
         public Color playerColour;
-        public Color obstacleColor = Color.black;  // Color of the obstacles
+        public Color obstacleColor = Color.black; 
 
         public Transform cameraHolder;
 
@@ -154,7 +155,6 @@ namespace RD
             curDirection = Direction.up;
             targetDirection = curDirection;
         }
-
 
         public void ClearReferences()
         {
@@ -300,7 +300,6 @@ namespace RD
             tailParent = new GameObject("TailParent");
         }
 
-
         void PlaceCamera()
         {
             Node n = GetNode(maxWidth / 2, maxHeight / 2);
@@ -367,7 +366,7 @@ namespace RD
         {
             obstacleParent = new GameObject("Obstacles");
 
-            // Calculate 10% of the map area
+            // Calculate 5% of the map area
             int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
 
             for (int i = 0; i < obstacleCount; i++)
@@ -384,8 +383,15 @@ namespace RD
                 PlacePlayerObject(obstacleObj, obstacleNode.worldPosition);
 
                 SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
-                obstacleRenderer.sprite = CreateSprite(obstacleColor);
+
+                obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
+
+                obstacleRenderer.color = obstacleColor;
+
                 obstacleRenderer.sortingOrder = 1;
+
+                // Scale the obstacle to 0.9f
+                obstacleObj.transform.localScale = Vector3.one * 0.9f;
             }
         }
 
@@ -492,10 +498,6 @@ namespace RD
             }
         }
 
-
-
-
-
         void AdjustCameraSize()
         {
             float cameraSize = Camera.main.orthographicSize;
@@ -513,9 +515,6 @@ namespace RD
                 Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
             }
         }
-
-
-
 
         void Update()
         {
@@ -608,7 +607,6 @@ namespace RD
                 targetDirection = d;
             }
         }
-
 
         float GetRotationForDirection(Direction direction)
         {
@@ -872,7 +870,6 @@ namespace RD
 
             return s;
         }
-
 
         Sprite CreateSprite(Color targetColour)
         {

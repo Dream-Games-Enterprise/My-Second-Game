@@ -10,6 +10,7 @@ moving obstacle nodes?
 
 CORE
 MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
+Ensure colours of PLAYER, TAIL, FOOD and OBSTACLES
 
 WIDGET
 Save best score
