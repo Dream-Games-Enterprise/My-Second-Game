@@ -487,9 +487,12 @@ namespace RD
                 desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
                 desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
 
+
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
+
+
 
 
 
