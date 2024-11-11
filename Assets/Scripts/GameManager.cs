@@ -193,14 +193,13 @@ namespace RD
                 foodRenderer.sortingOrder = 1;
 
                 PlacePlayerObject(foodObject, foodNode.worldPosition);
-                foodObject.transform.localScale = Vector3.one * 0.7f;
+                foodObject.transform.localScale = Vector3.one * 0.6f;
 
                 // Add to the list of food objects
                 foodObjects.Add(foodObject);
+                StartCoroutine(TweenFoodScale(foodObject));
             }
         }
-
-
 
         void CreateMap()
         {
@@ -290,25 +289,19 @@ namespace RD
 
         void CreateFood()
         {
-            // Refresh the valid nodes by filtering out tail nodes
             List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
-
-            // Check if there are any valid nodes left
             if (validNodes.Count == 0)
             {
                 Debug.LogWarning("No valid nodes available for food placement.");
                 return;
             }
 
-            // Select a random node from the filtered valid nodes
             int randomIndex = Random.Range(0, validNodes.Count);
             Node foodNode = validNodes[randomIndex];
 
-            // Remove the selected node from availableNodes and track it as a food node
             availableNodes.Remove(foodNode);
             foodNodes.Add(foodNode);
 
-            // Create and place the food object at the chosen node
             GameObject foodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
@@ -317,33 +310,11 @@ namespace RD
             PlacePlayerObject(foodObject, foodNode.worldPosition);
             foodObject.transform.localScale = Vector3.one * 0.7f;
 
-            // Track the food object
             foodObjects.Add(foodObject);
+
+            // Start the tweening coroutine
+            StartCoroutine(TweenFoodScale(foodObject));
         }
-
-
-        void OnFoodEaten(Node eatenFoodNode)
-        {
-            // Find and remove the eaten food from lists
-            int foodIndex = foodNodes.IndexOf(eatenFoodNode);
-            if (foodIndex != -1)
-            {
-                Destroy(foodObjects[foodIndex]);
-                foodObjects.RemoveAt(foodIndex);
-                foodNodes.RemoveAt(foodIndex);
-            }
-
-            // Return the node to availableNodes
-            if (!availableNodes.Contains(eatenFoodNode))
-            {
-                availableNodes.Add(eatenFoodNode);
-            }
-
-            // Spawn a new food item
-            CreateFood();
-        }
-
-
 
         bool IsDeadEnd(Node node)
         {
@@ -740,7 +711,7 @@ namespace RD
                 PlacePlayerObject(foodObject, n.worldPosition);
                 foodNode = n; // Store the node of the food for tracking
 
-                foodObject.transform.localScale = Vector3.one * 0.7f; // Set to any desired scale factor
+                foodObject.transform.localScale = Vector3.one * 0.6f; // Set to any desired scale factor
             }
             else
             {
@@ -784,6 +755,38 @@ namespace RD
             txt.filterMode = FilterMode.Point;
             Rect rect = new Rect(0, 0, 1, 1);
             return Sprite.Create(txt, rect, Vector2.one * 0.5f, 1, 0, SpriteMeshType.FullRect);
+        }
+
+        IEnumerator TweenFoodScale(GameObject foodObject)
+        {
+            // Define the tweening scale values
+            Vector3 minScale = Vector3.one * 0.6f;
+            Vector3 maxScale = Vector3.one * 0.7f;
+
+            float duration = 0.5f; // Duration of one tween cycle (expand or shrink)
+
+            while (foodObject != null)  // Loop until foodObject is destroyed
+            {
+                // Scale up
+                yield return TweenScale(foodObject.transform, minScale, maxScale, duration);
+
+                // Scale down
+                yield return TweenScale(foodObject.transform, maxScale, minScale, duration);
+            }
+        }
+
+        IEnumerator TweenScale(Transform target, Vector3 start, Vector3 end, float duration)
+        {
+            float elapsedTime = 0f;
+
+            while (elapsedTime < duration)
+            {
+                target.localScale = Vector3.Lerp(start, end, elapsedTime / duration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            target.localScale = end;  // Ensure final scale is set correctly
         }
 
         #endregion
