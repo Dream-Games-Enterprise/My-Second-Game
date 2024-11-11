@@ -168,24 +168,25 @@ namespace RD
 
             for (int i = 0; i < foodToSpawn; i++)
             {
-                // Check if there are available nodes
-                if (availableNodes.Count == 0)
+                // Refresh the valid nodes by filtering out tail nodes
+                List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+
+                // Check if there are any valid nodes left
+                if (validNodes.Count == 0)
                 {
                     Debug.LogWarning("No valid nodes available to spawn more food items.");
                     break;
                 }
 
-                // Randomly select a node from availableNodes
-                int randomIndex = Random.Range(0, availableNodes.Count);
-                Node foodNode = availableNodes[randomIndex];
+                // Randomly select a node from the filtered valid nodes
+                int randomIndex = Random.Range(0, validNodes.Count);
+                Node foodNode = validNodes[randomIndex];
 
-                // Remove this node from availableNodes to prevent overlapping
-                availableNodes.RemoveAt(randomIndex);
-
-                // Track this node as a food node
+                // Remove this node from availableNodes and track it as a food node
+                availableNodes.Remove(foodNode);
                 foodNodes.Add(foodNode);
 
-                // Create food object at the selected node
+                // Create and place the food object at the selected node
                 GameObject foodObject = new GameObject("Food");
                 SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
                 foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
@@ -194,7 +195,7 @@ namespace RD
                 PlacePlayerObject(foodObject, foodNode.worldPosition);
                 foodObject.transform.localScale = Vector3.one * 0.7f;
 
-                // Add to list of food objects
+                // Add to the list of food objects
                 foodObjects.Add(foodObject);
             }
         }
@@ -289,21 +290,25 @@ namespace RD
 
         void CreateFood()
         {
-            // Check if there are any available nodes
-            if (availableNodes.Count == 0)
+            // Refresh the valid nodes by filtering out tail nodes
+            List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+
+            // Check if there are any valid nodes left
+            if (validNodes.Count == 0)
             {
                 Debug.LogWarning("No valid nodes available for food placement.");
                 return;
             }
 
-            // Select a random node from availableNodes
-            int randomIndex = Random.Range(0, availableNodes.Count);
-            Node foodNode = availableNodes[randomIndex];
+            // Select a random node from the filtered valid nodes
+            int randomIndex = Random.Range(0, validNodes.Count);
+            Node foodNode = validNodes[randomIndex];
 
-            // Remove the selected node from availableNodes to prevent future food overlap
-            availableNodes.RemoveAt(randomIndex);
+            // Remove the selected node from availableNodes and track it as a food node
+            availableNodes.Remove(foodNode);
+            foodNodes.Add(foodNode);
 
-            // Create food object at the chosen node
+            // Create and place the food object at the chosen node
             GameObject foodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
@@ -312,9 +317,8 @@ namespace RD
             PlacePlayerObject(foodObject, foodNode.worldPosition);
             foodObject.transform.localScale = Vector3.one * 0.7f;
 
-            // Track the food object and node
+            // Track the food object
             foodObjects.Add(foodObject);
-            foodNodes.Add(foodNode);
         }
 
 
