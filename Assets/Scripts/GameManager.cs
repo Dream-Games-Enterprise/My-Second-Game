@@ -813,7 +813,7 @@ namespace RD
                 yield return null;
             }
 
-            target.localScale = end;  // Ensure final scale is set correctly
+            target.localScale = end;
         }
 
         #endregion
