@@ -424,6 +424,27 @@ namespace RD
             }
         }
 
+        void UpdateCameraPosition()
+        {
+            // Get the camera's orthographic size
+            float cameraSize = Camera.main.orthographicSize;
+
+            // Calculate the camera's desired position (centered on the player)
+            Vector3 desiredPosition = playerObject.transform.position;
+
+            // Clamp the camera's position to keep it within the bounds of the map
+            float halfWidth = maxWidth * 0.5f;
+            float halfHeight = maxHeight * 0.5f;
+
+            // Ensure the camera stays within the bounds of the map
+            desiredPosition.x = Mathf.Clamp(desiredPosition.x, halfWidth - cameraSize, halfWidth + cameraSize);
+            desiredPosition.y = Mathf.Clamp(desiredPosition.y, halfHeight - cameraSize, halfHeight + cameraSize);
+
+            // Smoothly move the camera towards the desired position
+            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, 0.1f);
+        }
+
+
         void Update()
         {
             if (isGameOver)
@@ -431,6 +452,7 @@ namespace RD
                 return;
             }
 
+            UpdateCameraPosition();
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
