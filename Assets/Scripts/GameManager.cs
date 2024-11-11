@@ -435,27 +435,43 @@ namespace RD
             // Adjust camera size based on map dimensions
             AdjustCameraSize();
 
-            // Get the camera's orthographic size and position
+            // Get the camera's orthographic size
             float cameraSize = Camera.main.orthographicSize;
 
-            // Calculate the camera's desired position (centered on the player)
-            Vector3 desiredPosition = playerObject.transform.position;
+            // Introduce a new threshold factor for medium maps
+            float horizontalThreshold = cameraSize * 2;
+            float verticalThreshold = cameraSize * 2;
 
-            // Clamp the camera's position to keep it within the bounds of the map
-            float halfWidth = maxWidth * 0.5f;
-            float halfHeight = maxHeight * 0.5f;
+            // Check if the map fits entirely in the camera's view
+            if (maxWidth <= horizontalThreshold && maxHeight <= verticalThreshold)
+            {
+                // If the map fits, center the camera on the map without following the player
+                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
+            }
+            else
+            {
+                // If the map is too large (or medium), follow the player
+                Vector3 desiredPosition = playerObject.transform.position;
 
-            // Calculate the camera boundaries based on the map size and camera size
-            float cameraHorizontalLimit = halfWidth - cameraSize;
-            float cameraVerticalLimit = halfHeight - cameraSize;
+                // Clamp the camera's position to stay within the bounds of the map
+                float halfWidth = maxWidth * 0.5f;
+                float halfHeight = maxHeight * 0.5f;
 
-            // Ensure the camera stays within the bounds of the map
-            desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-            desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+                // Calculate the camera boundaries based on the map size and camera size
+                float cameraHorizontalLimit = halfWidth - cameraSize;
+                float cameraVerticalLimit = halfHeight - cameraSize;
 
-            // Smoothly move the camera towards the desired position
-            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+                // Ensure the camera stays within the bounds of the map
+                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+
+                // Smoothly move the camera towards the desired position
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+            }
         }
+
+
 
 
         void AdjustCameraSize()
