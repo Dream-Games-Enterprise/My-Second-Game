@@ -9,8 +9,6 @@ public class GameOverUI : MonoBehaviour
     ScoreManager scoreManager;
     [SerializeField] GameObject gameOverUI;
     [SerializeField] TMP_Text totalScoreText;
-    [SerializeField] TMP_Text obstacleMultiText;
-    [SerializeField] TMP_Text speedMultiText;
     [SerializeField] TMP_Text multipliers;
 
     bool isVictory = false;

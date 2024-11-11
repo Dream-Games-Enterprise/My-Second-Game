@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace RD
 {
@@ -11,6 +12,11 @@ namespace RD
         ScoreManager scoreManager;
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
+
+        [SerializeField] Button upButton;
+        [SerializeField] Button downButton;
+        [SerializeField] Button leftButton;
+        [SerializeField] Button rightButton;
 
         public Sprite customPlayerSprite;
         public Sprite customTailSprite;
@@ -71,6 +77,7 @@ namespace RD
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
         bool isPaused = false;
+        bool usingButtonControl = true;
 
         #region Init
 
@@ -99,7 +106,17 @@ namespace RD
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
+
             StartNewGame();
+
+            usingButtonControl = true;
+
+            if (upButton != null) upButton.onClick.AddListener(OnUpButtonClick);
+            if (downButton != null) downButton.onClick.AddListener(OnDownButtonClick);
+            if (leftButton != null) leftButton.onClick.AddListener(OnLeftButtonClick);
+            if (rightButton != null) rightButton.onClick.AddListener(OnRightButtonClick);
+
+            
         }
 
         public void StartNewGame()
@@ -405,60 +422,98 @@ namespace RD
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.V)) // Press 'V' to simulate a victory
-            {
-                TriggerVictory();
-            }
-
             if (isGameOver)
             {
                 return;
             }
 
-            
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))  // Press 'Space' to toggle pause
             {
                 isPaused = !isPaused;
-                if (isPaused)
-                {
-                    Time.timeScale = 0f;
-                }
-                else { Time.timeScale = 1f; }
+                Time.timeScale = isPaused ? 0f : 1f;
             }
 
-           
-
-            GetInput();
-
-            if (!isFirstInput)
+            // Only handle input if we're not in a paused state and the game isn't over
+            if (!isPaused && !isGameOver)
             {
-                if (up || down || left || right)
+                // If button control is active, don’t handle other input methods
+                if (usingButtonControl)
                 {
-                    isFirstInput = true;
-                    firstInput.Invoke();
+                    // Directly set the movement direction
                     SetPlayerDirection();
-                }
-            }
-            else
-            {
-                SetPlayerDirection();
-
-                timer += Time.deltaTime;
-                if (timer >= moveRate)
-                {
-                    timer = 0f;
-                    curDirection = targetDirection;
                     MovePlayer();
+                    return; // Skip other input logic if buttons are active
+                }
+
+                // Handle input (keyboard, etc.)
+                GetInput();
+
+                if (!isFirstInput)
+                {
+                    if (up || down || left || right)
+                    {
+                        isFirstInput = true;
+                        firstInput.Invoke();
+                        SetPlayerDirection();
+                    }
+                }
+                else
+                {
+                    SetPlayerDirection();
+
+                    timer += Time.deltaTime;
+                    if (timer >= moveRate)
+                    {
+                        timer = 0f;
+                        curDirection = targetDirection;
+                        MovePlayer();
+                    }
                 }
             }
         }
 
+        void OnUpButtonClick()
+        {
+            SetDirection(Direction.up);
+            Debug.Log("Up being pressed");
+        }
+
+        void OnDownButtonClick()
+        {
+            SetDirection(Direction.down);
+            Debug.Log("down being pressed");
+        }
+
+        void OnLeftButtonClick()
+        {
+            SetDirection(Direction.left);
+            Debug.Log("left being pressed");
+        }
+
+        void OnRightButtonClick()
+        {
+            SetDirection(Direction.right);
+            Debug.Log("right being pressed");
+        }
+
         void GetInput()
         {
+            if (usingButtonControl) return; 
+
             up = Input.GetButtonDown("Up");
             down = Input.GetButtonDown("Down");
             left = Input.GetButtonDown("Left");
             right = Input.GetButtonDown("Right");
+        }
+
+        public void EnableButtonControl(bool enable)
+        {
+            usingButtonControl = enable;
+            if (enable)
+            {
+                // Optional: Pause other controls while button control is enabled
+                isFirstInput = false;  // Reset if needed
+            }
         }
 
         void SetPlayerDirection()
@@ -524,8 +579,8 @@ namespace RD
             }
             else
             {
-                prevDirection = curDirection;  
-                curDirection = targetDirection; 
+                prevDirection = curDirection;
+                curDirection = targetDirection;
             }
 
             switch (moveDirection)
@@ -576,7 +631,7 @@ namespace RD
 
                         scoreManager.AddScore();
 
-                        break; 
+                        break;
                     }
                 }
 
@@ -587,7 +642,7 @@ namespace RD
                 {
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
-                    foodNodes.Remove(targetNode); 
+                    foodNodes.Remove(targetNode);
                     CreateFood();
                 }
 
