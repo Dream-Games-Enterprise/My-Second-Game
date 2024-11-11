@@ -13,6 +13,11 @@ namespace RD
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
 
+        [SerializeField] Button upButton;
+        [SerializeField] Button downButton;
+        [SerializeField] Button leftButton;
+        [SerializeField] Button rightButton;
+
         public Sprite customPlayerSprite;
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
@@ -76,6 +81,7 @@ namespace RD
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
         bool isPaused = false;
+        bool usingButtonControl = true;
 
         #region Init
 
@@ -92,7 +98,7 @@ namespace RD
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it�s in a different scene
+            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
 
             if (customisation != null)
             {
@@ -104,6 +110,7 @@ namespace RD
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
+
             StartNewGame();
 
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
@@ -120,7 +127,8 @@ namespace RD
                 firstInput.Invoke();  // Trigger first input event
             }
 
-            SetDirection(direction);  // Change direction based on button press
+            SetDirection(direction);  // Change direction based on button press 
+
         }
 
         public void StartNewGame()
@@ -431,50 +439,96 @@ namespace RD
                 return;
             }
 
-
             if (Input.GetKeyDown(KeyCode.Space))
+
             {
                 isPaused = !isPaused;
-                if (isPaused)
-                {
-                    Time.timeScale = 0f;
-                }
-                else { Time.timeScale = 1f; }
+                Time.timeScale = isPaused ? 0f : 1f;
             }
-
-
 
             GetInput();
 
             if (!isFirstInput)
-            {
-                if (up || down || left || right)
-                {
-                    isFirstInput = true;
-                    firstInput.Invoke();
-                    SetPlayerDirection();
-                }
-            }
-            else
-            {
-                SetPlayerDirection();
 
-                timer += Time.deltaTime;
-                if (timer >= moveRate)
+            {
+                // If button control is active, don’t handle other input methods
+                if (usingButtonControl)
                 {
-                    timer = 0f;
-                    curDirection = targetDirection;
+                    // Directly set the movement direction
+                    SetPlayerDirection();
                     MovePlayer();
+                    return; // Skip other input logic if buttons are active
+                }
+
+                // Handle input (keyboard, etc.)
+                GetInput();
+
+                if (!isFirstInput)
+                {
+                    if (up || down || left || right)
+                    {
+                        isFirstInput = true;
+                        firstInput.Invoke();
+                        SetPlayerDirection();
+                    }
+                }
+                else
+                {
+                    SetPlayerDirection();
+
+                    timer += Time.deltaTime;
+                    if (timer >= moveRate)
+                    {
+                        timer = 0f;
+                        curDirection = targetDirection;
+                        MovePlayer();
+                    }
                 }
             }
         }
 
+        void OnUpButtonClick()
+        {
+            SetDirection(Direction.up);
+            Debug.Log("Up being pressed");
+        }
+
+        void OnDownButtonClick()
+        {
+            SetDirection(Direction.down);
+            Debug.Log("down being pressed");
+        }
+
+        void OnLeftButtonClick()
+        {
+            SetDirection(Direction.left);
+            Debug.Log("left being pressed");
+        }
+
+        void OnRightButtonClick()
+        {
+            SetDirection(Direction.right);
+            Debug.Log("right being pressed");
+        }
+
         void GetInput()
         {
+            if (usingButtonControl) return; 
+
             up = Input.GetButtonDown("Up");
             down = Input.GetButtonDown("Down");
             left = Input.GetButtonDown("Left");
             right = Input.GetButtonDown("Right");
+        }
+
+        public void EnableButtonControl(bool enable)
+        {
+            usingButtonControl = enable;
+            if (enable)
+            {
+                // Optional: Pause other controls while button control is enabled
+                isFirstInput = false;  // Reset if needed
+            }
         }
 
         void SetPlayerDirection()

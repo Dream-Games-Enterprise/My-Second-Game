@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 117025857}
   - component: {fileID: 117025856}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 196114335}
   - component: {fileID: 196114334}
   m_Layer: 5
-  m_Name: Image (3)
+  m_Name: Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1505,7 +1505,7 @@ GameObject:
   - component: {fileID: 969061001}
   - component: {fileID: 969061000}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2261,6 +2261,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiHandler: {fileID: 389438042}
+  upButton: {fileID: 1529164099}
+  downButton: {fileID: 251471596}
+  leftButton: {fileID: 1516301358}
+  rightButton: {fileID: 613573457}
   customPlayerSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customTailSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customFoodSprite: {fileID: 0}
@@ -2391,8 +2395,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameOverUI: {fileID: 539622235}
   totalScoreText: {fileID: 1161278882}
-  obstacleMultiText: {fileID: 0}
-  speedMultiText: {fileID: 0}
   multipliers: {fileID: 1097463156}
 --- !u!1 &1516301356
 GameObject:
@@ -2896,7 +2898,7 @@ GameObject:
   - component: {fileID: 2002775588}
   - component: {fileID: 2002775587}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
