@@ -36,6 +36,16 @@ public class GameOverUI : MonoBehaviour
         // Initialize an empty string for the multipliers display
         string multiplierText = "MULTIPLIERS\n";
 
+        // Check if speed multiplier is active and add it to the display string
+        if (scoreManager.SpeedMultiplier > 1.0f)
+        {
+            multiplierText += "Speed: x" + scoreManager.SpeedMultiplier.ToString("0.0") + "\n";
+        }
+        else
+        {
+            multiplierText += "Speed: N/A\n";
+        }
+
         // Check if obstacle multiplier is active and add it to the display string
         if (scoreManager.ObstacleMultiplier > 1.0f)
         {
@@ -46,15 +56,7 @@ public class GameOverUI : MonoBehaviour
             multiplierText += "Obstacles: N/A\n";
         }
 
-        // Check if speed multiplier is active and add it to the display string
-        if (scoreManager.SpeedMultiplier > 1.0f)
-        {
-            multiplierText += "Speed: x" + scoreManager.SpeedMultiplier.ToString("0.0") + "\n";
-        }
-        else
-        {
-            multiplierText += "Speed: N/A\n";
-        }
+        
 
         // Set the combined multipliers text
         multipliers.text = multiplierText;
