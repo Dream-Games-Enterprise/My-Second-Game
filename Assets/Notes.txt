@@ -18,7 +18,7 @@ If hgigher player speed then +1 to each map size camera size so easier to see up
 
 
 BUG
-CHECK OBSTALCE MULTIPLIER IS WORKIGN - DOESN'T WORK until player toggles it first
+CHECK OBSTALCE MULTIPLIER IS WORKIGN - DOESN'T WORK until player toggles it off and on again first
 Player spawns in obstacle, or obstacle spawns on player bug
 player can't die to obstacle with no tail - fix this
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
