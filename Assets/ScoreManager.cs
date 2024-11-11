@@ -9,7 +9,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI gameScoreText;
     int currentScore;
 
-    public float ObstacleMultiplier { get; private set; } = 1.2f;
+    public float ObstacleMultiplier { get; private set; } = 1.0f;
     public float SpeedMultiplier { get; private set; } = 1.0f;
     public float TotalMultiplier { get; private set; } = 1.0f;
 
@@ -50,5 +50,12 @@ public class ScoreManager : MonoBehaviour
     public int GetScore()
     {
         return currentScore;
+    }
+
+    public void WinMultiplier()
+    {
+        float winMultiplier = 5.0f;
+        currentScore = Mathf.RoundToInt(currentScore * winMultiplier);
+        UpdateScoreText();
     }
 }

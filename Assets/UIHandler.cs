@@ -65,4 +65,9 @@ public class UIHandler : MonoBehaviour
         pauseObject.SetActive(false);
         pauseMenuButtons.SetActive(true);
     }
+    
+    public void WinMenu()
+    {
+
+    }
 }

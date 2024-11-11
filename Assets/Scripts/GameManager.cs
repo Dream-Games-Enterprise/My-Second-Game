@@ -307,7 +307,6 @@ namespace RD
 
             foodObjects.Add(foodObject);
 
-            // Start the tweening coroutine
             StartCoroutine(TweenFoodScale(foodObject));
         }
 
@@ -406,6 +405,11 @@ namespace RD
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.V)) // Press 'V' to simulate a victory
+            {
+                TriggerVictory();
+            }
+
             if (isGameOver)
             {
                 return;
@@ -711,9 +715,20 @@ namespace RD
             }
             else
             {
-                // No available space - Player wins!
+                TriggerVictory();
             }
         }
+
+        void TriggerVictory()
+        {
+            isGameOver = true; //might need to make this different
+            //apply x5 Win multiplier
+            Time.timeScale = 0.3f;
+
+            scoreManager.WinMultiplier();
+            uiHandler.WinMenu();
+        }
+
 
         Node GetNode(int x, int y)
         {
