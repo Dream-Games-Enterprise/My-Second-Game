@@ -50,6 +50,10 @@ namespace RD
         List<SpecialNode> tail = new List<SpecialNode>();
         List<Node> obstacleNodes = new List<Node>();
 
+        public Button upButton;
+        public Button downButton;
+        public Button leftButton;
+        public Button rightButton;
         bool up, left, right, down;
         bool obstaclesToggle;
 
@@ -94,7 +98,7 @@ namespace RD
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
+            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if itâ€™s in a different scene
 
             if (customisation != null)
             {
@@ -109,14 +113,22 @@ namespace RD
 
             StartNewGame();
 
-            usingButtonControl = true;
+            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+        }
 
-            if (upButton != null) upButton.onClick.AddListener(OnUpButtonClick);
-            if (downButton != null) downButton.onClick.AddListener(OnDownButtonClick);
-            if (leftButton != null) leftButton.onClick.AddListener(OnLeftButtonClick);
-            if (rightButton != null) rightButton.onClick.AddListener(OnRightButtonClick);
+        void OnArrowButtonPressed(Direction direction)
+        {
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();  // Trigger first input event
+            }
 
-            
+            SetDirection(direction);  // Change direction based on button press 
+
         }
 
         public void StartNewGame()
@@ -427,16 +439,19 @@ namespace RD
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))  // Press 'Space' to toggle pause
+            if (Input.GetKeyDown(KeyCode.Space))
+
             {
                 isPaused = !isPaused;
                 Time.timeScale = isPaused ? 0f : 1f;
             }
 
-            // Only handle input if we're not in a paused state and the game isn't over
-            if (!isPaused && !isGameOver)
+            GetInput();
+
+            if (!isFirstInput)
+
             {
-                // If button control is active, don’t handle other input methods
+                // If button control is active, donâ€™t handle other input methods
                 if (usingButtonControl)
                 {
                     // Directly set the movement direction
