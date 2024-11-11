@@ -2337,6 +2337,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   foodObjects: []
+  smoothSpeed: 0.05
 --- !u!4 &1447539186
 Transform:
   m_ObjectHideFlags: 0

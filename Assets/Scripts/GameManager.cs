@@ -78,7 +78,7 @@ namespace RD
         bool isPaused = false;
 
         public float smoothSpeed = 0.1f;
-        private bool isCameraAdjusting = false;
+        bool isCameraAdjusting = false;
 
         #region Init
 
@@ -432,45 +432,62 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            // Adjust camera size based on map dimensions
             AdjustCameraSize();
 
-            // Get the camera's orthographic size
             float cameraSize = Camera.main.orthographicSize;
+            Vector3 playerPosition = playerObject.transform.position;
 
-            // Introduce a new threshold factor for medium maps
-            float horizontalThreshold = cameraSize * 2;
-            float verticalThreshold = cameraSize * 2;
+            // Define thresholds for small, medium, and large maps
+            float smallMapThreshold = 8f;   // Map fits within this size
+            float mediumMapThreshold = 10f; // Requires dynamic adjustment but not full follow
+            float largeMapThreshold = 12f;  // Requires full camera follow
 
-            // Check if the map fits entirely in the camera's view
-            if (maxWidth <= horizontalThreshold && maxHeight <= verticalThreshold)
+            bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
+            bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
+            bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
+
+            if (isSmallMap)
             {
-                // If the map fits, center the camera on the map without following the player
+                // For small maps, center the camera on the map without following the player
                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
             }
-            else
+            else if (isMediumMap)
             {
-                // If the map is too large (or medium), follow the player
-                Vector3 desiredPosition = playerObject.transform.position;
+                // For medium maps, adjust the camera to follow the player, and allow it to move beyond the map
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
 
-                // Clamp the camera's position to stay within the bounds of the map
+                // Adjust the camera size based on the medium map size
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
+
+                // Allow camera to go beyond the map boundaries like large maps
                 float halfWidth = maxWidth * 0.5f;
                 float halfHeight = maxHeight * 0.5f;
 
-                // Calculate the camera boundaries based on the map size and camera size
+                // The camera should be able to move beyond the map boundaries, hence removing the clamp
+                cameraHolder.position = new Vector3(
+                    Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
+                    Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
+                    cameraHolder.position.z
+                );
+            }
+            else if (isLargeMap)
+            {
+                // For large maps, fully follow the player with clamped camera boundaries
+                Vector3 desiredPosition = playerPosition;
+
+                // Define boundaries for camera movement based on the map size
+                float halfWidth = maxWidth * 0.5f;
+                float halfHeight = maxHeight * 0.5f;
+
                 float cameraHorizontalLimit = halfWidth - cameraSize;
                 float cameraVerticalLimit = halfHeight - cameraSize;
 
-                // Adjust the camera position to allow a slight margin beyond the map
-                float cameraHorizontalBuffer = cameraSize * 0.2f;  // 20% buffer for edge visibility
-                float cameraVerticalBuffer = cameraSize * 0.2f;    // 20% buffer for edge visibility
+                // Ensure the camera doesn't go out of bounds
+                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
 
-                // Ensure the camera stays within the bounds of the map and shows the void area beyond
-                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit - cameraHorizontalBuffer, halfWidth + cameraSize + cameraHorizontalBuffer);
-                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit - cameraVerticalBuffer, halfHeight + cameraSize + cameraVerticalBuffer);
 
-                // Smoothly move the camera towards the desired position
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
@@ -482,17 +499,25 @@ namespace RD
         void AdjustCameraSize()
         {
             float cameraSize = Camera.main.orthographicSize;
-            // Calculate the camera size based on the map size and adjust the size accordingly.
-            // Ensure that this adjustment doesn't trigger any recursive calls to UpdateCameraPosition.
+
+            // Update orthographic size based on map size thresholds for small, medium, and large maps
             if (maxWidth > 20 && maxHeight > 20)
             {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 13, 0.1f);  // Example for larger maps.
+                // Large maps: set camera size to 12
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 12f, 0.1f);
+            }
+            else if (maxWidth > 8 && maxHeight > 8)
+            {
+                // Medium maps: set camera size to 10
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
             }
             else
             {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8, 0.1f);   // Example for smaller maps.
+                // Small maps: set camera size to 8
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
             }
         }
+
 
 
 
