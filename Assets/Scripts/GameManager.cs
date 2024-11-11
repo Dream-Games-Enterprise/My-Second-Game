@@ -500,20 +500,16 @@ namespace RD
         {
             float cameraSize = Camera.main.orthographicSize;
 
-            // Update orthographic size based on map size thresholds for small, medium, and large maps
             if (maxWidth > 20 && maxHeight > 20)
             {
-                // Large maps: set camera size to 12
                 Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
             }
             else if (maxWidth > 8 && maxHeight > 8)
             {
-                // Medium maps: set camera size to 10
                 Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
             }
             else
             {
-                // Small maps: set camera size to 8
                 Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
             }
         }
@@ -531,8 +527,8 @@ namespace RD
             if (!isCameraAdjusting)
             {
                 isCameraAdjusting = true; // Prevent recursive adjustments in the same frame.
-                UpdateCameraPosition();   // Adjust camera position.
-                AdjustCameraSize();       // Adjust camera size.
+                UpdateCameraPosition(); 
+                AdjustCameraSize();       
                 isCameraAdjusting = false;
             }
 
