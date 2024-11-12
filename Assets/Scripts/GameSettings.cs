@@ -15,6 +15,8 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Slider speedSlider;
     [SerializeField] Toggle obstaclesToggle;
 
+    [SerializeField] TMP_Text inputTypeText; // should be either "INPUT TYPE/n" "SWIPE", "BUTTONS" 
+
     int widthInt;
     int heightInt;
     int speedInt;
