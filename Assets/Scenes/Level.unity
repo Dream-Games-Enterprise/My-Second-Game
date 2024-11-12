@@ -2502,6 +2502,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  buttonControl: {fileID: 2145919914}
   foodObjects: []
   smoothSpeed: 0.1
 --- !u!4 &1447539186

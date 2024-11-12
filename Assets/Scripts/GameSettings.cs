@@ -15,14 +15,18 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Slider speedSlider;
     [SerializeField] Toggle obstaclesToggle;
 
-    [SerializeField] TMP_Text inputTypeText; // should be either "INPUT TYPE/n" "SWIPE", "BUTTONS" 
+
+    [SerializeField] GameObject settingsPanel;
+    [SerializeField] TMP_Text inputTypeText; 
+    [SerializeField] Button toggleInputTypeButton; 
 
     int widthInt;
     int heightInt;
     int speedInt;
     bool obstacles;
 
-    //2 input types: swipe/touch and arrow buttons
+    enum InputType { Swipe, Buttons }
+    InputType currentInputType;
 
     void Start()
     {
@@ -38,14 +42,19 @@ public class GameSettings : MonoBehaviour
 
         obstaclesToggle.onValueChanged.AddListener(OnObstaclesToggleChanged);
         obstaclesToggle.isOn = obstacles;
+
+        toggleInputTypeButton.onClick.AddListener(ToggleInputType);
+        UpdateInputTypeText(); 
     }
 
     void LoadData()
     {
-        widthInt = PlayerPrefs.GetInt("width");
-        heightInt = PlayerPrefs.GetInt("height");
-        speedInt = PlayerPrefs.GetInt("speed");
-        obstacles = PlayerPrefs.GetInt("obstacles", 1) == 1; 
+        widthInt = PlayerPrefs.GetInt("width", 10);
+        heightInt = PlayerPrefs.GetInt("height", 10);
+        speedInt = PlayerPrefs.GetInt("speed", 5);
+        obstacles = PlayerPrefs.GetInt("obstacles", 1) == 1;
+
+        currentInputType = (InputType)PlayerPrefs.GetInt("inputType", (int)InputType.Swipe);
 
         widthSlider.value = widthInt;
         heightSlider.value = heightInt;
@@ -58,6 +67,7 @@ public class GameSettings : MonoBehaviour
         heightSlider.onValueChanged.RemoveListener(UpdateHeightText);
         speedSlider.onValueChanged.RemoveListener(UpdateSpeedText);
         obstaclesToggle.onValueChanged.RemoveListener(OnObstaclesToggleChanged);
+        toggleInputTypeButton.onClick.RemoveListener(ToggleInputType);
     }
 
     void UpdateWidthText(float value)
@@ -87,5 +97,24 @@ public class GameSettings : MonoBehaviour
         obstacles = isOn;
         PlayerPrefs.SetInt("obstacles", isOn ? 1 : 0);
         Debug.Log("Obstacles enabled: " + obstacles);
+    }
+
+    void ToggleInputType()
+    {
+        currentInputType = currentInputType == InputType.Swipe ? InputType.Buttons : InputType.Swipe;
+
+        PlayerPrefs.SetInt("inputType", (int)currentInputType);
+
+        UpdateInputTypeText();
+    }
+
+    void UpdateInputTypeText()
+    {
+        inputTypeText.text = "INPUT TYPE\n" + (currentInputType == InputType.Swipe ? "SWIPING" : "BUTTONS");
+    }
+
+    public void ToggleSettings()
+    {
+        settingsPanel.SetActive(!settingsPanel.activeSelf);
     }
 }

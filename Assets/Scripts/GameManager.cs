@@ -74,6 +74,9 @@ namespace RD
         public UnityEvent onGameOver;
         public UnityEvent firstInput;
 
+        [SerializeField] GameObject buttonControl;
+        private bool isButtonControl;  // true for button control, false for swipe control
+
         private Vector2 touchStartPos;
         private Vector2 touchEndPos;
         private float minSwipeDistance = 50f;
@@ -91,7 +94,12 @@ namespace RD
         {
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
+
+            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;  // 1 for button, 0 for swipe
+            ToggleInputType(isButtonControl);
         }
+
+
 
         void Start()
         {
@@ -118,6 +126,16 @@ namespace RD
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+        }
+
+        void ToggleInputType(bool useButtons)
+        {
+            isButtonControl = useButtons;
+            buttonControl.SetActive(useButtons);  // Toggle button UI
+
+            // Save the player’s input type preference in PlayerPrefs
+            PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
+            PlayerPrefs.Save();
         }
 
         void OnArrowButtonPressed(Direction direction)
@@ -565,9 +583,15 @@ namespace RD
             }
         }
 
+        public void ToggleInputButtonPressed()
+        {
+            ToggleInputType(!isButtonControl);
+        }
+
         void HandleTouchInput()
         {
-            if (Input.touchCount > 0)
+            // Only process swipe input if using swipe control
+            if (!isButtonControl && Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
 
@@ -580,10 +604,12 @@ namespace RD
                     touchEndPos = touch.position;
                     Vector2 swipeDirection = touchEndPos - touchStartPos;
 
-                    if (swipeDirection.magnitude >= minSwipeDistance) 
+                    // Only proceed if the swipe distance is greater than the minimum threshold
+                    if (swipeDirection.magnitude >= minSwipeDistance)
                     {
                         swipeDirection.Normalize();
 
+                        // Check if the swipe was more horizontal or vertical
                         if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
                         {
                             if (swipeDirection.x > 0 && !isOppositeDir(Direction.right))
@@ -599,11 +625,13 @@ namespace RD
                                 OnArrowButtonPressed(Direction.down);
                         }
 
+                        // Update the start position for the next swipe
                         touchStartPos = touchEndPos;
                     }
                 }
             }
         }
+
 
 
         void GetInput()
