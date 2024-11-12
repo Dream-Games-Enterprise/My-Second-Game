@@ -571,40 +571,40 @@ namespace RD
             {
                 Touch touch = Input.GetTouch(0);
 
-                switch (touch.phase)
+                if (touch.phase == TouchPhase.Began)
                 {
-                    case TouchPhase.Began:
-                        touchStartPos = touch.position;
-                        break;
+                    touchStartPos = touch.position;
+                }
+                else if (touch.phase == TouchPhase.Moved)
+                {
+                    touchEndPos = touch.position;
+                    Vector2 swipeDirection = touchEndPos - touchStartPos;
 
-                    case TouchPhase.Ended:
-                        touchEndPos = touch.position;
+                    if (swipeDirection.magnitude >= minSwipeDistance) 
+                    {
+                        swipeDirection.Normalize();
 
-                        Vector2 swipeDirection = touchEndPos - touchStartPos;
-
-                        if (swipeDirection.magnitude >= minSwipeDistance)
+                        if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
                         {
-                            swipeDirection.Normalize();
-
-                            if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
-                            {
-                                if (swipeDirection.x > 0)
-                                    OnArrowButtonPressed(Direction.right);
-                                else
-                                    OnArrowButtonPressed(Direction.left);
-                            }
-                            else
-                            {
-                                if (swipeDirection.y > 0)
-                                    OnArrowButtonPressed(Direction.up);
-                                else
-                                    OnArrowButtonPressed(Direction.down);
-                            }
+                            if (swipeDirection.x > 0 && !isOppositeDir(Direction.right))
+                                OnArrowButtonPressed(Direction.right);
+                            else if (swipeDirection.x < 0 && !isOppositeDir(Direction.left))
+                                OnArrowButtonPressed(Direction.left);
                         }
-                        break;
+                        else
+                        {
+                            if (swipeDirection.y > 0 && !isOppositeDir(Direction.up))
+                                OnArrowButtonPressed(Direction.up);
+                            else if (swipeDirection.y < 0 && !isOppositeDir(Direction.down))
+                                OnArrowButtonPressed(Direction.down);
+                        }
+
+                        touchStartPos = touchEndPos;
+                    }
                 }
             }
         }
+
 
         void GetInput()
         {
