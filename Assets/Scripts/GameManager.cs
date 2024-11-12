@@ -75,7 +75,8 @@ namespace RD
         public UnityEvent firstInput;
 
         [SerializeField] GameObject buttonControl;
-        private bool isButtonControl;  // true for button control, false for swipe control
+        bool isButtonControl; 
+
 
         private Vector2 touchStartPos;
         private Vector2 touchEndPos;
@@ -95,8 +96,11 @@ namespace RD
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
-            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;  // 1 for button, 0 for swipe
-            ToggleInputType(isButtonControl);
+            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
+
+            Debug.Log("Input type is button control: " + isButtonControl);
+
+            ToggleInputType(isButtonControl); // Call to toggle swipeText visibility
         }
 
 

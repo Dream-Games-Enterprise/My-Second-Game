@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIHandler : MonoBehaviour
 {
@@ -10,12 +11,16 @@ public class UIHandler : MonoBehaviour
     [SerializeField] Sprite pauseIcon;      
     [SerializeField] Sprite resumeIcon;
     [SerializeField] GameObject pauseObject;
-    [SerializeField] GameObject pauseMenuButtons; 
+    [SerializeField] GameObject pauseMenuButtons;
+    [SerializeField] TMP_Text swipeText;
 
     bool isPaused = false;   
 
     void Start()
     {
+        int inputType = PlayerPrefs.GetInt("inputType", 1);  // Default to 1 (button control) if not set
+        ToggleSwipeText(inputType == 1); // If inputType is 1 (button control), hide swipe text
+
         pauseButton.onClick.AddListener(TogglePause);
 
         pauseMenuButtons.SetActive(false);
@@ -65,7 +70,13 @@ public class UIHandler : MonoBehaviour
         pauseObject.SetActive(false);
         pauseMenuButtons.SetActive(true);
     }
-    
+
+    public void ToggleSwipeText(bool isButtonControl)
+    {
+        swipeText.gameObject.SetActive(!isButtonControl);
+    }
+
+
     public void WinMenu()
     {
 
