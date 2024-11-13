@@ -10,19 +10,30 @@ public class SnakeSkin
     public bool isUnlocked; 
 }
 
+[System.Serializable]
+public class TailSkin  
+{
+    public Sprite sprite;
+    public int cost;
+    public bool isUnlocked;
+}
+
 public class CustomisationManager : MonoBehaviour
 {
     public List<SnakeSkin> snakeSkins;
+    public List<TailSkin> tailSkins;  
     public Transform skinPanelContainer;  
-    public GameObject skinPanelPrefab;   
+    public GameObject skinPanelPrefab;
+    public GameObject tailPanelPrefab;  
 
     List<SkinPanel> skinPanels = new List<SkinPanel>();
+    List<TailPanel> tailPanels = new List<TailPanel>();
     int selectedSnakeIndex = 0;
+    int selectedTailIndex = 0;
 
     void Start()
     {
         InitializePanels();
-        //UpdateSelectedSkin(selectedSnakeIndex);
     }
 
     void InitializePanels()
@@ -31,12 +42,24 @@ public class CustomisationManager : MonoBehaviour
         {
             GameObject panelObj = Instantiate(skinPanelPrefab, skinPanelContainer);
             SkinPanel panel = panelObj.GetComponent<SkinPanel>();
-            panel.Setup(skin, skin.isUnlocked);
+            panel.SkinSetup(skin, skin.isUnlocked);
 
             int index = skinPanels.Count;
             panel.selectButton.onClick.AddListener(() => SelectSkin(index));
 
             skinPanels.Add(panel);
+        }
+
+        foreach (var tail in tailSkins)
+        {
+            GameObject panelObj = Instantiate(tailPanelPrefab, skinPanelContainer); 
+            TailPanel panel = panelObj.GetComponent<TailPanel>();
+            panel.TailSetup(tail, tail.isUnlocked);
+
+            int index = tailPanels.Count;
+            panel.selectButton.onClick.AddListener(() => SelectTail(index));
+
+            tailPanels.Add(panel);
         }
     }
 
@@ -49,18 +72,37 @@ public class CustomisationManager : MonoBehaviour
         }
     }
 
+    public void SelectTail(int index)
+    {
+        if (tailSkins[index].isUnlocked)
+        {
+            selectedTailIndex = index;
+            UpdateSelectedTail(index);
+        }
+    }
+
     void UpdateSelectedSkin(int index)
     {
-        // Save the selected skin index to PlayerPrefs
         PlayerPrefs.SetInt("SelectedSnakeIndex", index);
         Debug.Log("sprite has changed...");
         PlayerPrefs.Save();
         Debug.Log("Skin Selected: " + snakeSkins[index].sprite);  // Debug to check the sprite
     }
 
+    void UpdateSelectedTail(int index)
+    {
+        PlayerPrefs.SetInt("SelectedTailIndex", index);
+        PlayerPrefs.Save();
+        Debug.Log("Tail Skin Selected: " + tailSkins[index].sprite);
+    }
+
     public int GetSelectedSnakeIndex()
     {
-        // Retrieve the selected snake index from PlayerPrefs
-        return PlayerPrefs.GetInt("SelectedSnakeIndex", 0);  // Default to 0 if nothing is saved
+        return PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+    }
+
+    public int GetSelectedTailIndex()
+    {
+        return PlayerPrefs.GetInt("SelectedTailIndex", 0);
     }
 }

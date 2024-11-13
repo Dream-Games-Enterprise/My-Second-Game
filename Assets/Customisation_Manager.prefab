@@ -53,9 +53,14 @@ MonoBehaviour:
     isUnlocked: 1
   - sprite: {fileID: 21300000, guid: 4ba6fc2593284104fb25198e0d250a4e, type: 3}
     cost: 10
-    isUnlocked: 1
+    isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 1f64916b3bf067f4ba9db964852ccb74, type: 3}
     cost: 10
     isUnlocked: 1
+  tailSkins:
+  - sprite: {fileID: 21300000, guid: 4035dacf9020c644ca72e8f156970afc, type: 3}
+    cost: 0
+    isUnlocked: 1
   skinPanelContainer: {fileID: 0}
   skinPanelPrefab: {fileID: 8542019443601735437, guid: ae4601e954e43b34baab776433348b06, type: 3}
+  tailPanelPrefab: {fileID: 8542019443601735437, guid: b963057cd5fd0d44da75a652f4aa2af6, type: 3}

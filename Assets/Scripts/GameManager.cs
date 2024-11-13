@@ -105,6 +105,7 @@ namespace RD
         bool isCameraAdjusting = false;
 
         int playerSkinIndex;
+        int playerTailIndex;
 
         void Awake()
         {
@@ -138,8 +139,8 @@ namespace RD
 
 
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
+            playerTailIndex = customisationManager.GetSelectedTailIndex();
             customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
-
 
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
