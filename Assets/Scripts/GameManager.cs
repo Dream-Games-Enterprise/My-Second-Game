@@ -231,25 +231,48 @@ namespace RD
                     cameraHolder.position.z
                 );
             }
-            else if (isLargeMap || isRectangularMap)  // If it's a rectangular map, treat it similarly to large maps
+            else if (isLargeMap || isRectangularMap)  // If it's a large or rectangular map, ignore clamping
             {
-                // For large or rectangular maps, fully follow the player with clamped camera boundaries
+                // For large or rectangular maps, fully follow the player without clamping
                 Vector3 desiredPosition = playerPosition;
 
                 // Define boundaries for camera movement based on the map size
                 float halfWidth = maxWidth * 0.5f;
                 float halfHeight = maxHeight * 0.5f;
 
-                float cameraHorizontalLimit = halfWidth - cameraSize;
-                float cameraVerticalLimit = halfHeight - cameraSize;
+                // If it's a rectangular map, we should avoid clamping the camera position to the map's limits
+                if (isRectangularMap)
+                {
+                    // Follow the player to the left or right (for wide maps) and up or down (for tall maps)
+                    if (maxWidth > maxHeight)  // If it's a wide map
+                    {
+                        // Adjust the x position to follow the player without clamping
+                        desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);  // Follow left and right
+                    }
+                    else  // If it's a tall map
+                    {
+                        // Adjust the y position to follow the player without clamping
+                        desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight);  // Follow top and bottom
+                    }
+                }
+                else
+                {
+                    // For large maps, the camera should still follow the player but within bounds
+                    float cameraHorizontalLimit = halfWidth - cameraSize;
+                    float cameraVerticalLimit = halfHeight - cameraSize;
 
-                // Ensure the camera doesn't go out of bounds
-                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+                    // Adjust the camera position to follow the player within the boundaries of the map
+                    desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+                    desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+                }
 
+                // Update the camera position
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
+
+
+
 
 
         void AdjustCameraSize()
