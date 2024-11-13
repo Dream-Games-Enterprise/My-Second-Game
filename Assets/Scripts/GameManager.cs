@@ -10,7 +10,6 @@ namespace RD
     public class GameManager : MonoBehaviour
     {
         ScoreManager scoreManager;
-        [SerializeField] CustomisationManager customisationManager;
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
 
@@ -130,6 +129,7 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
+            ApplySpriteSelections();
 
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
@@ -143,7 +143,8 @@ namespace RD
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            playerSpriteRenderer.sprite = customisationManager.snakeSkins[playerHeadIndex].sprite;
+            // Apply the selected sprites to SpriteRenderers
+            playerSpriteRenderer.sprite = playerHeadSprites[playerHeadIndex];
             tailSpriteRenderer.sprite = tailSprites[tailIndex];
             foodSpriteRenderer.sprite = foodSprites[foodIndex];
         }
