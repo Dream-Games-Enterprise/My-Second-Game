@@ -130,7 +130,6 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
-            ApplySpriteSelections();
 
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
@@ -318,15 +317,13 @@ namespace RD
 
             int totalMapNodes = maxWidth * maxHeight;
             int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
-            //int initialFoodCount = 3;
 
             SpawnInitialFood(initialFoodCount);
 
             uiHandler.ResumeGame();
 
-            PlacePlayer();  // Place the player first
-            PlaceCamera();  // Now place the camera to center on the player
-
+            PlacePlayer();  
+            PlaceCamera(); 
             AdjustCameraSize();
 
             isGameOver = false;
@@ -448,7 +445,7 @@ namespace RD
             playerObject = new GameObject("Player");
             SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
 
-            // Use custom player sprite
+            ApplySpriteSelections();
             playerRenderer.sprite = customPlayerSprite != null ? customPlayerSprite : CreateSprite(playerColour);
             playerRenderer.sortingOrder = 1;
 
