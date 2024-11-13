@@ -10,10 +10,11 @@ namespace RD
     public class GameManager : MonoBehaviour
     {
         ScoreManager scoreManager;
+        [SerializeField] CustomisationManager customisationManager;
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
 
-        public Sprite customPlayerSprite;
+        Sprite customPlayerSprite;
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
         public Sprite customObstacleSprite;
@@ -85,7 +86,6 @@ namespace RD
         List<SpecialNode> tail = new List<SpecialNode>();
         List<Node> obstacleNodes = new List<Node>();
 
-
         bool obstaclesToggle;
 
         public bool isGameOver;
@@ -106,6 +106,8 @@ namespace RD
         public float smoothSpeed = 0.1f;
         bool isCameraAdjusting = false;
 
+        int playerSkinIndex;
+
         void Awake()
         {
             scoreManager = GetComponent<ScoreManager>();
@@ -125,21 +127,15 @@ namespace RD
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
-
-          /*  if (customisation != null)
-            {
-                customPlayerSprite = customisation.snakeSprites[snakeIndex];
-                customTailSprite = customisation.tailSprites[tailIndex];
-                customFoodSprite = customisation.foodSprites[foodIndex];
-            }*/
+            playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
+            customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
 
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
-            ApplySpriteSelections();
-
+/*            ApplySpriteSelections();
+*/
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
@@ -458,8 +454,7 @@ namespace RD
             playerObject = new GameObject("Player");
             SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
 
-            // Use custom player sprite
-            playerRenderer.sprite = customPlayerSprite != null ? customPlayerSprite : CreateSprite(playerColour);
+            playerRenderer.sprite = customPlayerSprite;
             playerRenderer.sortingOrder = 1;
 
             int randomIndex = Random.Range(0, availableNodes.Count);

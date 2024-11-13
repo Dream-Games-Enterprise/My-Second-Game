@@ -6508,6 +6508,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+--- !u!114 &1079950693 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+  m_PrefabInstance: {fileID: 1079950692}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bf865116db92c24eb0a4bd15314f6a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1086500482
 GameObject:
   m_ObjectHideFlags: 0
@@ -7065,50 +7076,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1202478199}
   m_CullTransparentMesh: 1
---- !u!1 &1252581848
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1252581850}
-  - component: {fileID: 1252581851}
-  m_Layer: 0
-  m_Name: Customisation_Settings
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1252581850
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252581848}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1252581851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252581848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55e21b1a7e5305a40a28f67cd9706b64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1273238792
 GameObject:
   m_ObjectHideFlags: 0
@@ -7292,8 +7259,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9687a7cf1b8f31e488280f057e6e8c23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  customisationManager: {fileID: 1079950693}
   uiHandler: {fileID: 389438042}
-  customPlayerSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customTailSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customFoodSprite: {fileID: 0}
   customObstacleSprite: {fileID: 21300000, guid: 22727b53a0e857b47a1139e8a6bbc7c8, type: 3}
@@ -7302,6 +7269,12 @@ MonoBehaviour:
   foodColour: {r: 0.02441454, g: 0, b: 1, a: 1}
   playerColour: {r: 0, g: 0, b: 0, a: 1}
   obstacleColor: {r: 0.05660379, g: 0.056108657, b: 0.055268794, a: 1}
+  playerSpriteRenderer: {fileID: 0}
+  tailSpriteRenderer: {fileID: 0}
+  foodSpriteRenderer: {fileID: 0}
+  playerHeadSprites: []
+  tailSprites: []
+  foodSprites: []
   inputPanel: {fileID: 2145919914}
   upButton: {fileID: 1529164099}
   downButton: {fileID: 251471596}
@@ -7312,7 +7285,6 @@ MonoBehaviour:
   maxHeight: 6
   maxWidth: 4
   cameraHolder: {fileID: 1867295740}
-  mainCamera: {fileID: 519420031}
   isGameOver: 0
   isFirstInput: 0
   onStart:
@@ -8357,6 +8329,5 @@ SceneRoots:
   - {fileID: 1447539186}
   - {fileID: 1537272317}
   - {fileID: 389438043}
-  - {fileID: 1252581850}
   - {fileID: 1079950692}
   - {fileID: 429543837}

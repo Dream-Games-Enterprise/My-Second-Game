@@ -22,7 +22,7 @@ public class CustomisationManager : MonoBehaviour
     void Start()
     {
         InitializePanels();
-        UpdateSelectedSkin(selectedSnakeIndex);
+        //UpdateSelectedSkin(selectedSnakeIndex);
     }
 
     void InitializePanels()
@@ -53,5 +53,10 @@ public class CustomisationManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("SelectedSnakeIndex", index);
         PlayerPrefs.Save();
+    }
+
+    public int GetSelectedSnakeIndex()
+    {
+        return selectedSnakeIndex;
     }
 }
