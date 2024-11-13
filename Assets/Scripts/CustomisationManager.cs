@@ -2,83 +2,56 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class SnakeSkin
+{
+    public Sprite sprite;
+    public int cost;
+    public bool isUnlocked; 
+}
+
 public class CustomisationManager : MonoBehaviour
 {
-    public List<Sprite> snakeSprites; // Drag your snake sprites here in the Inspector
-    public List<Sprite> tailSprites;  // Drag your tail sprites here in the Inspector
-    public List<Sprite> foodSprites;  // Drag your tail sprites here in the Inspector
+    public List<SnakeSkin> snakeSkins;
+    public Transform skinPanelContainer;  
+    public GameObject skinPanelPrefab;   
 
-    public Image snakePreview; // Image to show the selected snake sprite
-    public Image tailPreview;  // Image to show the selected tail sprite
-
+    List<SkinPanel> skinPanels = new List<SkinPanel>();
     int selectedSnakeIndex = 0;
-    int selectedTailIndex = 0;
-    int selectedFoodIndex = 0;
 
     void Start()
     {
-        // Load saved selections from PlayerPrefs (if available)
-        selectedSnakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-        selectedTailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
-        selectedFoodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-
-        // Update the preview images based on saved selections
-        //UpdatePreview();
+        InitializePanels();
+        UpdateSelectedSkin(selectedSnakeIndex);
     }
 
-    // Call this function when changing snake sprite
-    public void ChangeSnakeSprite(int index)
+    void InitializePanels()
     {
-        selectedSnakeIndex = index;
-        ApplySettings();
-        //UpdatePreview();
+        foreach (var skin in snakeSkins)
+        {
+            GameObject panelObj = Instantiate(skinPanelPrefab, skinPanelContainer);
+            SkinPanel panel = panelObj.GetComponent<SkinPanel>();
+            panel.Setup(skin, skin.isUnlocked);
+
+            int index = skinPanels.Count;
+            panel.selectButton.onClick.AddListener(() => SelectSkin(index));
+
+            skinPanels.Add(panel);
+        }
     }
 
-    // Call this function when changing tail sprite
-    public void ChangeTailSprite(int index)
+    public void SelectSkin(int index)
     {
-        selectedTailIndex = index;
-        ApplySettings();
-        //UpdatePreview();
+        if (snakeSkins[index].isUnlocked)
+        {
+            selectedSnakeIndex = index;
+            UpdateSelectedSkin(index);
+        }
     }
 
-    public void ChangeFoodSprite(int index)
+    void UpdateSelectedSkin(int index)
     {
-        selectedFoodIndex = index;
-        ApplySettings();
-        //UpdatePreview();
-    }
-
-    // Apply the selected sprites and save to PlayerPrefs
-    public void ApplySettings()
-    {
-        PlayerPrefs.SetInt("SelectedSnakeIndex", selectedSnakeIndex);
-        PlayerPrefs.SetInt("SelectedTailIndex", selectedTailIndex);
-        PlayerPrefs.SetInt("SelectedFoodIndex", selectedFoodIndex);
+        PlayerPrefs.SetInt("SelectedSnakeIndex", index);
         PlayerPrefs.Save();
-    }
-
-    // Update preview images
-    void UpdatePreview()
-    {
-        //snakePreview.sprite = snakeSprites[selectedSnakeIndex];
-        //tailPreview.sprite = tailSprites[selectedTailIndex];
-    }
-
-    // Get the selected snake sprite
-    public Sprite GetSelectedSnakeSprite()
-    {
-        return snakeSprites[selectedSnakeIndex];
-    }
-
-    // Get the selected tail sprite
-    public Sprite GetSelectedTailSprite()
-    {
-        return tailSprites[selectedTailIndex];
-    }
-
-    public Sprite GetSelectedFoodSprite()
-    {
-        return foodSprites[selectedFoodIndex];
     }
 }

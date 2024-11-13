@@ -8,9 +8,9 @@ public class SpriteSelection : MonoBehaviour
     public List<Sprite> tailSprites;        // List of tail sprites
     public List<Sprite> foodSprites;        // List of food sprites
 
-    private int selectedPlayerHeadIndex = 0;
-    private int selectedTailIndex = 0;
-    private int selectedFoodIndex = 0;
+    int selectedPlayerHeadIndex = 0;
+    int selectedTailIndex = 0;
+    int selectedFoodIndex = 0;
 
     void Start()
     {

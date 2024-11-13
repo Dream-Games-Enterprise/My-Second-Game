@@ -127,12 +127,12 @@ namespace RD
 
             CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
 
-            if (customisation != null)
+          /*  if (customisation != null)
             {
                 customPlayerSprite = customisation.snakeSprites[snakeIndex];
                 customTailSprite = customisation.tailSprites[tailIndex];
                 customFoodSprite = customisation.foodSprites[foodIndex];
-            }
+            }*/
 
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
@@ -148,15 +148,17 @@ namespace RD
 
         void ApplySpriteSelections()
         {
-            int playerHeadIndex = PlayerPrefs.GetInt("PlayerHeadIndex", 0);
-            int tailIndex = PlayerPrefs.GetInt("TailIndex", 0);
-            int foodIndex = PlayerPrefs.GetInt("FoodIndex", 0);
+            // Retrieve selected indexes
+            int playerHeadIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            // Apply the selected sprites
+            // Apply the selected sprites to SpriteRenderers
             playerSpriteRenderer.sprite = playerHeadSprites[playerHeadIndex];
             tailSpriteRenderer.sprite = tailSprites[tailIndex];
             foodSpriteRenderer.sprite = foodSprites[foodIndex];
         }
+
 
         void Update()
         {
