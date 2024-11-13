@@ -10,8 +10,7 @@ moving obstacle nodes?
 
 CORE
 MAKE SURE TO ADD SWIPING FOR PHONES AS INPUT
-Make swiping more responsive
-make arrows bigger for input
+
 Ensure colours of PLAYER, TAIL, FOOD and OBSTACLES
 
 WIDGET

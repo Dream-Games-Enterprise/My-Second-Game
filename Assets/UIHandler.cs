@@ -14,12 +14,13 @@ public class UIHandler : MonoBehaviour
     [SerializeField] GameObject pauseMenuButtons;
     [SerializeField] TMP_Text swipeText;
 
-    bool isPaused = false;   
+    bool isPaused = false;
+    Coroutine swipeTextTweenCoroutine;
 
     void Start()
     {
-        int inputType = PlayerPrefs.GetInt("inputType", 1);  // Default to 1 (button control) if not set
-        ToggleSwipeText(inputType == 1); // If inputType is 1 (button control), hide swipe text
+        int inputType = PlayerPrefs.GetInt("inputType", 1);
+        ToggleSwipeText(inputType == 1);
 
         pauseButton.onClick.AddListener(TogglePause);
 
@@ -74,7 +75,50 @@ public class UIHandler : MonoBehaviour
     public void ToggleSwipeText(bool isButtonControl)
     {
         swipeText.gameObject.SetActive(!isButtonControl);
+
+        // Start or stop the tween effect based on swipeText's active state
+        if (swipeText.gameObject.activeSelf)
+        {
+            swipeTextTweenCoroutine = StartCoroutine(TweenSwipeText());
+        }
+        else if (swipeTextTweenCoroutine != null)
+        {
+            StopCoroutine(swipeTextTweenCoroutine);
+            swipeTextTweenCoroutine = null;
+            swipeText.transform.localScale = Vector3.one; // Reset scale when not active
+        }
     }
+
+    IEnumerator TweenSwipeText()
+    {
+        Vector3 minScale = Vector3.one * 1f; // Minimum scale factor
+        Vector3 maxScale = Vector3.one * 1.8f; // Maximum scale factor
+        float duration = 0.5f; // Duration for one expand/shrink cycle
+
+        while (swipeText.gameObject.activeSelf)
+        {
+            // Scale up
+            yield return TweenScale(swipeText.transform, minScale, maxScale, duration);
+
+            // Scale down
+            yield return TweenScale(swipeText.transform, maxScale, minScale, duration);
+        }
+    }
+
+    IEnumerator TweenScale(Transform target, Vector3 start, Vector3 end, float duration)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            target.localScale = Vector3.Lerp(start, end, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        target.localScale = end;
+    }
+
 
 
     public void WinMenu()

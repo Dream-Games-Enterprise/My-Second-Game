@@ -46,6 +46,7 @@ namespace RD
         List<SpecialNode> tail = new List<SpecialNode>();
         List<Node> obstacleNodes = new List<Node>();
 
+        [SerializeField] GameObject inputPanel;
         public Button upButton;
         public Button downButton;
         public Button leftButton;
@@ -78,9 +79,9 @@ namespace RD
         bool isButtonControl; 
 
 
-        private Vector2 touchStartPos;
-        private Vector2 touchEndPos;
-        private float minSwipeDistance = 50f;
+        Vector2 touchStartPos;
+        Vector2 touchEndPos;
+        float minSwipeDistance = 50f;
 
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
@@ -831,6 +832,7 @@ namespace RD
             scoreManager.ApplyEndMultipliers();
             uiHandler.GameEndMenu();
             gameOverUI.ActivateUI();
+            inputPanel.SetActive(false);
         }
 
         bool isOppositeDir(Direction d)
