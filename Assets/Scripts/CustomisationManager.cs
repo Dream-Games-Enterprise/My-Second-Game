@@ -22,7 +22,8 @@ public class CustomisationManager : MonoBehaviour
 {
     public List<SnakeSkin> snakeSkins;
     public List<TailSkin> tailSkins;  
-    public Transform skinPanelContainer;  
+    public Transform skinPanelContainer;
+    public Transform tailPanelContainer;
     public GameObject skinPanelPrefab;
     public GameObject tailPanelPrefab;  
 
@@ -52,7 +53,7 @@ public class CustomisationManager : MonoBehaviour
 
         foreach (var tail in tailSkins)
         {
-            GameObject panelObj = Instantiate(tailPanelPrefab, skinPanelContainer); 
+            GameObject panelObj = Instantiate(tailPanelPrefab, tailPanelContainer); 
             TailPanel panel = panelObj.GetComponent<TailPanel>();
             panel.TailSetup(tail, tail.isUnlocked);
 
@@ -86,7 +87,7 @@ public class CustomisationManager : MonoBehaviour
         PlayerPrefs.SetInt("SelectedSnakeIndex", index);
         Debug.Log("sprite has changed...");
         PlayerPrefs.Save();
-        Debug.Log("Skin Selected: " + snakeSkins[index].sprite);  // Debug to check the sprite
+        Debug.Log("Skin Selected: " + snakeSkins[index].sprite); 
     }
 
     void UpdateSelectedTail(int index)
