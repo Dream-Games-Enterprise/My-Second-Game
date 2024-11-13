@@ -16,35 +16,21 @@ namespace RD
         public Sprite customPlayerSprite;
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
-        public Sprite customObstacleSprite; 
+        public Sprite customObstacleSprite;
 
-        public int maxHeight = 15;
-        public int maxWidth = 17;
+        #region CUSTOMISATION 
 
         public Color colour1;
         public Color colour2;
         public Color foodColour = Color.red;
         public Color playerColour;
-        public Color obstacleColor = Color.black; 
+        public Color obstacleColor = Color.black;
 
-        public Transform cameraHolder;
-
-        GameObject playerObject;
-        GameObject foodObject;
-        GameObject tailParent;
-        GameObject obstacleParent;  // Parent object to hold all obstacles
-        Node playerNode;
-        Node prevPlayerNode;
-        Node foodNode;
         Sprite playerSprite;
 
-        GameObject mapObject;
-        SpriteRenderer mapRenderer;
+        #endregion
 
-        Node[,] grid;
-        List<Node> availableNodes = new List<Node>();
-        List<SpecialNode> tail = new List<SpecialNode>();
-        List<Node> obstacleNodes = new List<Node>();
+        #region INPUT VARIABLES
 
         [SerializeField] GameObject inputPanel;
         public Button upButton;
@@ -52,12 +38,6 @@ namespace RD
         public Button leftButton;
         public Button rightButton;
         bool up, left, right, down;
-        bool obstaclesToggle;
-
-        public bool isGameOver;
-        public bool isFirstInput;
-        public float moveRate = 0.2f;
-        float timer;
 
         Direction targetDirection;
         Direction curDirection;
@@ -68,13 +48,44 @@ namespace RD
             up, left, right, down
         }
 
+        [SerializeField] GameObject buttonControl;
+        bool isButtonControl;
+
+        public float moveRate = 0.2f;
+        float timer;
+
+        #endregion
+
+        public int maxHeight = 15;
+        public int maxWidth = 17;
+
+        public Transform cameraHolder;
+
+        GameObject playerObject;
+        GameObject foodObject;
+        GameObject tailParent;
+        GameObject obstacleParent;  // Parent object to hold all obstacles
+        Node playerNode;
+        Node prevPlayerNode;
+        Node foodNode;
+
+        GameObject mapObject;
+        SpriteRenderer mapRenderer;
+
+        Node[,] grid;
+        List<Node> availableNodes = new List<Node>();
+        List<SpecialNode> tail = new List<SpecialNode>();
+        List<Node> obstacleNodes = new List<Node>();
+
+
+        bool obstaclesToggle;
+
+        public bool isGameOver;
+        public bool isFirstInput;
+
         public UnityEvent onStart;
         public UnityEvent onGameOver;
         public UnityEvent firstInput;
-
-        [SerializeField] GameObject buttonControl;
-        bool isButtonControl; 
-
 
         Vector2 touchStartPos;
         Vector2 touchEndPos;
