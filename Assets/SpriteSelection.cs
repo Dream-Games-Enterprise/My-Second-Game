@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SpriteSelection : MonoBehaviour
 {
-    public List<Sprite> playerHeadSprites;  // List of player head sprites
-    public List<Sprite> tailSprites;        // List of tail sprites
-    public List<Sprite> foodSprites;        // List of food sprites
+    public List<Sprite> playerHeadSprites;
+    public List<Sprite> tailSprites;        
+    public List<Sprite> foodSprites;        
 
     int selectedPlayerHeadIndex = 0;
     int selectedTailIndex = 0;
