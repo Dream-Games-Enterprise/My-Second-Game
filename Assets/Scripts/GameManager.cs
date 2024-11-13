@@ -54,9 +54,6 @@ namespace RD
         bool up, left, right, down;
         bool obstaclesToggle;
 
-        int currentScore;    // probably won't have these and just complete a grid for victory
-        int highScore;       // probably won't have these and just complete a grid for victory
-
         public bool isGameOver;
         public bool isFirstInput;
         public float moveRate = 0.2f;
@@ -90,8 +87,6 @@ namespace RD
         public float smoothSpeed = 0.1f;
         bool isCameraAdjusting = false;
 
-        #region Init
-
         void Awake()
         {
             scoreManager = GetComponent<ScoreManager>();
@@ -103,8 +98,6 @@ namespace RD
 
             ToggleInputType(isButtonControl); // Call to toggle swipeText visibility
         }
-
-
 
         void Start()
         {
@@ -133,26 +126,140 @@ namespace RD
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
         }
 
-        void ToggleInputType(bool useButtons)
+        void Update()
         {
-            isButtonControl = useButtons;
-            buttonControl.SetActive(useButtons);  // Toggle button UI
-
-            // Save the player’s input type preference in PlayerPrefs
-            PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
-            PlayerPrefs.Save();
-        }
-
-        void OnArrowButtonPressed(Direction direction)
-        {
-            if (!isFirstInput)
+            if (isGameOver)
             {
-                isFirstInput = true;
-                firstInput.Invoke();  // Trigger first input event
+                return;
             }
 
-            SetDirection(direction);  // Change direction based on button press
+            if (!isCameraAdjusting)
+            {
+                isCameraAdjusting = true;
+                UpdateCameraPosition();
+                AdjustCameraSize();
+                isCameraAdjusting = false;
+            }
+
+            HandleTouchInput();
+            GetInput();
+
+            if (!isFirstInput)
+            {
+                if (up || down || left || right)
+                {
+                    isFirstInput = true;
+                    firstInput.Invoke();
+                    SetPlayerDirection();
+                }
+            }
+            else
+            {
+                SetPlayerDirection();
+
+                timer += Time.deltaTime;
+                if (timer >= moveRate)
+                {
+                    timer = 0f;
+                    curDirection = targetDirection;
+                    MovePlayer();
+                }
+            }
         }
+
+        #region CAMERA
+
+        void PlaceCamera()
+        {
+            Node n = GetNode(maxWidth / 2, maxHeight / 2);
+            Vector3 p = n.worldPosition;
+            p += Vector3.one * 0.5f;
+            cameraHolder.position = p;
+        }
+
+        void UpdateCameraPosition()
+        {
+            AdjustCameraSize();
+
+            float cameraSize = Camera.main.orthographicSize;
+            Vector3 playerPosition = playerObject.transform.position;
+
+            // Define thresholds for small, medium, and large maps
+            float smallMapThreshold = 6f;
+            float mediumMapThreshold = 8f;
+            float largeMapThreshold = 10f;
+
+            bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
+            bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
+            bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
+
+            if (isSmallMap)
+            {
+                // For small maps, center the camera on the map without following the player
+                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
+            }
+            else if (isMediumMap)
+            {
+                // For medium maps, adjust the camera to follow the player, and allow it to move beyond the map
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
+
+                // Adjust the camera size based on the medium map size
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
+
+                // Allow camera to go beyond the map boundaries like large maps
+                float halfWidth = maxWidth * 0.5f;
+                float halfHeight = maxHeight * 0.5f;
+
+                // The camera should be able to move beyond the map boundaries, hence removing the clamp
+                cameraHolder.position = new Vector3(
+                    Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
+                    Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
+                    cameraHolder.position.z
+                );
+            }
+            else if (isLargeMap)
+            {
+                // For large maps, fully follow the player with clamped camera boundaries
+                Vector3 desiredPosition = playerPosition;
+
+                // Define boundaries for camera movement based on the map size
+                float halfWidth = maxWidth * 0.5f;
+                float halfHeight = maxHeight * 0.5f;
+
+                float cameraHorizontalLimit = halfWidth - cameraSize;
+                float cameraVerticalLimit = halfHeight - cameraSize;
+
+                // Ensure the camera doesn't go out of bounds
+                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+
+
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+            }
+        }
+
+        void AdjustCameraSize()
+        {
+            float cameraSize = Camera.main.orthographicSize;
+
+            if (maxWidth > 20 && maxHeight > 20)
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
+            }
+            else if (maxWidth > 8 && maxHeight > 8)
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
+            }
+            else
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
+            }
+        }
+
+        #endregion
+
+        #region SETUP
 
         public void StartNewGame()
         {
@@ -216,38 +323,21 @@ namespace RD
             grid = null;
         }
 
-        void SpawnInitialFood(int foodToSpawn)
+        void SetSpeed(float speed)
         {
-            foodObjects.Clear();
-            foodNodes.Clear();
+            moveRate = speed;
+        }
 
-            for (int i = 0; i < foodToSpawn; i++)
-            {
-                List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+        void LoadSpeedSettings()
+        {
+            int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
+            float speedToUse = GetMoveRateFromSpeed(speedInt);
+            SetSpeed(speedToUse);
 
-                if (validNodes.Count == 0)
-                {
-                    Debug.LogWarning("No valid nodes available to spawn more food items.");
-                    break;
-                }
+            bool obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 1) == 1;  // Default is 1 (enabled)
+            Debug.Log("Obstacles Enabled: " + obstaclesEnabled);
 
-                int randomIndex = Random.Range(0, validNodes.Count);
-                Node foodNode = validNodes[randomIndex];
-
-                availableNodes.Remove(foodNode);
-                foodNodes.Add(foodNode);
-
-                GameObject foodObject = new GameObject("Food");
-                SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
-                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
-                foodRenderer.sortingOrder = 1;
-
-                PlacePlayerObject(foodObject, foodNode.worldPosition);
-                foodObject.transform.localScale = Vector3.one * 0.6f;
-
-                foodObjects.Add(foodObject);
-                StartCoroutine(TweenFoodScale(foodObject));
-            }
+            obstaclesToggle = obstaclesEnabled;
         }
 
         void CreateMap()
@@ -327,12 +417,38 @@ namespace RD
             tailParent = new GameObject("TailParent");
         }
 
-        void PlaceCamera()
+        void SpawnInitialFood(int foodToSpawn)
         {
-            Node n = GetNode(maxWidth / 2, maxHeight / 2);
-            Vector3 p = n.worldPosition;
-            p += Vector3.one * 0.5f;
-            cameraHolder.position = p;
+            foodObjects.Clear();
+            foodNodes.Clear();
+
+            for (int i = 0; i < foodToSpawn; i++)
+            {
+                List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+
+                if (validNodes.Count == 0)
+                {
+                    Debug.LogWarning("No valid nodes available to spawn more food items.");
+                    break;
+                }
+
+                int randomIndex = Random.Range(0, validNodes.Count);
+                Node foodNode = validNodes[randomIndex];
+
+                availableNodes.Remove(foodNode);
+                foodNodes.Add(foodNode);
+
+                GameObject foodObject = new GameObject("Food");
+                SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
+                foodRenderer.sortingOrder = 1;
+
+                PlacePlayerObject(foodObject, foodNode.worldPosition);
+                foodObject.transform.localScale = Vector3.one * 0.6f;
+
+                foodObjects.Add(foodObject);
+                StartCoroutine(TweenFoodScale(foodObject));
+            }
         }
 
         void CreateFood()
@@ -363,30 +479,34 @@ namespace RD
             StartCoroutine(TweenFoodScale(foodObject));
         }
 
-        bool IsDeadEnd(Node node)
+        void PlaceFood()
         {
-            int x = node.x;
-            int y = node.y;
+            List<Node> validNodes = new List<Node>(availableNodes);
 
-            // Check all four directions
-            bool upBlocked = IsBlocked(x, y + 1);  // Up
-            bool downBlocked = IsBlocked(x, y - 1);  // Down
-            bool leftBlocked = IsBlocked(x - 1, y);  // Left
-            bool rightBlocked = IsBlocked(x + 1, y);  // Right
+            validNodes.Remove(playerNode);
+            foreach (var t in tail)
+            {
+                validNodes.Remove(t.node);
+            }
 
-            // If all directions are blocked, it's a dead end
-            return upBlocked && downBlocked && leftBlocked && rightBlocked;
-        }
+            foreach (var obstacle in obstacleNodes)
+            {
+                validNodes.Remove(obstacle);
+            }
 
-        bool IsBlocked(int x, int y)
-        {
-            Node targetNode = GetNode(x, y);
+            if (validNodes.Count > 0)
+            {
+                int ran = Random.Range(0, validNodes.Count);
+                Node n = validNodes[ran];
+                PlacePlayerObject(foodObject, n.worldPosition);
+                foodNode = n; // Store the node of the food for tracking
 
-            if (targetNode == null) return true; // Out of bounds
-            if (obstacleNodes.Contains(targetNode)) return true; // Blocked by obstacle
-            if (tail.Exists(t => t.node == targetNode)) return true; // Blocked by tail
-
-            return false; // Not blocked
+                foodObject.transform.localScale = Vector3.one * 0.6f; // Set to any desired scale factor
+            }
+            else
+            {
+                TriggerVictory();
+            }
         }
 
         void CreateObstacles()
@@ -422,26 +542,35 @@ namespace RD
             }
         }
 
-        #endregion
-
-        void SetSpeed(float speed)
+        void PlacePlayerObject(GameObject obj, Vector3 pos)
         {
-            moveRate = speed;
+            pos += Vector3.one * 0.5f;
+            obj.transform.position = pos;
         }
 
-        void LoadSpeedSettings()
+        #endregion
+
+        #region INPUT
+
+        void ToggleInputType(bool useButtons)
         {
-            // Load speed from PlayerPrefs
-            int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
-            float speedToUse = GetMoveRateFromSpeed(speedInt);
-            SetSpeed(speedToUse);
+            isButtonControl = useButtons;
+            buttonControl.SetActive(useButtons);
 
-            // Load obstacles state from PlayerPrefs
-            bool obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 1) == 1;  // Default is 1 (enabled)
-            Debug.Log("Obstacles Enabled: " + obstaclesEnabled);
+            // Save the player’s input type preference in PlayerPrefs
+            PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
+            PlayerPrefs.Save();
+        }
 
-            // Set the state of the toggle based on the loaded value
-            obstaclesToggle = obstaclesEnabled;
+        void OnArrowButtonPressed(Direction direction)
+        {
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();  
+            }
+
+            SetDirection(direction);
         }
 
         float GetMoveRateFromSpeed(int speed)
@@ -463,131 +592,6 @@ namespace RD
             }
         }
 
-        void UpdateCameraPosition()
-        {
-            AdjustCameraSize();
-
-            float cameraSize = Camera.main.orthographicSize;
-            Vector3 playerPosition = playerObject.transform.position;
-
-            // Define thresholds for small, medium, and large maps
-            float smallMapThreshold = 6f; 
-            float mediumMapThreshold = 8f;
-            float largeMapThreshold = 10f;
-
-            bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
-            bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
-            bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
-
-            if (isSmallMap)
-            {
-                // For small maps, center the camera on the map without following the player
-                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
-            }
-            else if (isMediumMap)
-            {
-                // For medium maps, adjust the camera to follow the player, and allow it to move beyond the map
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
-
-                // Adjust the camera size based on the medium map size
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
-
-                // Allow camera to go beyond the map boundaries like large maps
-                float halfWidth = maxWidth * 0.5f;
-                float halfHeight = maxHeight * 0.5f;
-
-                // The camera should be able to move beyond the map boundaries, hence removing the clamp
-                cameraHolder.position = new Vector3(
-                    Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
-                    Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
-                    cameraHolder.position.z
-                );
-            }
-            else if (isLargeMap)
-            {
-                // For large maps, fully follow the player with clamped camera boundaries
-                Vector3 desiredPosition = playerPosition;
-
-                // Define boundaries for camera movement based on the map size
-                float halfWidth = maxWidth * 0.5f;
-                float halfHeight = maxHeight * 0.5f;
-
-                float cameraHorizontalLimit = halfWidth - cameraSize;
-                float cameraVerticalLimit = halfHeight - cameraSize;
-
-                // Ensure the camera doesn't go out of bounds
-                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
-
-
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
-            }
-        }
-
-        void AdjustCameraSize()
-        {
-            float cameraSize = Camera.main.orthographicSize;
-
-            if (maxWidth > 20 && maxHeight > 20)
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
-            }
-            else if (maxWidth > 8 && maxHeight > 8)
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
-            }
-            else
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
-            }
-        }
-
-        void Update()
-        {
-            if (isGameOver)
-            {
-                return;
-            }
-
-            // Existing camera updates and other logic...
-            if (!isCameraAdjusting)
-            {
-                isCameraAdjusting = true;
-                UpdateCameraPosition();
-                AdjustCameraSize();
-                isCameraAdjusting = false;
-            }
-
-            // Get swipe input for mobile
-            HandleTouchInput();
-
-            // Continue with existing input logic
-            GetInput();
-
-            if (!isFirstInput)
-            {
-                if (up || down || left || right)
-                {
-                    isFirstInput = true;
-                    firstInput.Invoke();
-                    SetPlayerDirection();
-                }
-            }
-            else
-            {
-                SetPlayerDirection();
-
-                timer += Time.deltaTime;
-                if (timer >= moveRate)
-                {
-                    timer = 0f;
-                    curDirection = targetDirection;
-                    MovePlayer();
-                }
-            }
-        }
-
         public void ToggleInputButtonPressed()
         {
             ToggleInputType(!isButtonControl);
@@ -595,7 +599,6 @@ namespace RD
 
         void HandleTouchInput()
         {
-            // Only process swipe input if using swipe control
             if (!isButtonControl && Input.touchCount > 0)
             {
                 Touch touch = Input.GetTouch(0);
@@ -609,12 +612,10 @@ namespace RD
                     touchEndPos = touch.position;
                     Vector2 swipeDirection = touchEndPos - touchStartPos;
 
-                    // Only proceed if the swipe distance is greater than the minimum threshold
                     if (swipeDirection.magnitude >= minSwipeDistance)
                     {
                         swipeDirection.Normalize();
 
-                        // Check if the swipe was more horizontal or vertical
                         if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
                         {
                             if (swipeDirection.x > 0 && !isOppositeDir(Direction.right))
@@ -630,14 +631,11 @@ namespace RD
                                 OnArrowButtonPressed(Direction.down);
                         }
 
-                        // Update the start position for the next swipe
                         touchStartPos = touchEndPos;
                     }
                 }
             }
         }
-
-
 
         void GetInput()
         {
@@ -646,6 +644,10 @@ namespace RD
             left = Input.GetButtonDown("Left");
             right = Input.GetButtonDown("Right");
         }
+
+        #endregion
+   
+        #region MOVEMENT
 
         void SetPlayerDirection()
         {
@@ -674,7 +676,7 @@ namespace RD
                 targetDirection = d;
                 curDirection = targetDirection;
             }
-            else if (!isOppositeDir(d))  
+            else if (!isOppositeDir(d))
             {
                 targetDirection = d;
             }
@@ -816,23 +818,32 @@ namespace RD
             }
         }
 
-        #region Utilities
+        #endregion
 
-        public void RestartGame()
+        #region CHECKS
+
+        bool IsDeadEnd(Node node)
         {
-            onStart.Invoke();
-            Time.timeScale = 1;
+            int x = node.x;
+            int y = node.y;
+
+            bool upBlocked = IsBlocked(x, y + 1);
+            bool downBlocked = IsBlocked(x, y - 1);
+            bool leftBlocked = IsBlocked(x - 1, y);
+            bool rightBlocked = IsBlocked(x + 1, y);
+
+            return upBlocked && downBlocked && leftBlocked && rightBlocked;
         }
 
-        public void GameOver()
+        bool IsBlocked(int x, int y)
         {
-            isGameOver = true;
-            Time.timeScale = 1f; //set to 0.3f once particle system of dying snake is added
-            isFirstInput = false;
-            scoreManager.ApplyEndMultipliers();
-            uiHandler.GameEndMenu();
-            gameOverUI.ActivateUI();
-            inputPanel.SetActive(false);
+            Node targetNode = GetNode(x, y);
+
+            if (targetNode == null) return true; // Out of bounds
+            if (obstacleNodes.Contains(targetNode)) return true; // Blocked by obstacle
+            if (tail.Exists(t => t.node == targetNode)) return true; // Blocked by tail
+
+            return false; // Not blocked
         }
 
         bool isOppositeDir(Direction d)
@@ -870,40 +881,25 @@ namespace RD
             return obstacleNodes.Contains(node);
         }
 
-        void PlacePlayerObject(GameObject obj, Vector3 pos)
+        #endregion
+
+        #region Utilities
+
+        public void RestartGame()
         {
-            pos += Vector3.one * 0.5f;
-            obj.transform.position = pos;
+            onStart.Invoke();
+            Time.timeScale = 1;
         }
 
-        void PlaceFood()
+        public void GameOver()
         {
-            List<Node> validNodes = new List<Node>(availableNodes);
-
-            validNodes.Remove(playerNode);
-            foreach (var t in tail)
-            {
-                validNodes.Remove(t.node);
-            }
-
-            foreach (var obstacle in obstacleNodes)
-            {
-                validNodes.Remove(obstacle);
-            }
-
-            if (validNodes.Count > 0)
-            {
-                int ran = Random.Range(0, validNodes.Count);
-                Node n = validNodes[ran];
-                PlacePlayerObject(foodObject, n.worldPosition);
-                foodNode = n; // Store the node of the food for tracking
-
-                foodObject.transform.localScale = Vector3.one * 0.6f; // Set to any desired scale factor
-            }
-            else
-            {
-                TriggerVictory();
-            }
+            isGameOver = true;
+            Time.timeScale = 1f; //set to 0.3f once particle system of dying snake is added
+            isFirstInput = false;
+            scoreManager.ApplyEndMultipliers();
+            uiHandler.GameEndMenu();
+            gameOverUI.ActivateUI();
+            inputPanel.SetActive(false);
         }
 
         void TriggerVictory()

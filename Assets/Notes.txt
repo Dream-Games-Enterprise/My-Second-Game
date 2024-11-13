@@ -18,7 +18,6 @@ Save best score
 If hgigher player speed then +1 to each map size camera size so easier to see upcoming obstacles
 
 
-
 BUG
 CHECK OBSTALCE MULTIPLIER IS WORKIGN - DOESN'T WORK until player toggles it off and on again first
 Player spawns in obstacle, or obstacle spawns on player bug
