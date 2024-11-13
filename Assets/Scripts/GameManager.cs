@@ -204,6 +204,8 @@ namespace RD
             bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
             bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
 
+            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f; // Check for vastly different width and height
+
             if (isSmallMap)
             {
                 // For small maps, center the camera on the map without following the player
@@ -229,9 +231,9 @@ namespace RD
                     cameraHolder.position.z
                 );
             }
-            else if (isLargeMap)
+            else if (isLargeMap || isRectangularMap)  // If it's a rectangular map, treat it similarly to large maps
             {
-                // For large maps, fully follow the player with clamped camera boundaries
+                // For large or rectangular maps, fully follow the player with clamped camera boundaries
                 Vector3 desiredPosition = playerPosition;
 
                 // Define boundaries for camera movement based on the map size
@@ -245,10 +247,10 @@ namespace RD
                 desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
                 desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
 
-
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
+
 
         void AdjustCameraSize()
         {
