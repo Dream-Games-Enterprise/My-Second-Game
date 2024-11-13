@@ -10,6 +10,7 @@ namespace RD
     public class GameManager : MonoBehaviour
     {
         ScoreManager scoreManager;
+        [SerializeField] CustomisationManager customisationManager;
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
 
@@ -125,15 +126,6 @@ namespace RD
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            CustomisationManager customisation = FindObjectOfType<CustomisationManager>(); // Or load it if it’s in a different scene
-
-          /*  if (customisation != null)
-            {
-                customPlayerSprite = customisation.snakeSprites[snakeIndex];
-                customTailSprite = customisation.tailSprites[tailIndex];
-                customFoodSprite = customisation.foodSprites[foodIndex];
-            }*/
-
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
@@ -148,13 +140,11 @@ namespace RD
 
         void ApplySpriteSelections()
         {
-            // Retrieve selected indexes
             int playerHeadIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
-            // Apply the selected sprites to SpriteRenderers
-            playerSpriteRenderer.sprite = playerHeadSprites[playerHeadIndex];
+            playerSpriteRenderer.sprite = customisationManager.snakeSkins[playerHeadIndex].sprite;
             tailSpriteRenderer.sprite = tailSprites[tailIndex];
             foodSpriteRenderer.sprite = foodSprites[foodIndex];
         }

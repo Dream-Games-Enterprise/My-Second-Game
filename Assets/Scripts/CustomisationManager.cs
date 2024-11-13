@@ -52,6 +52,7 @@ public class CustomisationManager : MonoBehaviour
     void UpdateSelectedSkin(int index)
     {
         PlayerPrefs.SetInt("SelectedSnakeIndex", index);
+        Debug.Log("sprite has changed...");
         PlayerPrefs.Save();
     }
 }
