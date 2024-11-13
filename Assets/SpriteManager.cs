@@ -1,18 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpriteManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] GameObject snakePanel;
+    [SerializeField] GameObject tailPanel;
+    [SerializeField] GameObject foodPanel;
+
     void Start()
     {
-        
+        DisablePanels();    
     }
 
-    // Update is called once per frame
-    void Update()
+    public void DisablePanels()
     {
-        
+        snakePanel.SetActive(false);
+        tailPanel.SetActive(false);
+        foodPanel.SetActive(false);
+    }
+
+    public void OpenPanel(GameObject panelToOpen)
+    {
+        panelToOpen.SetActive(true);
     }
 }
