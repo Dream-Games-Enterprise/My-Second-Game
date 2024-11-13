@@ -28,6 +28,14 @@ namespace RD
 
         Sprite playerSprite;
 
+        public SpriteRenderer playerSpriteRenderer;
+        public SpriteRenderer tailSpriteRenderer;
+        public SpriteRenderer foodSpriteRenderer;
+
+        public List<Sprite> playerHeadSprites;
+        public List<Sprite> tailSprites;
+        public List<Sprite> foodSprites;
+
         #endregion
 
         #region INPUT VARIABLES
@@ -130,11 +138,25 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
+            ApplySpriteSelections();
 
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+        }
+
+        void ApplySpriteSelections()
+        {
+            // Get the saved sprite indices from PlayerPrefs
+            int playerHeadIndex = PlayerPrefs.GetInt("PlayerHeadIndex", 0);
+            int tailIndex = PlayerPrefs.GetInt("TailIndex", 0);
+            int foodIndex = PlayerPrefs.GetInt("FoodIndex", 0);
+
+            // Apply the selected sprites
+            playerSpriteRenderer.sprite = playerHeadSprites[playerHeadIndex];
+            tailSpriteRenderer.sprite = tailSprites[tailIndex];
+            foodSpriteRenderer.sprite = foodSprites[foodIndex];
         }
 
         void Update()
