@@ -3,7 +3,6 @@ Add particle effects for when food is picked up.
 MAKE IT NOT DO GAME OVER WHEN THE PLAYER TURNS ONTO IT'S TAIL JUST MAKE IT RETURN/IGNORE IT
 HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
-Tween the swipe text
 Obstacle sprites
 moving obstacle nodes?
 
