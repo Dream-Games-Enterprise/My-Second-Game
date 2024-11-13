@@ -29,11 +29,9 @@ namespace RD
 
         Sprite playerSprite;
 
-        public SpriteRenderer playerSpriteRenderer;
         public SpriteRenderer tailSpriteRenderer;
         public SpriteRenderer foodSpriteRenderer;
 
-        public List<Sprite> playerHeadSprites;
         public List<Sprite> tailSprites;
         public List<Sprite> foodSprites;
 
@@ -110,6 +108,17 @@ namespace RD
 
         void Awake()
         {
+            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);  // Default to 0 if not found
+
+            if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
+            {
+                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;  // Get the sprite
+                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);  // Debug to check the sprite
+            }
+            else
+            {
+                Debug.LogWarning("Invalid snake index. Using default sprite.");
+            }
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
@@ -134,27 +143,12 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
-/*            ApplySpriteSelections();
-*/
+
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
         }
-
-        void ApplySpriteSelections()
-        {
-            // Retrieve selected indexes
-            int playerHeadIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
-            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-
-            // Apply the selected sprites to SpriteRenderers
-            playerSpriteRenderer.sprite = playerHeadSprites[playerHeadIndex];
-            tailSpriteRenderer.sprite = tailSprites[tailIndex];
-            foodSpriteRenderer.sprite = foodSprites[foodIndex];
-        }
-
 
         void Update()
         {
@@ -983,7 +977,6 @@ namespace RD
             s.obj.transform.localScale = Vector3.one * 0.75f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
 
-            // Use custom tail sprite
             r.sprite = customTailSprite != null ? customTailSprite : playerSprite;
             r.sortingOrder = 1;
 
