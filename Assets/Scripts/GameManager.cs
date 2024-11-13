@@ -148,7 +148,6 @@ namespace RD
 
         void ApplySpriteSelections()
         {
-            // Get the saved sprite indices from PlayerPrefs
             int playerHeadIndex = PlayerPrefs.GetInt("PlayerHeadIndex", 0);
             int tailIndex = PlayerPrefs.GetInt("TailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("FoodIndex", 0);
@@ -292,8 +291,6 @@ namespace RD
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
-
-
 
         void AdjustCameraSize()
         {
