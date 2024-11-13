@@ -185,6 +185,13 @@ namespace RD
             Node n = GetNode(maxWidth / 2, maxHeight / 2);
             Vector3 p = n.worldPosition;
             p += Vector3.one * 0.5f;
+
+            // Add a buffer around small maps
+            if (maxWidth <= 10 && maxHeight <= 10)
+            {
+                p += new Vector3(20f, 20f, 0f); // Adjust this buffer value to your liking
+            }
+
             cameraHolder.position = p;
         }
 
@@ -206,7 +213,7 @@ namespace RD
 
             if (isSmallMap)
             {
-                // For small maps, center the camera on the map without following the player
+                // For small maps, center the camera on the map with a buffer
                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
             }
@@ -244,7 +251,6 @@ namespace RD
                 // Ensure the camera doesn't go out of bounds
                 desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
                 desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
-
 
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
