@@ -7297,22 +7297,24 @@ MonoBehaviour:
   customTailSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customFoodSprite: {fileID: 0}
   customObstacleSprite: {fileID: 21300000, guid: 22727b53a0e857b47a1139e8a6bbc7c8, type: 3}
-  maxHeight: 6
-  maxWidth: 4
   colour1: {r: 0.7529412, g: 0.69411767, b: 0.5882353, a: 1}
   colour2: {r: 0.49803922, g: 0.38039216, b: 0.27450982, a: 1}
   foodColour: {r: 0.02441454, g: 0, b: 1, a: 1}
   playerColour: {r: 0, g: 0, b: 0, a: 1}
   obstacleColor: {r: 0.05660379, g: 0.056108657, b: 0.055268794, a: 1}
-  cameraHolder: {fileID: 1867295740}
   inputPanel: {fileID: 2145919914}
   upButton: {fileID: 1529164099}
   downButton: {fileID: 251471596}
   leftButton: {fileID: 1516301358}
   rightButton: {fileID: 613573457}
+  buttonControl: {fileID: 2145919914}
+  moveRate: 0.2
+  maxHeight: 6
+  maxWidth: 4
+  cameraHolder: {fileID: 1867295740}
+  mainCamera: {fileID: 519420031}
   isGameOver: 0
   isFirstInput: 0
-  moveRate: 0.2
   onStart:
     m_PersistentCalls:
       m_Calls:
@@ -7358,7 +7360,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  buttonControl: {fileID: 2145919914}
   foodObjects: []
   smoothSpeed: 0.1
 --- !u!4 &1447539186
