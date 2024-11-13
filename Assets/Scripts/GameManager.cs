@@ -136,8 +136,10 @@ namespace RD
             int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
 
+
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
+
 
             onStart.Invoke();
             maxWidth = PlayerPrefs.GetInt("width");
@@ -149,6 +151,7 @@ namespace RD
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
         }
+
 
         void Update()
         {
@@ -318,15 +321,13 @@ namespace RD
 
             int totalMapNodes = maxWidth * maxHeight;
             int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
-            //int initialFoodCount = 3;
 
             SpawnInitialFood(initialFoodCount);
 
             uiHandler.ResumeGame();
 
-            PlacePlayer();  // Place the player first
-            PlaceCamera();  // Now place the camera to center on the player
-
+            PlacePlayer();  
+            PlaceCamera(); 
             AdjustCameraSize();
 
             isGameOver = false;
@@ -449,6 +450,7 @@ namespace RD
             SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
 
             playerRenderer.sprite = customPlayerSprite;
+
             playerRenderer.sortingOrder = 1;
 
             int randomIndex = Random.Range(0, availableNodes.Count);
