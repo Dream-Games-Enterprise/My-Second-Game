@@ -38,6 +38,10 @@ public class CustomisationManager : MonoBehaviour
     public GameObject tailPanelPrefab;
     public GameObject foodPanelPrefab;
 
+    [SerializeField] Image previewSnake;
+    [SerializeField] Image previewTail;
+    [SerializeField] Image previewFood;
+
     List<SkinPanel> skinPanels = new List<SkinPanel>();
     List<TailPanel> tailPanels = new List<TailPanel>();
     List<FoodPanel> foodPanels = new List<FoodPanel>();
@@ -48,6 +52,10 @@ public class CustomisationManager : MonoBehaviour
     void Start()
     {
         InitializePanels();
+
+        UpdateSelectedSkin(GetSelectedSnakeIndex());
+        UpdateSelectedTail(GetSelectedTailIndex());
+        UpdateSelectedFood(GetSelectedFoodIndex());
     }
 
     void InitializePanels()
@@ -119,15 +127,20 @@ public class CustomisationManager : MonoBehaviour
     void UpdateSelectedSkin(int index)
     {
         PlayerPrefs.SetInt("SelectedSnakeIndex", index);
-        Debug.Log("sprite has changed...");
         PlayerPrefs.Save();
-        Debug.Log("Skin Selected: " + snakeSkins[index].sprite); 
+
+        previewSnake.sprite = snakeSkins[index].sprite;
+
+        Debug.Log("Skin Selected: " + snakeSkins[index].sprite);
     }
 
     void UpdateSelectedTail(int index)
     {
         PlayerPrefs.SetInt("SelectedTailIndex", index);
         PlayerPrefs.Save();
+
+        previewTail.sprite = tailSkins[index].sprite;
+
         Debug.Log("Tail Skin Selected: " + tailSkins[index].sprite);
     }
 
@@ -135,6 +148,9 @@ public class CustomisationManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("SelectedFoodIndex", index);
         PlayerPrefs.Save();
+
+        previewFood.sprite = foodSkins[index].sprite;
+
         Debug.Log("Food Skin Selected: " + foodSkins[index].sprite);
     }
 

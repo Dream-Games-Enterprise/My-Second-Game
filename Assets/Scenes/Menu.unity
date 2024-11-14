@@ -8536,6 +8536,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: previewFood
+      value: 
+      objectReference: {fileID: 2016962384}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: previewTail
+      value: 
+      objectReference: {fileID: 130204791}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: previewSnake
+      value: 
+      objectReference: {fileID: 1284100134}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: foodPanelContainer
       value: 
       objectReference: {fileID: 1837329946}
