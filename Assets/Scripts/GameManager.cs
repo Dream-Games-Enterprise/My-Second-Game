@@ -121,6 +121,18 @@ namespace RD
                 Debug.LogWarning("Invalid snake index. Using default sprite.");
             }
 
+
+            int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
+            {
+                customTailSprite = customisationManager.tailSkins[tailSkinIndex].sprite;
+                Debug.Log("Tail skin sprite loaded: " + customTailSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail index. Using default tail sprite.");
+            }
+
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
@@ -135,9 +147,9 @@ namespace RD
         {
             LoadSpeedSettings();
             int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            //int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-
+            //customTailSprite = customisationManager.tailSkins[playerTailIndex].sprite;
 
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
@@ -981,11 +993,13 @@ namespace RD
             s.obj.transform.localScale = Vector3.one * 0.75f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
 
+            // Assign the selected custom tail sprite
             r.sprite = customTailSprite != null ? customTailSprite : playerSprite;
             r.sortingOrder = 1;
 
             return s;
         }
+
 
         Sprite CreateSprite(Color targetColour)
         {
