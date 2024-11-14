@@ -113,13 +113,14 @@ namespace RD
 
             if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
             {
-                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;  // Get the sprite
-                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);  // Debug to check the sprite
+                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;  
+                Debug.Log("Player skin sprite loaded: " + customPlayerSprite); 
             }
             else
             {
                 Debug.LogWarning("Invalid snake index. Using default sprite.");
             }
+
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
