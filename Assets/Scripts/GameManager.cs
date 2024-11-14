@@ -106,6 +106,7 @@ namespace RD
 
         int playerSkinIndex;
         int playerTailIndex;
+        int foodIndex;
 
         void Awake()
         {
@@ -131,6 +132,17 @@ namespace RD
             else
             {
                 Debug.LogWarning("Invalid tail index. Using default tail sprite.");
+            }
+
+            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+            if (foodIndex >= 0 && foodIndex < customisationManager.foodSkins.Count)
+            {
+                customFoodSprite = customisationManager.foodSkins[foodIndex].sprite;
+                Debug.Log("Food skin sprite loaded: " + customFoodSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food index. Using default food sprite.");
             }
 
             scoreManager = GetComponent<ScoreManager>();
@@ -528,6 +540,8 @@ namespace RD
 
             GameObject foodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+
+            // Use the custom food sprite or fallback to a default sprite/color
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
 
@@ -538,6 +552,7 @@ namespace RD
 
             StartCoroutine(TweenFoodScale(foodObject));
         }
+
 
         void PlaceFood()
         {
