@@ -520,7 +520,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &105287980
 RectTransform:
   m_ObjectHideFlags: 0
@@ -769,7 +769,7 @@ GameObject:
   - component: {fileID: 137228518}
   - component: {fileID: 137228517}
   m_Layer: 5
-  m_Name: Snake_Header
+  m_Name: Tail_Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3049,7 +3049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &827687903
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7425,7 +7425,7 @@ GameObject:
   - component: {fileID: 2055139035}
   - component: {fileID: 2055139034}
   m_Layer: 5
-  m_Name: Snake_Header
+  m_Name: Food_Header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7470,7 +7470,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SNAKE TAIL
+  m_text: FOOD
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
