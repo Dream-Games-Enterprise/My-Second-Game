@@ -18,19 +18,32 @@ public class TailSkin
     public bool isUnlocked;
 }
 
+[System.Serializable]
+public class FoodSkin
+{
+    public Sprite sprite;
+    public int cost;
+    public bool isUnlocked;
+}
+
 public class CustomisationManager : MonoBehaviour
 {
     public List<SnakeSkin> snakeSkins;
-    public List<TailSkin> tailSkins;  
+    public List<TailSkin> tailSkins;
+    public List<FoodSkin> foodSkins;
     public Transform skinPanelContainer;
     public Transform tailPanelContainer;
+    public Transform foodPanelContainer;
     public GameObject skinPanelPrefab;
-    public GameObject tailPanelPrefab;  
+    public GameObject tailPanelPrefab;
+    public GameObject foodPanelPrefab;
 
     List<SkinPanel> skinPanels = new List<SkinPanel>();
     List<TailPanel> tailPanels = new List<TailPanel>();
+    List<FoodPanel> foodPanels = new List<FoodPanel>();
     int selectedSnakeIndex = 0;
     int selectedTailIndex = 0;
+    int selectedFoodIndex = 0;
 
     void Start()
     {
@@ -62,6 +75,18 @@ public class CustomisationManager : MonoBehaviour
 
             tailPanels.Add(panel);
         }
+
+        foreach (var food in foodSkins)
+        {
+            GameObject panelObj = Instantiate(foodPanelPrefab, foodPanelContainer);
+            FoodPanel panel = panelObj.GetComponent<FoodPanel>();
+            panel.FoodSetup(food, food.isUnlocked);
+
+            int index = foodPanels.Count;
+            panel.selectButton.onClick.AddListener(() => SelectFood(index));
+
+            foodPanels.Add(panel);
+        }
     }
 
     public void SelectSkin(int index)
@@ -82,6 +107,15 @@ public class CustomisationManager : MonoBehaviour
         }
     }
 
+    public void SelectFood(int index)
+    {
+        if (foodSkins[index].isUnlocked)
+        {
+            selectedFoodIndex = index;
+            UpdateSelectedFood(index);
+        }
+    }
+
     void UpdateSelectedSkin(int index)
     {
         PlayerPrefs.SetInt("SelectedSnakeIndex", index);
@@ -97,6 +131,13 @@ public class CustomisationManager : MonoBehaviour
         Debug.Log("Tail Skin Selected: " + tailSkins[index].sprite);
     }
 
+    void UpdateSelectedFood(int index)
+    {
+        PlayerPrefs.SetInt("SelectedFoodIndex", index);
+        PlayerPrefs.Save();
+        Debug.Log("Food Skin Selected: " + foodSkins[index].sprite);
+    }
+
     public int GetSelectedSnakeIndex()
     {
         return PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
@@ -105,5 +146,10 @@ public class CustomisationManager : MonoBehaviour
     public int GetSelectedTailIndex()
     {
         return PlayerPrefs.GetInt("SelectedTailIndex", 0);
+    }
+
+    public int GetSelectedFoodIndex()
+    {
+        return PlayerPrefs.GetInt("SelectedFoodIndex", 0);
     }
 }

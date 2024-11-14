@@ -4,15 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class SkinPanel : MonoBehaviour
+public class FoodPanel : MonoBehaviour
 {
-    public Image skinImage;
+    public Image foodImage;
     public TMP_Text costText;
     public Button selectButton;
 
-    public void SkinSetup(SnakeSkin skin, bool isUnlocked)
+    public void FoodSetup(FoodSkin skin, bool isUnlocked)
     {
-        skinImage.sprite = skin.sprite;
+        foodImage.sprite = skin.sprite;
         costText.text = skin.isUnlocked ? "" : skin.cost.ToString();
         costText.gameObject.SetActive(!skin.isUnlocked);
         selectButton.interactable = skin.isUnlocked;
