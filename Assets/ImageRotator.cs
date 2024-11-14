@@ -13,7 +13,7 @@ public class ImageRotator : MonoBehaviour
     {
         foreach (var arrow in arrows)
         {
-            arrow.transform.Rotate(0, 0, rotationSpeed * Time.fixedDeltaTime);
+            arrow.transform.Rotate(0, 0, -rotationSpeed * Time.fixedDeltaTime);
         }
     }
 
