@@ -73,4 +73,9 @@ public class ScoreManager : MonoBehaviour
 
         Debug.Log("New CURRENCY Total: " + newCurrencyTotal);
     }
+
+    public void RemoveCurrency(int currencyToRemove)
+    {
+
+    }
 }
