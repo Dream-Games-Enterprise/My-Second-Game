@@ -15,6 +15,8 @@ public class ScoreManager : MonoBehaviour
     public float WinMultiplier { get; private set; } = 1.0f;
     public float TotalMultiplier { get; private set; } = 1.0f;
 
+    int piecesEaten;
+
     void Start()
     {
         currentScore = 0;
@@ -23,6 +25,7 @@ public class ScoreManager : MonoBehaviour
 
     public void AddScore()
     {
+        piecesEaten++;
         int baseScore = 5;
         currentScore += baseScore;
         UpdateScoreText();
@@ -40,6 +43,7 @@ public class ScoreManager : MonoBehaviour
 
         currentScore = Mathf.RoundToInt(currentScore * TotalMultiplier);
         UpdateScoreText();
+        Debug.Log("Food Pieces Eaten: " + piecesEaten);
         AddCurrency();
     }
 
