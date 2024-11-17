@@ -16,10 +16,12 @@ public class ScoreManager : MonoBehaviour
     public float TotalMultiplier { get; private set; } = 1.0f;
 
     int piecesEaten;
+    int highScore;
 
     void Start()
     {
         currentScore = 0;
+        highScore = PlayerPrefs.GetInt("highScore");
         UpdateScoreText();
     }
 
@@ -45,6 +47,7 @@ public class ScoreManager : MonoBehaviour
         UpdateScoreText();
         Debug.Log("Food Pieces Eaten: " + piecesEaten);
         AddCurrency();
+        CheckHighScore();
     }
 
     public void AddWinMultiplier()
@@ -78,8 +81,21 @@ public class ScoreManager : MonoBehaviour
         Debug.Log("New CURRENCY Total: " + newCurrencyTotal);
     }
 
-    public void RemoveCurrency(int currencyToRemove)
+    public void RemoveCurrency(int currencyToRemove) //this is where buying sprites and such will remove the currency they cost
     {
 
+    }
+
+    void CheckHighScore()
+    {
+        if (currentScore > highScore)
+        {
+            highScore = currentScore;
+            PlayerPrefs.SetInt("highScore", highScore);
+            Debug.Log("HIGH SCORE: " + highScore);
+        }
+        else { Debug.Log("High Score not beaten...");
+            Debug.Log("OLD HIGH SCORE: " + highScore);
+        }
     }
 }
