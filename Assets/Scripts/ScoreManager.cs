@@ -8,6 +8,7 @@ public class ScoreManager : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI gameScoreText;
     int currentScore;
+    int currency;
 
     public float ObstacleMultiplier { get; private set; } = 1.0f;
     public float SpeedMultiplier { get; private set; } = 1.0f;
@@ -39,6 +40,7 @@ public class ScoreManager : MonoBehaviour
 
         currentScore = Mathf.RoundToInt(currentScore * TotalMultiplier);
         UpdateScoreText();
+        AddCurrency();
     }
 
     public void AddWinMultiplier()
@@ -60,5 +62,15 @@ public class ScoreManager : MonoBehaviour
     public int GetScore()
     {
         return currentScore;
+    }
+
+    public void AddCurrency()
+    {
+        int stashedCurrency = PlayerPrefs.GetInt("currency");
+        currency += currentScore;
+        int newCurrencyTotal = stashedCurrency + currency;
+        PlayerPrefs.SetInt("currency", newCurrencyTotal);
+
+        Debug.Log("New CURRENCY Total: " + newCurrencyTotal);
     }
 }

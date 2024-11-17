@@ -63,15 +63,15 @@ namespace RD
 
         #endregion
 
-        public int maxHeight = 15;
-        public int maxWidth = 17;
+        public int maxHeight = 16;
+        public int maxWidth = 16;
 
         public Transform cameraHolder;
 
         GameObject playerObject;
         GameObject foodObject;
         GameObject tailParent;
-        GameObject obstacleParent;  // Parent object to hold all obstacles
+        GameObject obstacleParent;  
         Node playerNode;
         Node prevPlayerNode;
         Node foodNode;
