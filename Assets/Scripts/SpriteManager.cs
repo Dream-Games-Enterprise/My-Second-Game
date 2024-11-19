@@ -117,6 +117,15 @@ public class SpriteManager : MonoBehaviour
         header.color = originalColor;
     }
 
+    public void ShowUnlockSuccessfulMessage()
+    {
+        snakeHeader.text = "UNLOCK SUCCESSFUL";
+        tailHeader.text = "UNLOCK SUCCESSFUL";
+        foodHeader.text = "UNLOCK SUCCESSFUL";
+
+        StartCoroutine(ResetHeaderAfterDelay());
+    }
+
     public void UpdateCurrencyHeader(int newCurrency)
     {
         snakeHeader.text = "TOTAL POINTS\n" + newCurrency.ToString();
@@ -126,12 +135,10 @@ public class SpriteManager : MonoBehaviour
 
     public void ShowNotEnoughPointsMessage()
     {
-        // Show a "Not Enough Points" message in the header
         snakeHeader.text = "NOT ENOUGH POINTS";
         tailHeader.text = "NOT ENOUGH POINTS";
         foodHeader.text = "NOT ENOUGH POINTS";
 
-        // Optionally, you can show a temporary message or fade it back after some time
         StartCoroutine(ResetHeaderAfterDelay());
     }
 

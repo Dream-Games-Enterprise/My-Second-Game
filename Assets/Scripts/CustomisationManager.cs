@@ -117,7 +117,7 @@ public class CustomisationManager : MonoBehaviour
             Debug.Log("STAGE 3");
             currency -= snakeSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
-            spriteManager.UpdateCurrencyHeader(currency);
+            spriteManager.ShowUnlockSuccessfulMessage();
             snakeSkins[index].isUnlocked = true;
             skinPanels[index].UpdateSkinStatus(true, currency);
             UpdateSelectedSkin(index);
@@ -140,7 +140,7 @@ public class CustomisationManager : MonoBehaviour
         {
             currency -= tailSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
-            spriteManager.UpdateCurrencyHeader(currency);
+            spriteManager.ShowUnlockSuccessfulMessage();
             tailSkins[index].isUnlocked = true;
             tailPanels[index].UpdateTailStatus(true, currency);
             UpdateSelectedTail(index);
@@ -163,7 +163,7 @@ public class CustomisationManager : MonoBehaviour
         {
             currency -= foodSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
-            spriteManager.UpdateCurrencyHeader(currency);
+            spriteManager.ShowUnlockSuccessfulMessage();
             foodSkins[index].isUnlocked = true;
             foodPanels[index].UpdateFoodStatus(true, currency);
             UpdateSelectedFood(index);
