@@ -94,8 +94,9 @@ public class ScoreManager : MonoBehaviour
             PlayerPrefs.SetInt("highScore", highScore);
             Debug.Log("HIGH SCORE: " + highScore);
         }
-        else { Debug.Log("High Score not beaten...");
-            Debug.Log("OLD HIGH SCORE: " + highScore);
+        else
+        { 
+            Debug.Log("High Score not beaten...OLD HIGH SCORE: " + highScore);
         }
     }
 }
