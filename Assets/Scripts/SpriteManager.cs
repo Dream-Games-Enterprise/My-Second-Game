@@ -43,18 +43,18 @@ public class SpriteManager : MonoBehaviour
 
         if (panelToOpen == snakePanel)
         {
-            snakeHeader.text = "TOTAL POINTS\n" + PlayerPrefs.GetInt("currency").ToString();
-            StartToggle(snakeHeader, "SNAKE HEAD");
+            snakeHeader.text = "HEAD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+            //StartToggle(snakeHeader, "SNAKE HEAD");
         }
         else if (panelToOpen == tailPanel)
         {
-            tailHeader.text = "TOTAL POINTS\n" + PlayerPrefs.GetInt("currency").ToString();
-            StartToggle(tailHeader, "SNAKE TAIL");
+            tailHeader.text = "TAIL\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+            //StartToggle(tailHeader, "SNAKE TAIL");
         }
         else if (panelToOpen == foodPanel)
         {
-            foodHeader.text = "TOTAL POINTS\n" + PlayerPrefs.GetInt("currency").ToString();
-            StartToggle(foodHeader, "FOOD");
+            foodHeader.text = "FOOD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+            //StartToggle(foodHeader, "FOOD");
         }
     }
 
@@ -128,9 +128,9 @@ public class SpriteManager : MonoBehaviour
 
     public void UpdateCurrencyHeader(int newCurrency)
     {
-        snakeHeader.text = "TOTAL POINTS\n" + newCurrency.ToString();
-        tailHeader.text = "TOTAL POINTS\n" + newCurrency.ToString();
-        foodHeader.text = "TOTAL POINTS\n" + newCurrency.ToString();
+        snakeHeader.text = "HEAD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+        tailHeader.text = "TAIL\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+        foodHeader.text = "FOOD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
     }
 
     public void ShowNotEnoughPointsMessage()
