@@ -28,6 +28,7 @@ public class FoodSkin
 
 public class CustomisationManager : MonoBehaviour
 {
+    [SerializeField] SpriteManager spriteManager;
     public List<SnakeSkin> snakeSkins;
     public List<TailSkin> tailSkins;
     public List<FoodSkin> foodSkins;
@@ -55,6 +56,7 @@ public class CustomisationManager : MonoBehaviour
     {
         currency = PlayerPrefs.GetInt("currency");
         Debug.Log(currency);
+        spriteManager = FindObjectOfType<SpriteManager>();
         InitializePanels();
 
         UpdateSelectedSkin(GetSelectedSnakeIndex());
@@ -115,7 +117,7 @@ public class CustomisationManager : MonoBehaviour
             Debug.Log("STAGE 3");
             currency -= snakeSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
-            //update relevant sprite header text to show new updated currency since buying sprite
+            spriteManager.UpdateCurrencyHeader(currency);
             snakeSkins[index].isUnlocked = true;
             skinPanels[index].UpdateSkinStatus(true, currency);
             UpdateSelectedSkin(index);
@@ -138,7 +140,7 @@ public class CustomisationManager : MonoBehaviour
         {
             currency -= tailSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
-            //update relevant sprite header text to show new updated currency since buying sprite
+            spriteManager.UpdateCurrencyHeader(currency);
             tailSkins[index].isUnlocked = true;
             tailPanels[index].UpdateTailStatus(true, currency);
             UpdateSelectedTail(index);
@@ -161,7 +163,7 @@ public class CustomisationManager : MonoBehaviour
         {
             currency -= foodSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
-            //update relevant sprite header text to show new updated currency since buying sprite
+            spriteManager.UpdateCurrencyHeader(currency);
             foodSkins[index].isUnlocked = true;
             foodPanels[index].UpdateFoodStatus(true, currency);
             UpdateSelectedFood(index);

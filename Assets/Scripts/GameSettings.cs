@@ -30,6 +30,7 @@ public class GameSettings : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1f;
         LoadData();
 
         UpdateWidthText(widthSlider.value);
