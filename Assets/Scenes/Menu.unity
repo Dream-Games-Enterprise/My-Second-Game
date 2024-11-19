@@ -620,7 +620,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 6.556732}
-  m_SizeDelta: {x: 966.5, y: 71.92001}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &112468354
 MonoBehaviour:
@@ -800,15 +800,15 @@ RectTransform:
   m_GameObject: {fileID: 137228515}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.3069, y: 3.3069, z: 3.3069}
+  m_LocalScale: {x: 2.7515392, y: 2.7515392, z: 2.7515392}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 105287980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140.4241}
-  m_SizeDelta: {x: 235.8706, y: 60.3578}
+  m_AnchoredPosition: {x: 0, y: -146.782}
+  m_SizeDelta: {x: 235.871, y: 55.737}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &137228517
 MonoBehaviour:
@@ -3249,7 +3249,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &827687903
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7717,15 +7717,15 @@ RectTransform:
   m_GameObject: {fileID: 1857892948}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.3069, y: 3.3069, z: 3.3069}
+  m_LocalScale: {x: 2.7515392, y: 2.7515392, z: 2.7515392}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 827687903}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140.4241}
-  m_SizeDelta: {x: 235.8706, y: 60.3578}
+  m_AnchoredPosition: {x: 0, y: -146.782}
+  m_SizeDelta: {x: 235.871, y: 55.737}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1857892950
 MonoBehaviour:
@@ -7928,6 +7928,9 @@ MonoBehaviour:
   snakePanel: {fileID: 827687902}
   tailPanel: {fileID: 105287979}
   foodPanel: {fileID: 2060114605}
+  snakeHeader: {fileID: 1857892950}
+  tailHeader: {fileID: 137228517}
+  foodHeader: {fileID: 2055139034}
 --- !u!4 &1909078580
 Transform:
   m_ObjectHideFlags: 0
@@ -8541,15 +8544,15 @@ RectTransform:
   m_GameObject: {fileID: 2055139032}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.3069, y: 3.3069, z: 3.3069}
+  m_LocalScale: {x: 2.7515392, y: 2.7515392, z: 2.7515392}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2060114606}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -140.4241}
-  m_SizeDelta: {x: 235.8706, y: 60.3578}
+  m_AnchoredPosition: {x: 0, y: -146.782}
+  m_SizeDelta: {x: 235.871, y: 55.737}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2055139034
 MonoBehaviour:
