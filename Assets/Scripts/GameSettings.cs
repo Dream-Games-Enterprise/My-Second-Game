@@ -15,7 +15,6 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Slider speedSlider;
     [SerializeField] Toggle obstaclesToggle;
 
-
     [SerializeField] GameObject settingsPanel;
     [SerializeField] TMP_Text inputTypeText; 
     [SerializeField] Button toggleInputTypeButton; 

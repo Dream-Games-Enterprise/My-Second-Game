@@ -78,7 +78,7 @@ public class SpriteManager : MonoBehaviour
 
             yield return StartCoroutine(FadeInText(header));
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
 
             yield return StartCoroutine(FadeOutText(header));
 
@@ -87,7 +87,7 @@ public class SpriteManager : MonoBehaviour
 
             yield return StartCoroutine(FadeInText(header));
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.5f);
         }
     }
 
