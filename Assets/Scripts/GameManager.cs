@@ -746,7 +746,6 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            // If this is the first input, set the initial direction
             if (!isFirstInput)
             {
                 isFirstInput = true;
@@ -755,12 +754,10 @@ namespace RD
             }
             else if (isOppositeDir(d))
             {
-                // Ignore the input if it’s the opposite direction
                 Debug.Log("Ignored input: Opposite direction");
             }
             else
             {
-                // Set the new direction only if it's valid
                 targetDirection = d;
             }
         }
