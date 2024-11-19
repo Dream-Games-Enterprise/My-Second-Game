@@ -742,21 +742,25 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            if (!isFirstInput)
+            // If the player is stationary (curDirection is None), immediately start moving in the input direction
+            if (curDirection == Direction.None)
             {
-                isFirstInput = true;
+                curDirection = d;
                 targetDirection = d;
-                curDirection = targetDirection;
+                return; // Exit early since we're now moving
             }
-            else if (isOppositeDir(d))
+
+            // Prevent opposite direction input
+            if (isOppositeDir(d))
             {
                 Debug.Log("Ignored input: Opposite direction");
+                return;
             }
-            else
-            {
-                targetDirection = d;
-            }
+
+            // Otherwise, update targetDirection
+            targetDirection = d;
         }
+
 
         float GetRotationForDirection(Direction direction)
         {
