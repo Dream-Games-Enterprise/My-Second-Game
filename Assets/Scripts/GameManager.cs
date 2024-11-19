@@ -746,16 +746,25 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            if (isFirstInput)
+            // If this is the first input, set the initial direction
+            if (!isFirstInput)
             {
+                isFirstInput = true;
                 targetDirection = d;
                 curDirection = targetDirection;
             }
-            else if (!isOppositeDir(d))
+            else if (isOppositeDir(d))
             {
+                // Ignore the input if it’s the opposite direction
+                Debug.Log("Ignored input: Opposite direction");
+            }
+            else
+            {
+                // Set the new direction only if it's valid
                 targetDirection = d;
             }
         }
+
 
         float GetRotationForDirection(Direction direction)
         {
