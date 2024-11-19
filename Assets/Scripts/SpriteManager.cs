@@ -72,40 +72,30 @@ public class SpriteManager : MonoBehaviour
     {
         while (true)
         {
-            // Fade out the current text
             yield return StartCoroutine(FadeOutText(header));
 
-            // Update the text to the first string (originalText) after fading out
             header.text = originalText;
 
-            // Fade in the new text
             yield return StartCoroutine(FadeInText(header));
 
-            // Wait for 1 second
             yield return new WaitForSeconds(1f);
 
-            // Fade out the current text
             yield return StartCoroutine(FadeOutText(header));
 
-            // Update the text to the second string (pointDisplay) after fading out
             pointDisplay = "TOTAL POINTS " + PlayerPrefs.GetInt("currency").ToString();
             header.text = pointDisplay;
 
-            // Fade in the new text
             yield return StartCoroutine(FadeInText(header));
 
-            // Wait for 1 second
             yield return new WaitForSeconds(1f);
         }
     }
 
     IEnumerator FadeOutText(TMP_Text header)
     {
-        // Get the current color and target transparent color
         Color originalColor = header.color;
         Color transparentColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
 
-        // Fade out
         for (float t = 0; t < 1; t += Time.deltaTime)
         {
             header.color = Color.Lerp(originalColor, transparentColor, t);
@@ -116,11 +106,9 @@ public class SpriteManager : MonoBehaviour
 
     IEnumerator FadeInText(TMP_Text header)
     {
-        // Get the current color and target opaque color
         Color transparentColor = header.color;
         Color originalColor = new Color(transparentColor.r, transparentColor.g, transparentColor.b, 1);
 
-        // Fade in
         for (float t = 0; t < 1; t += Time.deltaTime)
         {
             header.color = Color.Lerp(transparentColor, originalColor, t);
