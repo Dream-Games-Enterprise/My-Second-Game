@@ -49,8 +49,12 @@ public class CustomisationManager : MonoBehaviour
     int selectedTailIndex = 0;
     int selectedFoodIndex = 0;
 
+    int currency;
+
     void Start()
     {
+        currency = PlayerPrefs.GetInt("currency");
+        Debug.Log(currency);
         InitializePanels();
 
         UpdateSelectedSkin(GetSelectedSnakeIndex());
@@ -67,7 +71,7 @@ public class CustomisationManager : MonoBehaviour
             panel.SkinSetup(skin, skin.isUnlocked);
 
             int index = skinPanels.Count;
-            panel.selectButton.onClick.AddListener(() => SelectSkin(index));
+            panel.selectButton.onClick.AddListener(() => TryUnlockSkin(index));
 
             skinPanels.Add(panel);
         }
@@ -79,7 +83,7 @@ public class CustomisationManager : MonoBehaviour
             panel.TailSetup(tail, tail.isUnlocked);
 
             int index = tailPanels.Count;
-            panel.selectButton.onClick.AddListener(() => SelectTail(index));
+            panel.selectButton.onClick.AddListener(() => TryUnlockTail(index));
 
             tailPanels.Add(panel);
         }
@@ -91,9 +95,75 @@ public class CustomisationManager : MonoBehaviour
             panel.FoodSetup(food, food.isUnlocked);
 
             int index = foodPanels.Count;
-            panel.selectButton.onClick.AddListener(() => SelectFood(index));
+            panel.selectButton.onClick.AddListener(() => TryUnlockFood(index));
 
             foodPanels.Add(panel);
+        }
+    }
+
+    public void TryUnlockSkin(int index)
+    {
+        Debug.Log("STAGE 1");
+        if (snakeSkins[index].isUnlocked)
+        {
+            Debug.Log("STAGE 2");
+            selectedSnakeIndex = index;
+            SelectSkin(index);
+        }
+        else if (currency >= snakeSkins[index].cost)
+        {
+            Debug.Log("STAGE 3");
+            currency -= snakeSkins[index].cost;
+            PlayerPrefs.SetInt("currency", currency);
+            snakeSkins[index].isUnlocked = true;
+            skinPanels[index].UpdateSkinStatus(true, currency);
+            UpdateSelectedSkin(index);
+        }
+        else
+        {
+            Debug.Log("Not enough currency to unlock this skin.");
+        }
+    }
+
+    public void TryUnlockTail(int index)
+    {
+        if (tailSkins[index].isUnlocked)
+        {
+            selectedTailIndex = index;
+            SelectTail(index);
+        }
+        else if (currency >= tailSkins[index].cost)
+        {
+            currency -= tailSkins[index].cost;
+            PlayerPrefs.SetInt("currency", currency);
+            tailSkins[index].isUnlocked = true;
+            tailPanels[index].UpdateTailStatus(true, currency);
+            UpdateSelectedTail(index);
+        }
+        else
+        {
+            Debug.Log("Not enough currency to unlock this tail.");
+        }
+    }
+
+    public void TryUnlockFood(int index)
+    {
+        if (foodSkins[index].isUnlocked)
+        {
+            selectedFoodIndex = index;
+            SelectFood(index);
+        }
+        else if (currency >= foodSkins[index].cost)
+        {
+            currency -= foodSkins[index].cost;
+            PlayerPrefs.SetInt("currency", currency);
+            foodSkins[index].isUnlocked = true;
+            foodPanels[index].UpdateFoodStatus(true, currency);
+            UpdateSelectedFood(index);
+        }
+        else
+        {
+            Debug.Log("Not enough currency to unlock this food.");
         }
     }
 

@@ -15,6 +15,12 @@ public class TailPanel : MonoBehaviour
         tailImage.sprite = skin.sprite;
         costText.text = skin.isUnlocked ? "" : skin.cost.ToString();
         costText.gameObject.SetActive(!skin.isUnlocked);
-        selectButton.interactable = skin.isUnlocked;
+        selectButton.interactable = true;
+    }
+
+    public void UpdateTailStatus(bool isUnlocked, int currentCurrency)
+    {
+        costText.gameObject.SetActive(!isUnlocked);
+        selectButton.interactable = isUnlocked || currentCurrency >= int.Parse(costText.text);
     }
 }
