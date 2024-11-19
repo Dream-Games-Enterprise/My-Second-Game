@@ -637,8 +637,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: 20
     m_Right: 20
-    m_Top: 150
-    m_Bottom: 250
+    m_Top: 175
+    m_Bottom: 275
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
@@ -5678,8 +5678,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: 20
     m_Right: 20
-    m_Top: 150
-    m_Bottom: 250
+    m_Top: 175
+    m_Bottom: 275
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
@@ -7643,8 +7643,8 @@ MonoBehaviour:
   m_Padding:
     m_Left: 20
     m_Right: 20
-    m_Top: 150
-    m_Bottom: 250
+    m_Top: 175
+    m_Bottom: 275
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0

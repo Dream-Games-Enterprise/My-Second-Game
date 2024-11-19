@@ -28,7 +28,7 @@ public class ScoreManager : MonoBehaviour
     public void AddScore()
     {
         piecesEaten++;
-        int baseScore = 5;
+        int baseScore = 2;
         currentScore += baseScore;
         UpdateScoreText();
     }
