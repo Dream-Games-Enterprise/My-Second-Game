@@ -52,7 +52,7 @@ namespace RD
 
         public enum Direction
         {
-            up, left, right, down
+            None, up, left, right, down
         }
 
         [SerializeField] GameObject buttonControl;
@@ -355,8 +355,8 @@ namespace RD
 
             isGameOver = false;
             isFirstInput = false;
-            //curDirection = Direction.up;
-            //targetDirection = curDirection;
+            curDirection = Direction.None;
+            targetDirection = Direction.None;
         }
 
         public void ClearReferences()
@@ -777,6 +777,12 @@ namespace RD
 
         void MovePlayer()
         {
+            if (curDirection == Direction.None)
+            {
+                // Player is stationary until the first input
+                return;
+            }
+
             int x = 0;
             int y = 0;
 
@@ -804,7 +810,6 @@ namespace RD
             {
                 if (targetNode == tail[0].node)
                 {
-                    // Carry on moving forward (prevdirection)
                     return;
                 }
                 else { onGameOver.Invoke(); }
