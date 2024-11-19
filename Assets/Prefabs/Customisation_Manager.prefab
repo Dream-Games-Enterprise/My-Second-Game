@@ -119,19 +119,19 @@ MonoBehaviour:
     cost: 325
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 4a27e775c2d378f40aeb94872b9120cf, type: 3}
-    cost: 400
-    isUnlocked: 0
-  - sprite: {fileID: 21300000, guid: 01abf781a2a63b842b90a2f2c12fadf7, type: 3}
-    cost: 450
+    cost: 3000
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 2ce89a8c6cdba5c498604321f1bc2b6c, type: 3}
-    cost: 500
+    cost: 3500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 01abf781a2a63b842b90a2f2c12fadf7, type: 3}
+    cost: 4000
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 7950197096c2e3048b97da0d5ba32730, type: 3}
-    cost: 600
+    cost: 4500
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 7391c7909ea7f8a4f81203363ffbf897, type: 3}
-    cost: 1000
+    cost: 5000
     isUnlocked: 0
   tailSkins:
   - sprite: {fileID: 21300000, guid: 4ba6fc2593284104fb25198e0d250a4e, type: 3}
