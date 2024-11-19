@@ -159,9 +159,7 @@ namespace RD
         {
             LoadSpeedSettings();
             int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            //int tailIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-            //customTailSprite = customisationManager.tailSkins[playerTailIndex].sprite;
 
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
@@ -177,7 +175,6 @@ namespace RD
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
         }
-
 
         void Update()
         {
@@ -358,8 +355,8 @@ namespace RD
 
             isGameOver = false;
             isFirstInput = false;
-            curDirection = Direction.up;
-            targetDirection = curDirection;
+            //curDirection = Direction.up;
+            //targetDirection = curDirection;
         }
 
         public void ClearReferences()
@@ -552,7 +549,6 @@ namespace RD
 
             StartCoroutine(TweenFoodScale(foodObject));
         }
-
 
         void PlaceFood()
         {
@@ -762,7 +758,6 @@ namespace RD
             }
         }
 
-
         float GetRotationForDirection(Direction direction)
         {
             switch (direction)
@@ -786,16 +781,6 @@ namespace RD
             int y = 0;
 
             Direction moveDirection = curDirection;
-
-            if (isOppositeDir(targetDirection))
-            {
-                moveDirection = prevDirection; // Continue in the previous direction if reversing
-            }
-            else
-            {
-                prevDirection = curDirection;
-                curDirection = targetDirection;
-            }
 
             switch (moveDirection)
             {
