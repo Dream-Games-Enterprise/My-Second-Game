@@ -115,6 +115,7 @@ public class CustomisationManager : MonoBehaviour
             Debug.Log("STAGE 3");
             currency -= snakeSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
+            //update relevant sprite header text to show new updated currency since buying sprite
             snakeSkins[index].isUnlocked = true;
             skinPanels[index].UpdateSkinStatus(true, currency);
             UpdateSelectedSkin(index);
@@ -122,6 +123,7 @@ public class CustomisationManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough currency to unlock this skin.");
+            //update relevant spritemanager header text to say not enough points
         }
     }
 
@@ -136,6 +138,7 @@ public class CustomisationManager : MonoBehaviour
         {
             currency -= tailSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
+            //update relevant sprite header text to show new updated currency since buying sprite
             tailSkins[index].isUnlocked = true;
             tailPanels[index].UpdateTailStatus(true, currency);
             UpdateSelectedTail(index);
@@ -143,6 +146,7 @@ public class CustomisationManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough currency to unlock this tail.");
+            //update relevant spritemanager header text to say not enough points
         }
     }
 
@@ -157,6 +161,7 @@ public class CustomisationManager : MonoBehaviour
         {
             currency -= foodSkins[index].cost;
             PlayerPrefs.SetInt("currency", currency);
+            //update relevant sprite header text to show new updated currency since buying sprite
             foodSkins[index].isUnlocked = true;
             foodPanels[index].UpdateFoodStatus(true, currency);
             UpdateSelectedFood(index);
@@ -164,6 +169,7 @@ public class CustomisationManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough currency to unlock this food.");
+            //update relevant spritemanager header text to say not enough points
         }
     }
 
