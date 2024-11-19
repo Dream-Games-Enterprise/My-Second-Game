@@ -124,4 +124,20 @@ public class SpriteManager : MonoBehaviour
         foodHeader.text = "TOTAL POINTS\n" + newCurrency.ToString();
     }
 
+    public void ShowNotEnoughPointsMessage()
+    {
+        // Show a "Not Enough Points" message in the header
+        snakeHeader.text = "NOT ENOUGH POINTS";
+        tailHeader.text = "NOT ENOUGH POINTS";
+        foodHeader.text = "NOT ENOUGH POINTS";
+
+        // Optionally, you can show a temporary message or fade it back after some time
+        StartCoroutine(ResetHeaderAfterDelay());
+    }
+
+    IEnumerator ResetHeaderAfterDelay()
+    {
+        yield return new WaitForSeconds(2f);
+        UpdateCurrencyHeader(PlayerPrefs.GetInt("currency"));
+    }
 }

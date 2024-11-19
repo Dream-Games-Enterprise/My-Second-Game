@@ -125,7 +125,7 @@ public class CustomisationManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough currency to unlock this skin.");
-            //update relevant spritemanager header text to say not enough points
+            spriteManager.ShowNotEnoughPointsMessage();
         }
     }
 
@@ -148,7 +148,7 @@ public class CustomisationManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough currency to unlock this tail.");
-            //update relevant spritemanager header text to say not enough points
+            spriteManager.ShowNotEnoughPointsMessage();
         }
     }
 
@@ -171,7 +171,7 @@ public class CustomisationManager : MonoBehaviour
         else
         {
             Debug.Log("Not enough currency to unlock this food.");
-            //update relevant spritemanager header text to say not enough points
+            spriteManager.ShowNotEnoughPointsMessage();
         }
     }
 
