@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 53cfd8f29d78f074ab5546a1da4da2a5
+guid: 2683b2f76f389fa44b09820e103b3180
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Vacaciones ffp
+  - Vacaciones
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
