@@ -12,6 +12,7 @@ public class SpriteManager : MonoBehaviour
     [SerializeField] TMP_Text snakeHeader; //Should say "SNAKE HEAD"
     [SerializeField] TMP_Text tailHeader; //Should say "SNAKE TAIL"
     [SerializeField] TMP_Text foodHeader; //Should say "Food"
+    [SerializeField] GameObject bottomPanel;
 
     string pointDisplay;
     Coroutine toggleCoroutine;
@@ -28,7 +29,8 @@ public class SpriteManager : MonoBehaviour
         tailPanel.SetActive(false);
         foodPanel.SetActive(false);
 
-        // Stop the toggle when all panels are closed
+        bottomPanel.SetActive(true);
+
         if (toggleCoroutine != null)
         {
             StopCoroutine(toggleCoroutine);
@@ -40,6 +42,8 @@ public class SpriteManager : MonoBehaviour
     {
         DisablePanels();
         panelToOpen.SetActive(true);
+        bottomPanel.SetActive(false);
+
 
         if (panelToOpen == snakePanel)
         {
