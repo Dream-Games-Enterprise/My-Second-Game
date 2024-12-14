@@ -628,7 +628,6 @@ namespace RD
             isButtonControl = useButtons;
             buttonControl.SetActive(useButtons);
 
-            // Save the player’s input type preference in PlayerPrefs
             PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
             PlayerPrefs.Save();
         }
