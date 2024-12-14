@@ -8,6 +8,7 @@ using System;
 public class Leaderboard : MonoBehaviour
 {
     [SerializeField] GameObject leaderboardPanel;
+    [SerializeField] GameObject bottomPanel;
 
     void Start()
     {
@@ -16,6 +17,7 @@ public class Leaderboard : MonoBehaviour
 
     public void ToggleLeaderboardPanel()
     {
+        bottomPanel.SetActive(!bottomPanel.activeSelf);
         leaderboardPanel.SetActive(!leaderboardPanel.activeSelf);
     }
 }

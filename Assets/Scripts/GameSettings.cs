@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class GameSettings : MonoBehaviour
 {
@@ -16,8 +14,15 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Toggle obstaclesToggle;
 
     [SerializeField] GameObject settingsPanel;
-    [SerializeField] TMP_Text inputTypeText; 
-    [SerializeField] Button toggleInputTypeButton; 
+    [SerializeField] GameObject bottomPanel;
+    [SerializeField] TMP_Text inputTypeText;
+    [SerializeField] Button toggleInputTypeButton;
+
+    // New variables for Lerp effect
+    [SerializeField] float lerpDuration = 0.5f; // Duration of the animation
+    Vector3 targetPosition;
+    Vector3 initialPosition;
+    private bool isSettingsActive = false;
 
     int widthInt;
     int heightInt;
@@ -26,6 +31,22 @@ public class GameSettings : MonoBehaviour
 
     enum InputType { Swipe, Buttons }
     InputType currentInputType;
+
+    void Awake()
+    {
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false); // Initially inactive
+
+            // Set the initial position off-screen below the screen (adjust based on screen height)
+            initialPosition = settingsPanel.transform.position;
+
+            // Set the initial position dynamically off-screen (below the screen)
+            initialPosition.y = -Screen.height; // Move it off-screen vertically based on screen height
+
+            settingsPanel.transform.position = initialPosition; // Apply this initial position
+        }
+    }
 
     void Start()
     {
@@ -44,7 +65,7 @@ public class GameSettings : MonoBehaviour
         obstaclesToggle.isOn = obstacles;
 
         toggleInputTypeButton.onClick.AddListener(ToggleInputType);
-        UpdateInputTypeText(); 
+        UpdateInputTypeText();
     }
 
     void LoadData()
@@ -113,8 +134,38 @@ public class GameSettings : MonoBehaviour
         inputTypeText.text = "INPUT TYPE\n" + (currentInputType == InputType.Swipe ? "SWIPING" : "BUTTONS");
     }
 
+    // New ToggleSettings function with Lerp for position
     public void ToggleSettings()
     {
-        settingsPanel.SetActive(!settingsPanel.activeSelf);
+        Debug.Log("BEING CLICKED");
+
+        settingsPanel.SetActive(true);
+
+        isSettingsActive = !isSettingsActive;
+
+        // Set the target position (screen center for example)
+        targetPosition = isSettingsActive
+            ? new Vector3(0f, 0f, 0f) // Move it to the center of the screen (both x and y = 0)
+            : new Vector3(0f, -Screen.height, 0f); // Move it off-screen vertically
+
+        // Start the Lerp animation
+        StartCoroutine(LerpPosition());
+    }
+
+    // Coroutine to Lerp the position of the settings panel
+    private IEnumerator LerpPosition()
+    {
+        float timeElapsed = 0f;
+
+        // While the time elapsed is less than the lerp duration, continue animating the position
+        while (timeElapsed < lerpDuration)
+        {
+            settingsPanel.transform.position = Vector3.Lerp(initialPosition, targetPosition, timeElapsed / lerpDuration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure it reaches the final target position
+        settingsPanel.transform.position = targetPosition;
     }
 }

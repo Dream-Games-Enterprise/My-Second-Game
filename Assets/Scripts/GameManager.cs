@@ -1015,7 +1015,6 @@ namespace RD
             return s;
         }
 
-
         Sprite CreateSprite(Color targetColour)
         {
             Texture2D txt = new Texture2D(1, 1);

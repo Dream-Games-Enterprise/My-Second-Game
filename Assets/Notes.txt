@@ -9,7 +9,7 @@ moving obstacle nodes?
 CORE
 Ensure colours of PLAYER, TAIL, FOOD and OBSTACLES
 Add particle effects for when food is picked up.
-
+A fading swiping effect for where player inputs
 
 WIDGET
 Save best score

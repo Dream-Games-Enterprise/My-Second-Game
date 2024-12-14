@@ -2107,7 +2107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5702,8 +5702,10 @@ MonoBehaviour:
   speedSlider: {fileID: 560120765}
   obstaclesToggle: {fileID: 1528289402}
   settingsPanel: {fileID: 1522332163}
+  bottomPanel: {fileID: 533785205}
   inputTypeText: {fileID: 5580326}
   toggleInputTypeButton: {fileID: 1741100445}
+  lerpDuration: 0.5
 --- !u!4 &1290690119
 Transform:
   m_ObjectHideFlags: 0
@@ -6090,9 +6092,9 @@ RectTransform:
   - {fileID: 827687903}
   - {fileID: 105287980}
   - {fileID: 2060114606}
+  - {fileID: 533785206}
   - {fileID: 1522332164}
   - {fileID: 325521114}
-  - {fileID: 533785206}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7117,7 +7119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1522332164
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7127,7 +7129,7 @@ RectTransform:
   m_GameObject: {fileID: 1522332163}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1, y: 1.1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1304718805}
@@ -9401,6 +9403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaderboardPanel: {fileID: 325521113}
+  bottomPanel: {fileID: 533785205}
 --- !u!4 &2028437652
 Transform:
   m_ObjectHideFlags: 0
