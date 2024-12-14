@@ -761,7 +761,6 @@ namespace RD
             targetDirection = d;
         }
 
-
         float GetRotationForDirection(Direction direction)
         {
             switch (direction)
