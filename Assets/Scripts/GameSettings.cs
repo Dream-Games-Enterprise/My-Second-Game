@@ -130,3 +130,4 @@ public class GameSettings : MonoBehaviour
         settingsPanel.SetActive(false);
     }
 }
+//this is nothing down here bru
