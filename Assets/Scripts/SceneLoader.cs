@@ -15,6 +15,17 @@ public class SceneLoader : MonoBehaviour
         SplashScreen();
     }
 
+    void Update()
+    {
+        if (currentSceneInt == 0)
+        {
+            if (Input.anyKey)
+            {
+                LoadScene(1);
+            }
+        }    
+    }
+
     void SplashScreen()
     {
         if (currentSceneInt == 0)
