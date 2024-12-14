@@ -128,15 +128,12 @@ public class GameSettings : MonoBehaviour
                 break;
         }
     }
-    // New ToggleSettings function with Lerp for position
+
     public void ToggleSettings()
     {
-        Debug.Log("BEING CLICKED");
-
         settingsPanel.SetActive(true);
 
         isSettingsActive = !isSettingsActive;
-
     }
 
     public void CloseSettings()
