@@ -7,6 +7,7 @@ using TMPro;
 public class UIHandler : MonoBehaviour
 {
     [SerializeField] Button pauseButton;
+    [SerializeField] GameObject pauseMenu;
     [SerializeField] Image pauseAndResume;
     [SerializeField] Sprite pauseIcon;      
     [SerializeField] Sprite resumeIcon;
@@ -68,9 +69,22 @@ public class UIHandler : MonoBehaviour
 
     public void GameEndMenu()
     {
+        // Disable the pauseObject (likely for hiding the in-game UI)
         pauseObject.SetActive(false);
+
+        // Set the pauseMenu's X position to -290 when the game ends
+        RectTransform pauseMenuRect = pauseMenu.GetComponent<RectTransform>();
+        if (pauseMenuRect != null)
+        {
+            Vector3 currentPosition = pauseMenuRect.anchoredPosition;
+            currentPosition.x = -200f;  // Set the X position to -290
+            pauseMenuRect.anchoredPosition = currentPosition;
+        }
+
+        // Enable the pauseMenu buttons, likely for showing the end game options
         pauseMenuButtons.SetActive(true);
     }
+
 
     public void ToggleSwipeText(bool isButtonControl)
     {

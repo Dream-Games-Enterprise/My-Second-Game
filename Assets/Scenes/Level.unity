@@ -580,6 +580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseButton: {fileID: 757223597}
+  pauseMenu: {fileID: 1622706091}
   pauseAndResume: {fileID: 1127402160}
   pauseIcon: {fileID: 21300000, guid: 7d7108180df9b9c4d8fbb229c1cb144a, type: 3}
   resumeIcon: {fileID: 21300000, guid: 4971cc11a1bb10449a77456aa796fa39, type: 3}
@@ -6273,9 +6274,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 38187504}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -200, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 200, y: 0}
   m_SizeDelta: {x: 141.021, y: 51}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &908654685
@@ -6822,9 +6823,9 @@ RectTransform:
   - {fileID: 757223596}
   m_Father: {fileID: 38187504}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 125, y: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -125, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1127402160
@@ -7759,14 +7760,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 359693199}
   - {fileID: 2136608459}
+  - {fileID: 359693199}
   m_Father: {fileID: 38187504}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 290, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -375, y: 0}
+  m_SizeDelta: {x: 265, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1622706093
 MonoBehaviour:
@@ -7786,7 +7787,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 64.6
+  m_Spacing: 65
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
