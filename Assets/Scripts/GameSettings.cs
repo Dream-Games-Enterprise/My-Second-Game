@@ -131,3 +131,5 @@ public class GameSettings : MonoBehaviour
     }
 }
 //this is nothing down here bru
+
+//why is it reverting to the old one bruh
