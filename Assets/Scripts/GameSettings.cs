@@ -25,7 +25,7 @@ public class GameSettings : MonoBehaviour
     int speedInt;
     bool obstacles;
 
-    enum InputType { Swipe, Buttons }
+    enum InputType { Swipe, Buttons, Joystick }  // Add Joystick input type
     InputType currentInputType;
 
     void Start()
@@ -102,18 +102,32 @@ public class GameSettings : MonoBehaviour
 
     void ToggleInputType()
     {
-        currentInputType = currentInputType == InputType.Swipe ? InputType.Buttons : InputType.Swipe;
+        if (currentInputType == InputType.Swipe)
+            currentInputType = InputType.Buttons;
+        else if (currentInputType == InputType.Buttons)
+            currentInputType = InputType.Joystick;
+        else
+            currentInputType = InputType.Swipe;
 
         PlayerPrefs.SetInt("inputType", (int)currentInputType);
-
         UpdateInputTypeText();
     }
 
     void UpdateInputTypeText()
     {
-        inputTypeText.text = "INPUT TYPE\n" + (currentInputType == InputType.Swipe ? "SWIPING" : "BUTTONS");
+        switch (currentInputType)
+        {
+            case InputType.Swipe:
+                inputTypeText.text = "INPUT TYPE\nSWIPING";
+                break;
+            case InputType.Buttons:
+                inputTypeText.text = "INPUT TYPE\nBUTTONS";
+                break;
+            case InputType.Joystick:
+                inputTypeText.text = "INPUT TYPE\nJOYSTICK";
+                break;
+        }
     }
-
     // New ToggleSettings function with Lerp for position
     public void ToggleSettings()
     {
