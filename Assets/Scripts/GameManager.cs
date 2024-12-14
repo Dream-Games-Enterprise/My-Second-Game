@@ -93,6 +93,11 @@ namespace RD
         public UnityEvent onGameOver;
         public UnityEvent firstInput;
 
+        public enum InputType { Swipe, Buttons, Joystick }  // Define enum here
+
+        InputType currentInputType;  // Declare currentInputType
+
+
         Vector2 touchStartPos;
         Vector2 touchEndPos;
         float minSwipeDistance = 50f;
@@ -623,14 +628,21 @@ namespace RD
 
         #region INPUT
 
-        void ToggleInputType(bool useButtons)
+        void ToggleInputType(bool useJoystick)
         {
-            isButtonControl = useButtons;
-            buttonControl.SetActive(useButtons);
+            // Set the current input type based on the joystick flag
+            currentInputType = useJoystick ? InputType.Joystick : (isButtonControl ? InputType.Buttons : InputType.Swipe);
 
-            PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
+            // Toggle visibility of the button control and input panel based on the input type
+            buttonControl.SetActive(currentInputType != InputType.Joystick);  // Hide button control if joystick is active
+            inputPanel.SetActive(currentInputType != InputType.Joystick);  // Hide input panel if joystick is active
+
+            // Save the input type preference
+            PlayerPrefs.SetInt("inputType", (int)currentInputType);
             PlayerPrefs.Save();
         }
+
+
 
         void OnArrowButtonPressed(Direction direction)
         {
@@ -709,11 +721,34 @@ namespace RD
 
         void GetInput()
         {
-            up = Input.GetButtonDown("Up");
-            down = Input.GetButtonDown("Down");
-            left = Input.GetButtonDown("Left");
-            right = Input.GetButtonDown("Right");
+            if (currentInputType == InputType.Buttons)
+            {
+                up = Input.GetButtonDown("Up");
+                down = Input.GetButtonDown("Down");
+                left = Input.GetButtonDown("Left");
+                right = Input.GetButtonDown("Right");
+            }
+            else if (currentInputType == InputType.Joystick)
+            {
+                float horizontal = Input.GetAxis("Horizontal");
+                float vertical = Input.GetAxis("Vertical");
+
+                if (vertical > 0.5f && !isOppositeDir(Direction.up))
+                    OnArrowButtonPressed(Direction.up);
+                else if (vertical < -0.5f && !isOppositeDir(Direction.down))
+                    OnArrowButtonPressed(Direction.down);
+
+                if (horizontal > 0.5f && !isOppositeDir(Direction.right))
+                    OnArrowButtonPressed(Direction.right);
+                else if (horizontal < -0.5f && !isOppositeDir(Direction.left))
+                    OnArrowButtonPressed(Direction.left);
+            }
+            else
+            {
+                HandleTouchInput();  // Handle swipe input as before
+            }
         }
+
 
         #endregion
 
@@ -759,6 +794,7 @@ namespace RD
             // Otherwise, update targetDirection
             targetDirection = d;
         }
+
 
         float GetRotationForDirection(Direction direction)
         {
