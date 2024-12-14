@@ -114,15 +114,11 @@ public class GameSettings : MonoBehaviour
         inputTypeText.text = "INPUT TYPE\n" + (currentInputType == InputType.Swipe ? "SWIPING" : "BUTTONS");
     }
 
-    // New ToggleSettings function with Lerp for position
     public void ToggleSettings()
     {
-        Debug.Log("BEING CLICKED");
-
         settingsPanel.SetActive(true);
 
         isSettingsActive = !isSettingsActive;
-
     }
 
     public void CloseSettings()
