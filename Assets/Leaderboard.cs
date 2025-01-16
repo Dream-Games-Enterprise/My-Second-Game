@@ -9,6 +9,7 @@ public class Leaderboard : MonoBehaviour
 {
     [SerializeField] GameObject leaderboardPanel;
     [SerializeField] GameObject bottomPanel;
+    [SerializeField] TMP_Text personalBest;
 
     void Start()
     {
@@ -19,5 +20,8 @@ public class Leaderboard : MonoBehaviour
     {
         bottomPanel.SetActive(!bottomPanel.activeSelf);
         leaderboardPanel.SetActive(!leaderboardPanel.activeSelf);
+        personalBest.text = "HIGH SCORE\n" + PlayerPrefs.GetInt("highScore");
     }
+
+
 }

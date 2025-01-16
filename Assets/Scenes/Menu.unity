@@ -9404,6 +9404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leaderboardPanel: {fileID: 325521113}
   bottomPanel: {fileID: 533785205}
+  personalBest: {fileID: 1842371643}
 --- !u!4 &2028437652
 Transform:
   m_ObjectHideFlags: 0

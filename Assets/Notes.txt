@@ -10,14 +10,15 @@ CORE
 Ensure colours of PLAYER, TAIL, FOOD and OBSTACLES
 Add particle effects for when food is picked up.
 A fading swiping effect for where player inputs
-
-WIDGET
-Save best score
+Personal widget
+Leaderboard
+Map colours
 If hgigher player speed then +1 to each map size camera size so easier to see upcoming obstacles
 
 
 BUG
 Player spawns in obstacle, or obstacle spawns on player bug
+Obstacles spawning next to each other fix
 player can't die to obstacle with no tail - fix this
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
 food spawning in tail - Fixed? 
