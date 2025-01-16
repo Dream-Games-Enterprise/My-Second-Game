@@ -14,9 +14,10 @@ Personal widget
 Leaderboard
 Map colours
 If hgigher player speed then +1 to each map size camera size so easier to see upcoming obstacles
-
+Camera size to zoom out/increase/decrease when player gets bigger
 
 BUG
+
 Player spawns in obstacle, or obstacle spawns on player bug
 Obstacles spawning next to each other fix
 player can't die to obstacle with no tail - fix this
