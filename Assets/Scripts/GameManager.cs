@@ -580,35 +580,39 @@ namespace RD
             }
         }
 
+        bool IsEdge(Node node)
+        {
+            return node.x == 0 || node.y == 0 || node.x == maxWidth - 1 || node.y == maxHeight - 1;
+        }
+
+        bool CanPlaceObstacle(Node node)
+        {
+            if (IsEdge(node))
+            {
+                // Check if placing an obstacle here would block all paths
+                return !IsDeadEnd(node);
+            }
+            return true;
+        }
+
         void CreateObstacles()
         {
             obstacleParent = new GameObject("Obstacles");
 
-            // Calculate 5% of the map area
             int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
-            List<Node> potentialNodes = new List<Node>(availableNodes); // Copy available nodes for obstacle placement
+            List<Node> potentialNodes = new List<Node>(availableNodes);
 
             while (obstacleCount > 0 && potentialNodes.Count > 0)
             {
-                // Pick a random node
                 int randomIndex = Random.Range(0, potentialNodes.Count);
                 Node candidateNode = potentialNodes[randomIndex];
 
-                // Temporarily add it as an obstacle to check if it causes a dead-end
-                obstacleNodes.Add(candidateNode);
-
-                if (CreatesDeadEnd(candidateNode))
+                if (CanPlaceObstacle(candidateNode))
                 {
-                    // If it creates a dead-end, remove it
-                    obstacleNodes.Remove(candidateNode);
-                }
-                else
-                {
-                    // Finalize the placement
+                    obstacleNodes.Add(candidateNode);
                     availableNodes.Remove(candidateNode);
                     obstacleCount--;
 
-                    // Create the obstacle game object
                     GameObject obstacleObj = new GameObject("Obstacle");
                     obstacleObj.transform.parent = obstacleParent.transform;
                     PlacePlayerObject(obstacleObj, candidateNode.worldPosition);
@@ -617,15 +621,30 @@ namespace RD
                     obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
                     obstacleRenderer.color = obstacleColor;
                     obstacleRenderer.sortingOrder = 1;
-
-                    // Scale the obstacle to 0.9f
                     obstacleObj.transform.localScale = Vector3.one * 0.9f;
                 }
 
-                // Remove this node from potential nodes to avoid duplicate checks
                 potentialNodes.Remove(candidateNode);
             }
         }
+
+        bool IsDeadEnd(Node node)
+        {
+            int x = node.x;
+            int y = node.y;
+
+            bool upBlocked = IsBlocked(x, y + 1);
+            bool downBlocked = IsBlocked(x, y - 1);
+            bool leftBlocked = IsBlocked(x - 1, y);
+            bool rightBlocked = IsBlocked(x + 1, y);
+
+            // At least two directions must remain unblocked
+            int blockedCount = (upBlocked ? 1 : 0) + (downBlocked ? 1 : 0) +
+                               (leftBlocked ? 1 : 0) + (rightBlocked ? 1 : 0);
+
+            return blockedCount >= 3; // Node is a dead-end if 3 or more sides are blocked
+        }
+
 
         bool CreatesDeadEnd(Node node)
         {
@@ -641,7 +660,7 @@ namespace RD
             return causesDeadEnd;
         }
 
-        bool IsDeadEnd(Node node)
+       /* bool IsDeadEnd(Node node)
         {
             int x = node.x;
             int y = node.y;
@@ -653,7 +672,7 @@ namespace RD
             bool rightBlocked = IsBlocked(x + 1, y);
 
             return upBlocked && downBlocked && leftBlocked && rightBlocked;
-        }
+        }*/
 
         bool IsBlocked(int x, int y)
         {
