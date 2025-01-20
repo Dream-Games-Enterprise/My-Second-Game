@@ -55,3 +55,15 @@ While the code is relatively self-explanatory, adding comments for complex logic
 Performance Optimization:
 
 Instead of repeatedly using tail.Exists and foodNodes.Contains, consider a HashSet<Node> for constant-time lookups.
+ 
+
+
+
+
+
+
+
+
+
+
+ oi - TRY THE CHATGPT CODE FOR THE EDGE CASE FOR DEADENDS WITH OBSTACLES
