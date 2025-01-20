@@ -618,12 +618,37 @@ namespace RD
             return CheckAllNodesForDeadEnds(tempObstacleNodes);
         }
 
-        bool CreatesDeadEnd(Node node)
+        bool CreatesDeadEnd(Node obstacleNode)
         {
-            var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
-            tempObstacleNodes.Add(node);
+            HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
+            tempObstacles.Add(obstacleNode);
 
-            return CheckAllNodesForDeadEnds(tempObstacleNodes);
+            Node startNode = playerNode;  
+            HashSet<Node> visitedNodes = new HashSet<Node>();
+            Queue<Node> queue = new Queue<Node>();
+            queue.Enqueue(startNode);
+            visitedNodes.Add(startNode);
+
+            while (queue.Count > 0)
+            {
+                Node currentNode = queue.Dequeue();
+
+                if (!tempObstacles.Contains(currentNode))
+                {
+                    return false;
+                }
+
+                foreach (Node neighbor in GetAdjacentNodes(currentNode))
+                {
+                    if (!visitedNodes.Contains(neighbor) && !tempObstacles.Contains(neighbor))
+                    {
+                        visitedNodes.Add(neighbor);
+                        queue.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            return true;
         }
 
         bool CheckAllNodesForDeadEnds(HashSet<Node> tempObstacles)
@@ -687,7 +712,7 @@ namespace RD
                 int randomIndex = Random.Range(0, potentialNodes.Count);
                 Node candidateNode = potentialNodes[randomIndex];
 
-                if (!CreatesDeadEnd(candidateNode))
+                if (!CreatesDeadEnd(candidateNode)) 
                 {
                     obstacleNodes.Add(candidateNode);
                     availableNodes.Remove(candidateNode);
@@ -706,6 +731,25 @@ namespace RD
 
                 potentialNodes.Remove(candidateNode);
             }
+        }
+
+        List<Node> GetAdjacentNodes(Node node)
+        {
+            List<Node> adjacentNodes = new List<Node>();
+
+            Node upNode = GetNode(node.x, node.y + 1);
+            if (upNode != null) adjacentNodes.Add(upNode);
+
+            Node downNode = GetNode(node.x, node.y - 1);
+            if (downNode != null) adjacentNodes.Add(downNode);
+
+            Node leftNode = GetNode(node.x - 1, node.y);
+            if (leftNode != null) adjacentNodes.Add(leftNode);
+
+            Node rightNode = GetNode(node.x + 1, node.y);
+            if (rightNode != null) adjacentNodes.Add(rightNode);
+
+            return adjacentNodes;
         }
 
         bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
@@ -886,7 +930,6 @@ namespace RD
         {
             if (curDirection == Direction.None)
             {
-                // Player is stationary until the first input
                 return;
             }
 
@@ -1069,12 +1112,12 @@ namespace RD
 
         Node GetNode(int x, int y)
         {
-            if (x < 0 || x > maxWidth - 1 || y < -0 || y > maxHeight - 1)
+            if (x < 0 || x >= maxWidth || y < 0 || y >= maxHeight)
             {
-                return null;
+                return null; // Out of bounds
             }
 
-            return grid[x, y];
+            return grid[x, y]; // Return the node from the grid
         }
 
         SpecialNode CreateTailNode(int x, int y)
