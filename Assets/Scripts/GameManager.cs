@@ -612,11 +612,9 @@ namespace RD
 
         bool CreatesDeadEndWithNeighbors(Node node)
         {
-            // Create a temporary list of obstacles
             var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
             tempObstacleNodes.Add(node);
 
-            // Check if placing the obstacle (and its neighbors) creates any dead ends
             return CheckAllNodesForDeadEnds(tempObstacleNodes);
         }
 
