@@ -592,8 +592,8 @@ namespace RD
                 // Temporarily place the obstacle
                 obstacleNodes.Add(candidateNode);
 
-                // Check if it creates a dead-end
-                if (CreatesDeadEnd(candidateNode))
+                // Check if placing this obstacle (and its neighbors) creates a dead-end
+                if (CreatesDeadEndWithNeighbors(candidateNode))
                 {
                     // Revert placement if it creates a dead-end
                     obstacleNodes.Remove(candidateNode);
@@ -610,6 +610,17 @@ namespace RD
             }
         }
 
+        bool CreatesDeadEndWithNeighbors(Node node)
+        {
+            // Create a temporary list of obstacles
+            var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
+            tempObstacleNodes.Add(node);
+
+            // Check if placing the obstacle (and its neighbors) creates any dead ends
+            return CheckAllNodesForDeadEnds(tempObstacleNodes);
+        }
+
+
         bool CreatesDeadEnd(Node node)
         {
             var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
@@ -620,28 +631,35 @@ namespace RD
 
         bool CheckAllNodesForDeadEnds(HashSet<Node> tempObstacles)
         {
+            // Check for dead-ends in all 8 cardinal directions (including diagonals)
             foreach (Node node in grid)
             {
-                if (!tempObstacles.Contains(node) && IsDeadEnd(node))
+                if (!tempObstacles.Contains(node) && IsDeadEnd(node, tempObstacles))
                 {
                     return true; // A dead-end exists
                 }
             }
-            return false; 
+            return false;
         }
 
-        bool IsDeadEnd(Node node)
+        bool IsDeadEnd(Node node, HashSet<Node> tempObstacles)
         {
             int x = node.x;
             int y = node.y;
 
-            // Check cardinal directions
-            bool upBlocked = IsBlocked(x, y + 1);
-            bool downBlocked = IsBlocked(x, y - 1);
-            bool leftBlocked = IsBlocked(x - 1, y);
-            bool rightBlocked = IsBlocked(x + 1, y);
+            // Check all 8 directions (cardinal + diagonal)
+            bool upBlocked = IsBlocked(x, y + 1, tempObstacles);
+            bool downBlocked = IsBlocked(x, y - 1, tempObstacles);
+            bool leftBlocked = IsBlocked(x - 1, y, tempObstacles);
+            bool rightBlocked = IsBlocked(x + 1, y, tempObstacles);
+            bool upLeftBlocked = IsBlocked(x - 1, y + 1, tempObstacles);
+            bool upRightBlocked = IsBlocked(x + 1, y + 1, tempObstacles);
+            bool downLeftBlocked = IsBlocked(x - 1, y - 1, tempObstacles);
+            bool downRightBlocked = IsBlocked(x + 1, y - 1, tempObstacles);
 
-            return upBlocked && downBlocked && leftBlocked && rightBlocked;
+            // A dead-end occurs when all 8 directions are blocked
+            return upBlocked && downBlocked && leftBlocked && rightBlocked &&
+                   upLeftBlocked && upRightBlocked && downLeftBlocked && downRightBlocked;
         }
 
 
@@ -694,14 +712,14 @@ namespace RD
             }
         }
 
-        bool IsBlocked(int x, int y)
+        bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
         {
             // Check grid boundaries
             if (x < 0 || y < 0 || x >= maxWidth || y >= maxHeight) return true;
 
-            // Check if the node is an obstacle or part of the snake
+            // Check if the node is an obstacle or part of the snake (using the temporary obstacles set)
             Node node = grid[x, y];
-            return obstacleNodes.Contains(node) || tail.Any(t => t.node == node);
+            return tempObstacles.Contains(node) || tail.Any(t => t.node == node);
         }
 
         void PlacePlayerObject(GameObject obj, Vector3 pos)
