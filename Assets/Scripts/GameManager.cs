@@ -612,7 +612,6 @@ namespace RD
 
         bool CreatesDeadEnd(Node node)
         {
-            // Use a temporary list for checking
             var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
             tempObstacleNodes.Add(node);
 
@@ -628,7 +627,7 @@ namespace RD
                     return true; // A dead-end exists
                 }
             }
-            return false; // No dead-ends found
+            return false; 
         }
 
         bool IsDeadEnd(Node node)
@@ -642,7 +641,6 @@ namespace RD
             bool leftBlocked = IsBlocked(x - 1, y);
             bool rightBlocked = IsBlocked(x + 1, y);
 
-            // A dead-end occurs when all four cardinal directions are blocked
             return upBlocked && downBlocked && leftBlocked && rightBlocked;
         }
 
