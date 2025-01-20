@@ -1,5 +1,6 @@
 EXTRA
 HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
+Have speed up on food pick up
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
 CUSTOMISAABLE OBSTACLE SPRITES
 moving obstacle nodes?
@@ -19,10 +20,14 @@ Camera size to zoom out/increase/decrease when player gets bigger
 BUG
 
 Player spawns in obstacle, or obstacle spawns on player bug
-Obstacles spawning next to each other fix
-player can't die to obstacle with no tail - fix this
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
 food spawning in tail - Fixed? 
+
+
+Update in Future If Played:
+
+- Fix obstacles creating dead ends, happens maybe 50% of map generations but can be more, can be less...
+
 
 AI Suggestions to gamemanager: Suggestions for Improvement
 Refactor Repeated Logic:
@@ -55,6 +60,3 @@ While the code is relatively self-explanatory, adding comments for complex logic
 Performance Optimization:
 
 Instead of repeatedly using tail.Exists and foodNodes.Contains, consider a HashSet<Node> for constant-time lookups.
- 
-
-
