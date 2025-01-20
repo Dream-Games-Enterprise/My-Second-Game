@@ -586,32 +586,85 @@ namespace RD
 
             // Calculate 5% of the map area
             int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
+            List<Node> potentialNodes = new List<Node>(availableNodes); // Copy available nodes for obstacle placement
 
-            for (int i = 0; i < obstacleCount; i++)
+            while (obstacleCount > 0 && potentialNodes.Count > 0)
             {
-                if (availableNodes.Count == 0) break;
+                // Pick a random node
+                int randomIndex = Random.Range(0, potentialNodes.Count);
+                Node candidateNode = potentialNodes[randomIndex];
 
-                int randomIndex = Random.Range(0, availableNodes.Count);
-                Node obstacleNode = availableNodes[randomIndex];
-                availableNodes.RemoveAt(randomIndex);
-                obstacleNodes.Add(obstacleNode);
+                // Temporarily add it as an obstacle to check if it causes a dead-end
+                obstacleNodes.Add(candidateNode);
 
-                GameObject obstacleObj = new GameObject("Obstacle");
-                obstacleObj.transform.parent = obstacleParent.transform;
-                PlacePlayerObject(obstacleObj, obstacleNode.worldPosition);
+                if (CreatesDeadEnd(candidateNode))
+                {
+                    // If it creates a dead-end, remove it
+                    obstacleNodes.Remove(candidateNode);
+                }
+                else
+                {
+                    // Finalize the placement
+                    availableNodes.Remove(candidateNode);
+                    obstacleCount--;
 
-                SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
+                    // Create the obstacle game object
+                    GameObject obstacleObj = new GameObject("Obstacle");
+                    obstacleObj.transform.parent = obstacleParent.transform;
+                    PlacePlayerObject(obstacleObj, candidateNode.worldPosition);
 
-                obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
+                    SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
+                    obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
+                    obstacleRenderer.color = obstacleColor;
+                    obstacleRenderer.sortingOrder = 1;
 
-                obstacleRenderer.color = obstacleColor;
+                    // Scale the obstacle to 0.9f
+                    obstacleObj.transform.localScale = Vector3.one * 0.9f;
+                }
 
-                obstacleRenderer.sortingOrder = 1;
-
-                // Scale the obstacle to 0.9f
-                obstacleObj.transform.localScale = Vector3.one * 0.9f;
+                // Remove this node from potential nodes to avoid duplicate checks
+                potentialNodes.Remove(candidateNode);
             }
         }
+
+        bool CreatesDeadEnd(Node node)
+        {
+            // Temporarily treat the node as an obstacle
+            obstacleNodes.Add(node);
+
+            // Check if adding this node creates a dead-end
+            bool causesDeadEnd = IsDeadEnd(node);
+
+            // Revert the temporary obstacle placement
+            obstacleNodes.Remove(node);
+
+            return causesDeadEnd;
+        }
+
+        bool IsDeadEnd(Node node)
+        {
+            int x = node.x;
+            int y = node.y;
+
+            // A node is a dead-end if all four neighboring nodes are blocked
+            bool upBlocked = IsBlocked(x, y + 1);
+            bool downBlocked = IsBlocked(x, y - 1);
+            bool leftBlocked = IsBlocked(x - 1, y);
+            bool rightBlocked = IsBlocked(x + 1, y);
+
+            return upBlocked && downBlocked && leftBlocked && rightBlocked;
+        }
+
+        bool IsBlocked(int x, int y)
+        {
+            // Check grid boundaries
+            if (x < 0 || y < 0 || x >= maxWidth || y >= maxHeight) return true;
+
+            // Check if the node is an obstacle or part of the snake
+            Node node = grid[x, y];
+            return obstacleNodes.Contains(node) || tail.Any(t => t.node == node);
+        }
+
 
         void PlacePlayerObject(GameObject obj, Vector3 pos)
         {
@@ -895,7 +948,7 @@ namespace RD
 
         #region CHECKS
 
-        bool IsDeadEnd(Node node)
+        /*bool IsDeadEnd(Node node)
         {
             int x = node.x;
             int y = node.y;
@@ -917,7 +970,7 @@ namespace RD
             if (tail.Exists(t => t.node == targetNode)) return true; // Blocked by tail
 
             return false; // Not blocked
-        }
+        }*/
 
         bool isOppositeDir(Direction d)
         {
