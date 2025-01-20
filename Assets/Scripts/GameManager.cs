@@ -660,20 +660,6 @@ namespace RD
             return causesDeadEnd;
         }
 
-       /* bool IsDeadEnd(Node node)
-        {
-            int x = node.x;
-            int y = node.y;
-
-            // A node is a dead-end if all four neighboring nodes are blocked
-            bool upBlocked = IsBlocked(x, y + 1);
-            bool downBlocked = IsBlocked(x, y - 1);
-            bool leftBlocked = IsBlocked(x - 1, y);
-            bool rightBlocked = IsBlocked(x + 1, y);
-
-            return upBlocked && downBlocked && leftBlocked && rightBlocked;
-        }*/
-
         bool IsBlocked(int x, int y)
         {
             // Check grid boundaries

@@ -58,12 +58,3 @@ Instead of repeatedly using tail.Exists and foodNodes.Contains, consider a HashS
  
 
 
-
-
-
-
-
-
-
-
- oi - TRY THE CHATGPT CODE FOR THE EDGE CASE FOR DEADENDS WITH OBSTACLES
