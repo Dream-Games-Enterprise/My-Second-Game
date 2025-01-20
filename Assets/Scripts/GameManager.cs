@@ -71,7 +71,7 @@ namespace RD
         GameObject playerObject;
         GameObject foodObject;
         GameObject tailParent;
-        GameObject obstacleParent;  
+        GameObject obstacleParent;
         Node playerNode;
         Node prevPlayerNode;
         Node foodNode;
@@ -114,8 +114,8 @@ namespace RD
 
             if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
             {
-                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;  
-                Debug.Log("Player skin sprite loaded: " + customPlayerSprite); 
+                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
+                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);
             }
             else
             {
@@ -349,8 +349,8 @@ namespace RD
 
             uiHandler.ResumeGame();
 
-            PlacePlayer();  
-            PlaceCamera(); 
+            PlacePlayer();
+            PlaceCamera();
             AdjustCameraSize();
 
             isGameOver = false;
@@ -580,6 +580,73 @@ namespace RD
             }
         }
 
+        void PlaceObstacles(int obstacleCount)
+        {
+            List<Node> potentialNodes = new List<Node>(availableNodes); // List of available nodes for obstacle placement
+
+            while (obstacleCount > 0 && potentialNodes.Count > 0)
+            {
+                // Pick a random node
+                Node candidateNode = potentialNodes[Random.Range(0, potentialNodes.Count)];
+
+                // Temporarily place the obstacle
+                obstacleNodes.Add(candidateNode);
+
+                // Check if it creates a dead-end
+                if (CreatesDeadEnd(candidateNode))
+                {
+                    // Revert placement if it creates a dead-end
+                    obstacleNodes.Remove(candidateNode);
+                }
+                else
+                {
+                    // Finalize placement
+                    availableNodes.Remove(candidateNode); // Remove from available nodes
+                    obstacleCount--;
+                }
+
+                // Remove this node from potential nodes to avoid duplicate checks
+                potentialNodes.Remove(candidateNode);
+            }
+        }
+
+        bool CreatesDeadEnd(Node node)
+        {
+            // Use a temporary list for checking
+            var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
+            tempObstacleNodes.Add(node);
+
+            return CheckAllNodesForDeadEnds(tempObstacleNodes);
+        }
+
+        bool CheckAllNodesForDeadEnds(HashSet<Node> tempObstacles)
+        {
+            foreach (Node node in grid)
+            {
+                if (!tempObstacles.Contains(node) && IsDeadEnd(node))
+                {
+                    return true; // A dead-end exists
+                }
+            }
+            return false; // No dead-ends found
+        }
+
+        bool IsDeadEnd(Node node)
+        {
+            int x = node.x;
+            int y = node.y;
+
+            // Check cardinal directions
+            bool upBlocked = IsBlocked(x, y + 1);
+            bool downBlocked = IsBlocked(x, y - 1);
+            bool leftBlocked = IsBlocked(x - 1, y);
+            bool rightBlocked = IsBlocked(x + 1, y);
+
+            // A dead-end occurs when all four cardinal directions are blocked
+            return upBlocked && downBlocked && leftBlocked && rightBlocked;
+        }
+
+
         bool IsEdge(Node node)
         {
             return node.x == 0 || node.y == 0 || node.x == maxWidth - 1 || node.y == maxHeight - 1;
@@ -589,64 +656,9 @@ namespace RD
         {
             if (IsEdge(node))
             {
-                // Prevent obstacles on edges if it blocks paths
                 return !CreatesDeadEnd(node);
             }
-
-            // Check if adding this obstacle creates a dead-end for any neighboring tile
-            foreach (var neighbor in GetNeighbors(node))
-            {
-                if (neighbor != null && !IsBlocked(neighbor.x, neighbor.y) && CreatesDeadEnd(neighbor))
-                {
-                    return false; // Adding this obstacle would create a dead-end
-                }
-            }
-
             return true;
-        }
-
-        List<Node> GetNeighbors(Node node)
-        {
-            var neighbors = new List<Node>();
-
-            // Only add neighbors within the grid bounds
-            if (node.y + 1 < maxHeight) neighbors.Add(GetNode(node.x, node.y + 1)); // Up
-            if (node.y - 1 >= 0) neighbors.Add(GetNode(node.x, node.y - 1));       // Down
-            if (node.x - 1 >= 0) neighbors.Add(GetNode(node.x - 1, node.y));       // Left
-            if (node.x + 1 < maxWidth) neighbors.Add(GetNode(node.x + 1, node.y)); // Right
-
-            return neighbors;
-        }
-
-
-        bool IsGridConnected()
-        {
-            // Find the starting node (any available node)
-            Node start = availableNodes.FirstOrDefault();
-            if (start == null) return false;
-
-            var visited = new HashSet<Node>();
-            var stack = new Stack<Node>();
-            stack.Push(start);
-
-            while (stack.Count > 0)
-            {
-                var current = stack.Pop();
-
-                if (visited.Contains(current)) continue;
-                visited.Add(current);
-
-                foreach (var neighbor in GetNeighbors(current))
-                {
-                    if (!IsBlocked(neighbor.x, neighbor.y) && !visited.Contains(neighbor))
-                    {
-                        stack.Push(neighbor);
-                    }
-                }
-            }
-
-            // Ensure all free nodes are reachable
-            return availableNodes.All(node => visited.Contains(node));
         }
 
         void CreateObstacles()
@@ -654,17 +666,16 @@ namespace RD
             obstacleParent = new GameObject("Obstacles");
 
             int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
-            List<Node> potentialNodes = new List<Node>(availableNodes);
-
-            // Remove edge nodes from potential obstacle nodes
-            potentialNodes = potentialNodes.Where(node => !IsEdge(node)).ToList();
+            List<Node> potentialNodes = availableNodes
+                .Where(node => !IsEdge(node)) // Exclude edge nodes
+                .ToList();
 
             while (obstacleCount > 0 && potentialNodes.Count > 0)
             {
                 int randomIndex = Random.Range(0, potentialNodes.Count);
                 Node candidateNode = potentialNodes[randomIndex];
 
-                if (CanPlaceObstacle(candidateNode))
+                if (!CreatesDeadEnd(candidateNode))
                 {
                     obstacleNodes.Add(candidateNode);
                     availableNodes.Remove(candidateNode);
@@ -679,58 +690,11 @@ namespace RD
                     obstacleRenderer.color = obstacleColor;
                     obstacleRenderer.sortingOrder = 1;
                     obstacleObj.transform.localScale = Vector3.one * 0.9f;
-
-                    // Ensure the grid remains connected after placing the obstacle
-                    if (!IsGridConnected())
-                    {
-                        // Revert the obstacle placement if it breaks connectivity
-                        obstacleNodes.Remove(candidateNode);
-                        availableNodes.Add(candidateNode);
-                        Destroy(obstacleObj);
-                        obstacleCount++;
-                    }
                 }
 
                 potentialNodes.Remove(candidateNode);
             }
         }
-
-
-
-        bool IsDeadEnd(Node node)
-        {
-            int x = node.x;
-            int y = node.y;
-
-            // Treat out-of-bounds as blocked
-            bool upBlocked = IsBlocked(x, y + 1) || y + 1 >= maxHeight;
-            bool downBlocked = IsBlocked(x, y - 1) || y - 1 < 0;
-            bool leftBlocked = IsBlocked(x - 1, y) || x - 1 < 0;
-            bool rightBlocked = IsBlocked(x + 1, y) || x + 1 >= maxWidth;
-
-            // A node is a dead-end if 3 or more sides are blocked
-            int blockedCount = (upBlocked ? 1 : 0) + (downBlocked ? 1 : 0) +
-                               (leftBlocked ? 1 : 0) + (rightBlocked ? 1 : 0);
-
-            return blockedCount >= 3;
-        }
-
-
-
-        bool CreatesDeadEnd(Node node)
-        {
-            // Temporarily treat the node as an obstacle
-            obstacleNodes.Add(node);
-
-            // Check if adding this node creates a dead-end
-            bool causesDeadEnd = IsDeadEnd(node);
-
-            // Revert the temporary obstacle placement
-            obstacleNodes.Remove(node);
-
-            return causesDeadEnd;
-        }
-
 
         bool IsBlocked(int x, int y)
         {
@@ -741,7 +705,6 @@ namespace RD
             Node node = grid[x, y];
             return obstacleNodes.Contains(node) || tail.Any(t => t.node == node);
         }
-
 
         void PlacePlayerObject(GameObject obj, Vector3 pos)
         {
@@ -1025,30 +988,6 @@ namespace RD
 
         #region CHECKS
 
-        /*bool IsDeadEnd(Node node)
-        {
-            int x = node.x;
-            int y = node.y;
-
-            bool upBlocked = IsBlocked(x, y + 1);
-            bool downBlocked = IsBlocked(x, y - 1);
-            bool leftBlocked = IsBlocked(x - 1, y);
-            bool rightBlocked = IsBlocked(x + 1, y);
-
-            return upBlocked && downBlocked && leftBlocked && rightBlocked;
-        }
-
-        bool IsBlocked(int x, int y)
-        {
-            Node targetNode = GetNode(x, y);
-
-            if (targetNode == null) return true; // Out of bounds
-            if (obstacleNodes.Contains(targetNode)) return true; // Blocked by obstacle
-            if (tail.Exists(t => t.node == targetNode)) return true; // Blocked by tail
-
-            return false; // Not blocked
-        }*/
-
         bool isOppositeDir(Direction d)
         {
             switch (d)
@@ -1110,8 +1049,8 @@ namespace RD
             isGameOver = true;
             Time.timeScale = 0.3f; // Slow down time to celebrate the win
 
-            scoreManager.ApplyEndMultipliers(); 
-            scoreManager.AddWinMultiplier    (); 
+            scoreManager.ApplyEndMultipliers();
+            scoreManager.AddWinMultiplier();
 
             gameOverUI.ActivateUI(true);
         }
