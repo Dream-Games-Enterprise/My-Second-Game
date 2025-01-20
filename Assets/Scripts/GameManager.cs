@@ -618,7 +618,6 @@ namespace RD
             return CheckAllNodesForDeadEnds(tempObstacleNodes);
         }
 
-
         bool CreatesDeadEnd(Node node)
         {
             var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
@@ -659,7 +658,6 @@ namespace RD
             return upBlocked && downBlocked && leftBlocked && rightBlocked &&
                    upLeftBlocked && upRightBlocked && downLeftBlocked && downRightBlocked;
         }
-
 
         bool IsEdge(Node node)
         {
