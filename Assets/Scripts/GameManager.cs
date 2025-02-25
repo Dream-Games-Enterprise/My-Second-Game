@@ -95,7 +95,7 @@ namespace RD
 
         Vector2 touchStartPos;
         Vector2 touchEndPos;
-        float minSwipeDistance = 50f;
+        float minSwipeDistance = 25f;
 
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
@@ -538,7 +538,6 @@ namespace RD
             GameObject foodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
 
-            // Use the custom food sprite or fallback to a default sprite/color
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
             foodRenderer.sortingOrder = 1;
 
@@ -890,22 +889,19 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            // If the player is stationary (curDirection is None), immediately start moving in the input direction
             if (curDirection == Direction.None)
             {
                 curDirection = d;
                 targetDirection = d;
-                return; // Exit early since we're now moving
+                return;
             }
 
-            // Prevent opposite direction input
             if (isOppositeDir(d))
             {
                 Debug.Log("Ignored input: Opposite direction");
                 return;
             }
 
-            // Otherwise, update targetDirection
             targetDirection = d;
         }
 
@@ -966,7 +962,6 @@ namespace RD
             }
             else if (targetNode == null)
             {
-                // If the player moves out of bounds (i.e., targetNode is null), game over.
                 onGameOver.Invoke();
             }
             else
