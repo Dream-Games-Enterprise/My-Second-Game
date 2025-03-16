@@ -110,8 +110,7 @@ namespace RD
 
         void Awake()
         {
-            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);  // Default to 0 if not found
-
+            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
             if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
             {
                 customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
@@ -121,7 +120,6 @@ namespace RD
             {
                 Debug.LogWarning("Invalid snake index. Using default sprite.");
             }
-
 
             int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
             if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
@@ -145,25 +143,25 @@ namespace RD
                 Debug.LogWarning("Invalid food index. Using default food sprite.");
             }
 
-            int colorIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
-            if (colorIndex >= 0 && colorIndex < customisationManager.snakeColours.Count)
+            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
             {
-                snakeColour = customisationManager.snakeColours[colorIndex];
-                Debug.Log("Snake colour loaded: " + snakeColour);
+                playerColour = customisationManager.snakeColours[playerColourIndex];
+                Debug.Log("Player color loaded: " + playerColour);
             }
             else
             {
-                Debug.LogWarning("Invalid colour index. Using default colour.");
+                Debug.LogWarning("Invalid player color index. Using default color.");
+                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);  // default to the standard off-white colour
             }
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
             isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
-
             Debug.Log("Input type is button control: " + isButtonControl);
 
-            ToggleInputType(isButtonControl); // Call to toggle swipeText visibility
+            ToggleInputType(isButtonControl);
         }
 
         void Start()
@@ -484,6 +482,7 @@ namespace RD
             SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
 
             playerRenderer.sprite = customPlayerSprite;
+            playerRenderer.color = playerColour;
 
             playerRenderer.sortingOrder = 1;
 
