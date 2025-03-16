@@ -145,6 +145,17 @@ namespace RD
                 Debug.LogWarning("Invalid food index. Using default food sprite.");
             }
 
+            int colorIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            if (colorIndex >= 0 && colorIndex < customisationManager.snakeColours.Count)
+            {
+                snakeColour = customisationManager.snakeColours[colorIndex];
+                Debug.Log("Snake colour loaded: " + snakeColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid colour index. Using default colour.");
+            }
+
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
