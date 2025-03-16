@@ -842,7 +842,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.98039216, g: 0.9764706, b: 0.9647059, a: 1}
+  m_Color: {r: 0.28773582, g: 1, b: 0.47773355, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1756,7 +1756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.98039216, g: 0.9764706, b: 0.9647059, a: 1}
+  m_Color: {r: 0.12549019, g: 0.27316114, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3998,7 +3998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.98039216, g: 0.9764706, b: 0.9647059, a: 1}
+  m_Color: {r: 1, g: 0.4764151, b: 0.97647285, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6657,7 +6657,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.98039216, g: 0.9764706, b: 0.9647059, a: 1}
+  m_Color: {r: 1, g: 0.66124034, b: 0.1745283, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12657,7 +12657,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.98039216, g: 0.9764706, b: 0.9647059, a: 1}
+  m_Color: {r: 0.9622642, g: 0.94578785, b: 0.29503384, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13994,7 +13994,7 @@ PrefabInstance:
       objectReference: {fileID: 1330795877}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: snakeColours.Array.size
-      value: 9
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: snakeColours.Array.data[2].a
@@ -14107,6 +14107,86 @@ PrefabInstance:
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: snakeColours.Array.data[8].r
       value: 0.92941177
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[9].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[9].b
+      value: 0.29411766
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[9].g
+      value: 0.94509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[9].r
+      value: 0.9607843
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[10].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[10].b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[10].g
+      value: 0.27450982
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[10].r
+      value: 0.1254902
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[11].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[11].b
+      value: 0.9764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[11].g
+      value: 0.4745098
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[11].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[12].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[12].b
+      value: 0.1764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[12].g
+      value: 0.6627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[12].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[13].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[13].b
+      value: 0.47843137
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[13].g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: snakeColours.Array.data[13].r
+      value: 0.28627452
       objectReference: {fileID: 0}
     - target: {fileID: 2329680655283942787, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: m_Name
