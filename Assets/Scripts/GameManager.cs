@@ -23,7 +23,7 @@ namespace RD
 
         public Color colour1;
         public Color colour2;
-        public Color foodColour = Color.red;
+        public Color foodColour;
         public Color playerColour;
         public Color snakeTailColour;
         public Color obstacleColor = Color.black;
@@ -144,6 +144,19 @@ namespace RD
                 Debug.LogWarning("Invalid food index. Using default food sprite.");
             }
 
+            FetchColours();
+
+            scoreManager = GetComponent<ScoreManager>();
+            gameOverUI = GetComponent<GameOverUI>();
+
+            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
+            Debug.Log("Input type is button control: " + isButtonControl);
+
+            ToggleInputType(isButtonControl);
+        }
+
+        void FetchColours()
+        {
             int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
             if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
             {
@@ -153,7 +166,7 @@ namespace RD
             else
             {
                 Debug.LogWarning("Invalid player color index. Using default color.");
-                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);  // default to the standard off-white colour
+                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
             }
 
             int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
@@ -165,17 +178,20 @@ namespace RD
             else
             {
                 Debug.LogWarning("Invalid tail color index. Using default color.");
-                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);  // default off-white
+                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
             }
 
-
-            scoreManager = GetComponent<ScoreManager>();
-            gameOverUI = GetComponent<GameOverUI>();
-
-            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
-            Debug.Log("Input type is button control: " + isButtonControl);
-
-            ToggleInputType(isButtonControl);
+            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
+            {
+                foodColour = customisationManager.snakeColours[foodColourIndex];
+                Debug.Log("Food color loaded: " + foodColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food color index. Using default color.");
+                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
         }
 
         void Start()
@@ -533,7 +549,11 @@ namespace RD
 
                 GameObject foodObject = new GameObject("Food");
                 SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
-                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
+
+                // Assign selected food sprite and color
+                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
+                foodRenderer.color = foodColour; //  Apply the saved food color 
+
                 foodRenderer.sortingOrder = 1;
 
                 PlacePlayerObject(foodObject, foodNode.worldPosition);
@@ -543,6 +563,7 @@ namespace RD
                 StartCoroutine(TweenFoodScale(foodObject));
             }
         }
+
 
         void CreateFood()
         {
@@ -562,7 +583,9 @@ namespace RD
             GameObject foodObject = new GameObject("Food");
             SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
 
-            foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(foodColour);
+            foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
+            foodRenderer.color = foodColour;
+
             foodRenderer.sortingOrder = 1;
 
             PlacePlayerObject(foodObject, foodNode.worldPosition);
@@ -572,6 +595,7 @@ namespace RD
 
             StartCoroutine(TweenFoodScale(foodObject));
         }
+
 
         void PlaceFood()
         {
@@ -1159,7 +1183,6 @@ namespace RD
 
             return s;
         }
-
 
         Sprite CreateSprite(Color targetColour)
         {
