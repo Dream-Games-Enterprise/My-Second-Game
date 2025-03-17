@@ -13,7 +13,7 @@ Leaderboard
 Map colours
 If hgigher player speed then +1 to each map size camera size so easier to see upcoming obstacles
 
-Have a leaderboard for most points held - just count the bank balance not with sprites and stuff have them toggle to opt in to leaderboard
+Have a leaderboard for most points held - just count the bank balance not with sprites and stuff have them toggle to opt in to leaderboard. so need high score for 1 match then total score ever achieved...
 
 
 BUG
@@ -33,33 +33,25 @@ Update in Future If Played:
 
 
 
-
-AI Suggestions to gamemanager: Suggestions for Improvement
 Refactor Repeated Logic:
 
 The MovePlayer() and MoveTail() methods share some logic that could be abstracted into smaller helper functions for better reusability and readability.
-Magic Numbers:
 
-Replace hardcoded values (e.g., minSwipeDistance, 0.6f, 0.7f) with constants or configurable fields to improve maintainability.
 Collision Detection:
 
 The collision checks (isTailNode(), isObstacleNode()) are functional, but consider combining them into a single method to streamline the logic.
+
 Touch Input Optimization:
 
 You reset touchStartPos after each swipe. This might result in smaller consecutive swipes being misinterpreted. Consider resetting it only at TouchPhase.Ended.
+
+
 Enhance Rotation Logic:
 
 Tail segment rotation (MoveTail()) calculates direction and rotation but might produce incorrect results for segments turning around corners. Using segment-to-segment direction comparison would enhance accuracy.
-Victory Condition:
 
-Add checks for when all food is consumed and the player wins the game.
-UI and Feedback:
 
 Consider adding haptic feedback or sound effects for swipes and collisions to improve player engagement.
-Edge Cases:
-
-Ensure edge cases like overlapping obstacles and food are handled during initialization.
-Code Comments and Documentation:
 
 Performance Optimization:
 Instead of repeatedly using tail.Exists and foodNodes.Contains, consider a HashSet<Node> for constant-time lookups.
