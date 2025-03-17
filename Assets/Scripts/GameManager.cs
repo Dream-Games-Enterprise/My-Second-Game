@@ -564,7 +564,6 @@ namespace RD
             }
         }
 
-
         void CreateFood()
         {
             List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
@@ -595,7 +594,6 @@ namespace RD
 
             StartCoroutine(TweenFoodScale(foodObject));
         }
-
 
         void PlaceFood()
         {
@@ -896,12 +894,15 @@ namespace RD
                             else if (swipeDirection.y < 0 && !isOppositeDir(Direction.down))
                                 OnArrowButtonPressed(Direction.down);
                         }
-
-                        touchStartPos = touchEndPos;
                     }
+                }
+                else if (touch.phase == TouchPhase.Ended)
+                {
+                    touchStartPos = Vector2.zero; // Reset only when touch ends
                 }
             }
         }
+
 
         void GetInput()
         {
