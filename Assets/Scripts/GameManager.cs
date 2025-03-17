@@ -25,6 +25,7 @@ namespace RD
         public Color colour2;
         public Color foodColour = Color.red;
         public Color playerColour;
+        public Color snakeTailColour;
         public Color obstacleColor = Color.black;
 
         Sprite playerSprite;
@@ -154,6 +155,19 @@ namespace RD
                 Debug.LogWarning("Invalid player color index. Using default color.");
                 playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);  // default to the standard off-white colour
             }
+
+            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
+            {
+                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
+                Debug.Log("Tail color loaded: " + snakeTailColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail color index. Using default color.");
+                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);  // default off-white
+            }
+
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
@@ -1137,10 +1151,15 @@ namespace RD
 
             // Assign the selected custom tail sprite
             r.sprite = customTailSprite != null ? customTailSprite : playerSprite;
+
+            // Apply the selected tail color
+            r.color = snakeTailColour;
+
             r.sortingOrder = 1;
 
             return s;
         }
+
 
         Sprite CreateSprite(Color targetColour)
         {

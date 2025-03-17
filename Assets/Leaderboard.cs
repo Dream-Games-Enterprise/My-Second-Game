@@ -22,6 +22,4 @@ public class Leaderboard : MonoBehaviour
         leaderboardPanel.SetActive(!leaderboardPanel.activeSelf);
         personalBest.text = "HIGH SCORE\n" + PlayerPrefs.GetInt("highScore");
     }
-
-
 }

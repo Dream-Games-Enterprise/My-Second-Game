@@ -51,6 +51,7 @@ public class CustomisationManager : MonoBehaviour
     int selectedFoodIndex = 0;
 
     Color snakeColour;
+    Color snakeTailColour;
     [SerializeField] public List<Color> snakeColours;
 
     int currency;
@@ -261,6 +262,24 @@ public class CustomisationManager : MonoBehaviour
             previewSnake.color = snakeColour;
 
             Debug.Log("Colour Selected: " + snakeColour);
+        }
+        else
+        {
+            Debug.LogWarning("Invalid colour index selected: " + index);
+        }
+    }
+
+    public void SelectTailColour(int index)
+    {
+        if (index >= 0 && index < snakeColours.Count)
+        {
+            snakeTailColour = snakeColours[index];
+            PlayerPrefs.SetInt("SelectedTailColourIndex", index);
+            PlayerPrefs.Save();
+
+            previewTail.color = snakeTailColour;
+
+            Debug.Log("Colour Selected: " + snakeTailColour);
         }
         else
         {
