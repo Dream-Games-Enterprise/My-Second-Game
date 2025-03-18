@@ -33,9 +33,7 @@ Update in Future If Played:
 
 
 
-Refactor Repeated Logic:
-
-The MovePlayer() and MoveTail() methods share some logic that could be abstracted into smaller helper functions for better reusability and readability.
+Refactor Repeated Logic: The MovePlayer() and MoveTail() methods share some logic that could be abstracted into smaller helper functions for better reusability and readability.
 
 Collision Detection:
 
@@ -53,5 +51,3 @@ Consider adding haptic feedback or sound effects for swipes and collisions to im
 
 Performance Optimization:
 Instead of repeatedly using tail.Exists and foodNodes.Contains, consider a HashSet<Node> for constant-time lookups.
-
-
