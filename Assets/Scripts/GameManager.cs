@@ -57,7 +57,7 @@ namespace RD
         }
 
         [SerializeField] GameObject buttonControl;
-        bool isButtonControl;
+        public bool isButtonControl; // Must be public to access from SwipeInput
 
         public float moveRate = 0.2f;
         float timer;
@@ -903,7 +903,7 @@ namespace RD
         }
 
         // Separate method for detecting swipes (used for both touch and mouse)
-        void DetectSwipe(Vector2 startPos, Vector2 endPos)
+        public void DetectSwipe(Vector2 startPos, Vector2 endPos)
         {
             Vector2 swipeDirection = endPos - startPos;
 
