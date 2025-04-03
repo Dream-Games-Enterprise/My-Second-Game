@@ -863,45 +863,72 @@ namespace RD
 
         void HandleTouchInput()
         {
-            if (!isButtonControl && Input.touchCount > 0)
+            if (!isButtonControl)
             {
-                Touch touch = Input.GetTouch(0);
-
-                if (touch.phase == TouchPhase.Began)
+                // Touch Input (Mobile)
+                if (Input.touchCount > 0)
                 {
-                    touchStartPos = touch.position;
-                }
-                else if (touch.phase == TouchPhase.Moved)
-                {
-                    touchEndPos = touch.position;
-                    Vector2 swipeDirection = touchEndPos - touchStartPos;
+                    Touch touch = Input.GetTouch(0);
 
-                    if (swipeDirection.magnitude >= minSwipeDistance)
+                    if (touch.phase == TouchPhase.Began)
                     {
-                        swipeDirection.Normalize();
-
-                        if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
-                        {
-                            if (swipeDirection.x > 0 && !isOppositeDir(Direction.right))
-                                OnArrowButtonPressed(Direction.right);
-                            else if (swipeDirection.x < 0 && !isOppositeDir(Direction.left))
-                                OnArrowButtonPressed(Direction.left);
-                        }
-                        else
-                        {
-                            if (swipeDirection.y > 0 && !isOppositeDir(Direction.up))
-                                OnArrowButtonPressed(Direction.up);
-                            else if (swipeDirection.y < 0 && !isOppositeDir(Direction.down))
-                                OnArrowButtonPressed(Direction.down);
-                        }
+                        touchStartPos = touch.position;
+                    }
+                    else if (touch.phase == TouchPhase.Moved)
+                    {
+                        touchEndPos = touch.position;
+                        DetectSwipe(touchStartPos, touchEndPos);
+                    }
+                    else if (touch.phase == TouchPhase.Ended)
+                    {
+                        touchStartPos = Vector2.zero; // Reset only when touch ends
                     }
                 }
-                else if (touch.phase == TouchPhase.Ended)
+
+                // Mouse Input (PC Testing)
+                if (Input.GetMouseButtonDown(0)) // Left mouse button pressed
                 {
-                    touchStartPos = Vector2.zero; // Reset only when touch ends
+                    touchStartPos = Input.mousePosition;
+                }
+                else if (Input.GetMouseButton(0)) // Mouse is being dragged
+                {
+                    touchEndPos = Input.mousePosition;
+                    DetectSwipe(touchStartPos, touchEndPos);
+                }
+                else if (Input.GetMouseButtonUp(0)) // Left mouse button released
+                {
+                    touchStartPos = Vector2.zero; // Reset after release
                 }
             }
         }
+
+        // Separate method for detecting swipes (used for both touch and mouse)
+        void DetectSwipe(Vector2 startPos, Vector2 endPos)
+        {
+            Vector2 swipeDirection = endPos - startPos;
+
+            if (swipeDirection.magnitude >= minSwipeDistance)
+            {
+                swipeDirection.Normalize();
+
+                if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+                {
+                    if (swipeDirection.x > 0 && !isOppositeDir(Direction.right))
+                        OnArrowButtonPressed(Direction.right);
+                    else if (swipeDirection.x < 0 && !isOppositeDir(Direction.left))
+                        OnArrowButtonPressed(Direction.left);
+                }
+                else
+                {
+                    if (swipeDirection.y > 0 && !isOppositeDir(Direction.up))
+                        OnArrowButtonPressed(Direction.up);
+                    else if (swipeDirection.y < 0 && !isOppositeDir(Direction.down))
+                        OnArrowButtonPressed(Direction.down);
+                }
+            }
+        }
+
+
 
         void GetInput()
         {
