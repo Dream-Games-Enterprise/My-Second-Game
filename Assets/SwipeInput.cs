@@ -1,109 +1,84 @@
 ﻿using System.Collections;
 using UnityEngine;
-using RD;
 
 public class SwipeInput : MonoBehaviour
 {
-    public LineRenderer swipeLine; // Assign in Unity Inspector
-    public float fadeDuration = 0.5f; // Time for fade-out
+    public LineRenderer swipeLine;
+    public float fadeDuration = 0.5f;
 
     private Vector2 touchStartPos;
-    private Vector2 touchEndPos;
     private Coroutine fadeCoroutine;
-    GameManager gameManager; // Reference to GameManager
-
-    void Start()
-    {
-        // Get reference to GameManager
-        gameManager = FindObjectOfType<GameManager>();
-        if (gameManager == null)
-        {
-            Debug.LogError("GameManager not found!");
-        }
-    }
 
     void Update()
     {
-        HandleTouchInput();
+        HandleInput();
     }
 
-    void HandleTouchInput()
+    void HandleInput()
     {
-        Debug.Log("swipe input is handling touch input");
+        bool isTouching = false;
+        Vector2 currentPos = Vector2.zero;
 
-        if (!gameManager.isButtonControl)
+        if (Input.touchCount > 0)
         {
-            // Check if touch is detected at all
-            Debug.Log("Touch count: " + Input.touchCount);
+            Touch touch = Input.GetTouch(0);
+            currentPos = touch.position;
 
-            // Touch Input (Mobile)
-            if (Input.touchCount > 0)
+            switch (touch.phase)
             {
-                Touch touch = Input.GetTouch(0);
-                Debug.Log("Touch detected with phase: " + touch.phase);
-
-                if (touch.phase == TouchPhase.Began)
-                {
-                    Debug.Log("Touch Began - Calling StartSwipeEffect()");
-                    touchStartPos = touch.position;
+                case TouchPhase.Began:
+                    touchStartPos = currentPos;
                     StartSwipeEffect(touchStartPos);
-                }
-                else if (touch.phase == TouchPhase.Moved)
-                {
-                    Debug.Log("Touch Moved - Calling UpdateSwipeEffect()");
-                    touchEndPos = touch.position;
-                    gameManager.DetectSwipe(touchStartPos, touchEndPos);
-                    UpdateSwipeEffect(touchEndPos);
-                }
-                else if (touch.phase == TouchPhase.Ended)
-                {
-                    Debug.Log("Touch Ended - Calling EndSwipeEffect()");
-                    touchStartPos = Vector2.zero;
+                    break;
+                case TouchPhase.Moved:
+                case TouchPhase.Stationary:
+                    UpdateSwipeEffect(currentPos);
+                    break;
+                case TouchPhase.Ended:
+                case TouchPhase.Canceled:
                     EndSwipeEffect();
-                }
+                    break;
             }
 
-            // Mouse Input (PC Testing)
-            if (Input.GetMouseButtonDown(0)) // Left mouse button pressed
+            isTouching = true;
+        }
+
+        if (!isTouching)
+        {
+            currentPos = Input.mousePosition;
+
+            if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("Mouse Button Down - Calling StartSwipeEffect()");
-                touchStartPos = Input.mousePosition;
+                touchStartPos = currentPos;
                 StartSwipeEffect(touchStartPos);
             }
-            else if (Input.GetMouseButton(0)) // Mouse is being dragged
+            else if (Input.GetMouseButton(0))
             {
-                Debug.Log("Mouse Button Held - Calling UpdateSwipeEffect()");
-                touchEndPos = Input.mousePosition;
-                gameManager.DetectSwipe(touchStartPos, touchEndPos);
-                UpdateSwipeEffect(touchEndPos);
+                UpdateSwipeEffect(currentPos);
             }
-            else if (Input.GetMouseButtonUp(0)) // Left mouse button released
+            else if (Input.GetMouseButtonUp(0))
             {
-                Debug.Log("Mouse Button Up - Calling EndSwipeEffect()");
-                touchStartPos = Vector2.zero;
                 EndSwipeEffect();
             }
         }
     }
 
-
     void StartSwipeEffect(Vector2 startPos)
     {
-        Debug.Log("Should be swiping broski");
         if (fadeCoroutine != null)
             StopCoroutine(fadeCoroutine);
 
         swipeLine.gameObject.SetActive(true);
         swipeLine.positionCount = 2;
-        swipeLine.SetPosition(0, Camera.main.ScreenToWorldPoint(new Vector3(startPos.x, startPos.y, 10)));
-        swipeLine.SetPosition(1, swipeLine.GetPosition(0));
-        swipeLine.startColor = swipeLine.endColor = new Color(1, 1, 1, 1); // White, full alpha
+        Vector3 worldPos = ScreenToWorld(startPos);
+        swipeLine.SetPosition(0, worldPos);
+        swipeLine.SetPosition(1, worldPos);
+        SetLineAlpha(1f);
     }
 
     void UpdateSwipeEffect(Vector2 endPos)
     {
-        Debug.Log("Should be updating line");
-        swipeLine.SetPosition(1, Camera.main.ScreenToWorldPoint(new Vector3(endPos.x, endPos.y, 10)));
+        swipeLine.SetPosition(1, ScreenToWorld(endPos));
     }
 
     void EndSwipeEffect()
@@ -113,15 +88,29 @@ public class SwipeInput : MonoBehaviour
 
     IEnumerator FadeSwipeEffect()
     {
-        float timer = 0;
+        float timer = 0f;
         while (timer < fadeDuration)
         {
-            float alpha = Mathf.Lerp(1, 0, timer / fadeDuration);
-            swipeLine.startColor = swipeLine.endColor = new Color(1, 1, 1, alpha);
+            float alpha = Mathf.Lerp(1f, 0f, timer / fadeDuration);
+            SetLineAlpha(alpha);
             timer += Time.deltaTime;
             yield return null;
         }
-
         swipeLine.gameObject.SetActive(false);
+    }
+
+    void SetLineAlpha(float alpha)
+    {
+        Color start = swipeLine.startColor;
+        Color end = swipeLine.endColor;
+        start.a = end.a = alpha;
+        swipeLine.startColor = start;
+        swipeLine.endColor = end;
+    }
+
+    Vector3 ScreenToWorld(Vector2 screenPos)
+    {
+        Vector3 screenToWorld = new Vector3(screenPos.x, screenPos.y, 10f); // z = distance from camera
+        return Camera.main.ScreenToWorldPoint(screenToWorld);
     }
 }

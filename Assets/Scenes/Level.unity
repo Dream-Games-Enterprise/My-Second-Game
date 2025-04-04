@@ -6586,7 +6586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 226f85627c8888449afbe9bbb8b4cace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swipeLine: {fileID: 0}
+  swipeLine: {fileID: 1043875783}
   fadeDuration: 0.5
 --- !u!4 &1043875785
 Transform:
