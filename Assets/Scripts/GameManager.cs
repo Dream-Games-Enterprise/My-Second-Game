@@ -1122,13 +1122,12 @@ namespace RD
                     prevNode = previousSegmentNode;
                 }
 
-                // Smoothly move the tail segment
-                StartCoroutine(SmoothMove(tailSegment.obj, tailSegment.obj.transform.position, tailSegment.node.worldPosition));
-
-                // Update rotation for tail segment based on current direction
+                // Calculate rotation for the tail segment based on its new position
+                Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
 
                 availableNodes.Remove(tailSegment.node);
+                PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
             }
         }
 
