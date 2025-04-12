@@ -627,30 +627,24 @@ namespace RD
 
         void PlaceObstacles(int obstacleCount)
         {
-            List<Node> potentialNodes = new List<Node>(availableNodes); // List of available nodes for obstacle placement
+            List<Node> potentialNodes = new List<Node>(availableNodes); 
 
             while (obstacleCount > 0 && potentialNodes.Count > 0)
             {
-                // Pick a random node
                 Node candidateNode = potentialNodes[Random.Range(0, potentialNodes.Count)];
 
-                // Temporarily place the obstacle
                 obstacleNodes.Add(candidateNode);
 
-                // Check if placing this obstacle (and its neighbors) creates a dead-end
                 if (CreatesDeadEndWithNeighbors(candidateNode))
                 {
-                    // Revert placement if it creates a dead-end
                     obstacleNodes.Remove(candidateNode);
                 }
                 else
                 {
-                    // Finalize placement
-                    availableNodes.Remove(candidateNode); // Remove from available nodes
+                    availableNodes.Remove(candidateNode); 
                     obstacleCount--;
                 }
 
-                // Remove this node from potential nodes to avoid duplicate checks
                 potentialNodes.Remove(candidateNode);
             }
         }

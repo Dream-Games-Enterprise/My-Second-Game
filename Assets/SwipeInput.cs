@@ -6,8 +6,8 @@ public class SwipeInput : MonoBehaviour
     public LineRenderer swipeLine;
     public float fadeDuration = 0.5f;
 
-    private Vector2 touchStartPos;
-    private Coroutine fadeCoroutine;
+    Vector2 touchStartPos;
+    Coroutine fadeCoroutine;
 
     void Update()
     {
