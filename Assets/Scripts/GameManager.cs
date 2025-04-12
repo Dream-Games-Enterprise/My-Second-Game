@@ -109,6 +109,10 @@ namespace RD
         int playerTailIndex;
         int foodIndex;
 
+        bool isMoving = false;
+        float moveDuration = 0.1f; // Movement time in seconds, can be based on speed level too
+
+
         void Awake()
         {
             int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
@@ -993,7 +997,7 @@ namespace RD
 
         void MovePlayer()
         {
-            if (curDirection == Direction.None)
+            if (curDirection == Direction.None || isMoving)
             {
                 return;
             }
@@ -1027,7 +1031,10 @@ namespace RD
                 {
                     return;
                 }
-                else { onGameOver.Invoke(); }
+                else
+                {
+                    onGameOver.Invoke();
+                }
             }
             else if (targetNode == null)
             {
@@ -1067,10 +1074,31 @@ namespace RD
                 MoveTail();
 
                 playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
-                PlacePlayerObject(playerObject, targetNode.worldPosition);
+                StartCoroutine(SmoothMove(playerObject, playerNode.worldPosition, targetNode.worldPosition));
+
                 playerNode = targetNode;
                 availableNodes.Remove(playerNode);
             }
+        }
+
+        IEnumerator SmoothMove(GameObject obj, Vector3 startPos, Vector3 endPos)
+        {
+            isMoving = true;
+
+            startPos += Vector3.one * 0.5f;
+            endPos += Vector3.one * 0.5f;
+
+            float elapsed = 0f;
+
+            while (elapsed < moveDuration)
+            {
+                obj.transform.position = Vector3.Lerp(startPos, endPos, elapsed / moveDuration);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            obj.transform.position = endPos;
+            isMoving = false;
         }
 
         void MoveTail()
@@ -1094,12 +1122,13 @@ namespace RD
                     prevNode = previousSegmentNode;
                 }
 
-                // Calculate rotation for the tail segment based on its new position
-                Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
+                // Smoothly move the tail segment
+                StartCoroutine(SmoothMove(tailSegment.obj, tailSegment.obj.transform.position, tailSegment.node.worldPosition));
+
+                // Update rotation for tail segment based on current direction
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
 
                 availableNodes.Remove(tailSegment.node);
-                PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
             }
         }
 
