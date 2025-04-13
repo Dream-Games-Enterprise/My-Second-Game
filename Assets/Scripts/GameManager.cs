@@ -85,6 +85,9 @@ namespace RD
 
         #endregion
 
+        Queue<Direction> inputBuffer = new Queue<Direction>();
+
+
         #region MAP
         GameObject mapObject;
         SpriteRenderer mapRenderer;
@@ -185,9 +188,23 @@ namespace RD
                 if (timer >= moveRate)
                 {
                     timer = 0f;
+
+                    // Only allow one valid input per move
+                    while (inputBuffer.Count > 0)
+                    {
+                        Direction nextDir = inputBuffer.Dequeue();
+
+                        if (!isOppositeDir(nextDir))
+                        {
+                            targetDirection = nextDir;
+                            break;
+                        }
+                    }
+
                     curDirection = targetDirection;
                     MovePlayer();
                 }
+
             }
         }
 
@@ -344,13 +361,9 @@ namespace RD
                 return;
             }
 
-            if (isOppositeDir(d))
-            {
-                Debug.Log("Ignored input: Opposite direction");
-                return;
-            }
-
-            targetDirection = d;
+            // Add direction to the buffer regardless of validity;
+            // we'll check validity when consuming it during movement
+            inputBuffer.Enqueue(d);
         }
 
         float GetRotationForDirection(Direction direction)
