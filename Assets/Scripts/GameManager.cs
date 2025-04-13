@@ -112,7 +112,6 @@ namespace RD
         bool isMoving = false;
         float moveDuration = 0.1f; // Movement time in seconds, can be based on speed level too
 
-
         #region CAMERA
 
         void PlaceCamera()
@@ -373,7 +372,6 @@ namespace RD
                 }
             }
         }
-
 
         #region SETUP
 
@@ -650,42 +648,33 @@ namespace RD
             }
         }
 
-        bool TooManyAdjacentObstacles(Node node)
-        {
-            int adjacentObstacleCount = 0;
-
-            foreach (Node neighbor in GetAdjacentNodes(node))
-            {
-                if (obstacleNodes.Contains(neighbor))
-                {
-                    adjacentObstacleCount++;
-                }
-            }
-
-            // Allow 0 or 1 adjacent obstacles max, but avoid 2+ neighbors (which could form a C)
-            return adjacentObstacleCount > 1;
-        }
-
         bool IsEdge(Node node)
         {
             return node.x == 0 || node.y == 0 || node.x == maxWidth - 1 || node.y == maxHeight - 1;
         }
+
+        private static readonly (int dx, int dy)[] EightDirections = new (int, int)[]
+{
+    (-1, -1), (0, -1), (1, -1),
+    (-1,  0),          (1,  0),
+    (-1,  1), (0,  1), (1,  1)
+};
 
         void CreateObstacles()
         {
             obstacleParent = new GameObject("Obstacles");
 
             int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
-            List<Node> potentialNodes = availableNodes
-                .Where(node => !IsEdge(node)) // Exclude edge nodes
-                .ToList();
+            // Exclude edge nodes from potential placement
+            List<Node> potentialNodes = availableNodes.Where(node => !IsEdge(node)).ToList();
 
             while (obstacleCount > 0 && potentialNodes.Count > 0)
             {
                 int randomIndex = Random.Range(0, potentialNodes.Count);
                 Node candidateNode = potentialNodes[randomIndex];
 
-                // NEW: Add the extra check here!
+                // Only place the obstacle if it does not create a dead end
+                if (!CreatesDeadEnd(candidateNode))
                 {
                     obstacleNodes.Add(candidateNode);
                     availableNodes.Remove(candidateNode);
@@ -706,6 +695,43 @@ namespace RD
             }
         }
 
+        bool CreatesDeadEnd(Node candidateNode)
+        {
+            // Create a temporary set with existing obstacles plus the candidate
+            HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
+            tempObstacles.Add(candidateNode);
+
+            // Check each of the candidate's 8 neighbors
+            foreach (var (dx, dy) in EightDirections)
+            {
+                Node neighbor = GetNode(candidateNode.x + dx, candidateNode.y + dy);
+                if (neighbor == null)
+                    continue;  // Out-of-bound, skip
+
+                // Only check free nodes (those not already blocked or part of the snake)
+                if (!tempObstacles.Contains(neighbor) && !tail.Any(t => t.node == neighbor))
+                {
+                    int freeCount = 0;
+                    // For this neighbor, count how many of its adjacent cells remain free
+                    foreach (var (dx2, dy2) in EightDirections)
+                    {
+                        Node adjacent = GetNode(neighbor.x + dx2, neighbor.y + dy2);
+                        // Consider only valid nodes; out-of-bound cells are treated as blocked
+                        if (adjacent != null && !tempObstacles.Contains(adjacent) && !tail.Any(t => t.node == adjacent))
+                        {
+                            freeCount++;
+                        }
+                    }
+                    // If the neighbor would have fewer than 7 free adjacent cells, skip candidate
+                    if (freeCount < 7)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
         List<Node> GetAdjacentNodes(Node node)
         {
@@ -1134,10 +1160,10 @@ namespace RD
         {
             if (x < 0 || x >= maxWidth || y < 0 || y >= maxHeight)
             {
-                return null; // Out of bounds
+                return null; 
             }
 
-            return grid[x, y]; // Return the node from the grid
+            return grid[x, y];
         }
 
         SpecialNode CreateTailNode(int x, int y)
