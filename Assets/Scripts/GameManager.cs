@@ -310,7 +310,6 @@ namespace RD
             ToggleInputType(isButtonControl);
         }
 
-
         void Start()
         {
             LoadSpeedSettings();
@@ -654,11 +653,11 @@ namespace RD
         }
 
         private static readonly (int dx, int dy)[] EightDirections = new (int, int)[]
-{
-    (-1, -1), (0, -1), (1, -1),
-    (-1,  0),          (1,  0),
-    (-1,  1), (0,  1), (1,  1)
-};
+        {
+            (-1, -1), (0, -1), (1, -1),
+            (-1,  0),          (1,  0),
+            (-1,  1), (0,  1), (1,  1)
+        };
 
         void CreateObstacles()
         {
@@ -697,32 +696,29 @@ namespace RD
 
         bool CreatesDeadEnd(Node candidateNode)
         {
-            // Create a temporary set with existing obstacles plus the candidate
             HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
             tempObstacles.Add(candidateNode);
 
-            // Check each of the candidate's 8 neighbors
             foreach (var (dx, dy) in EightDirections)
             {
                 Node neighbor = GetNode(candidateNode.x + dx, candidateNode.y + dy);
                 if (neighbor == null)
-                    continue;  // Out-of-bound, skip
+                    continue;
 
-                // Only check free nodes (those not already blocked or part of the snake)
                 if (!tempObstacles.Contains(neighbor) && !tail.Any(t => t.node == neighbor))
                 {
                     int freeCount = 0;
-                    // For this neighbor, count how many of its adjacent cells remain free
+
                     foreach (var (dx2, dy2) in EightDirections)
                     {
                         Node adjacent = GetNode(neighbor.x + dx2, neighbor.y + dy2);
-                        // Consider only valid nodes; out-of-bound cells are treated as blocked
+
                         if (adjacent != null && !tempObstacles.Contains(adjacent) && !tail.Any(t => t.node == adjacent))
                         {
                             freeCount++;
                         }
                     }
-                    // If the neighbor would have fewer than 7 free adjacent cells, skip candidate
+
                     if (freeCount < 6)
                     {
                         return true;
@@ -731,25 +727,6 @@ namespace RD
             }
 
             return false;
-        }
-
-        List<Node> GetAdjacentNodes(Node node)
-        {
-            List<Node> adjacentNodes = new List<Node>();
-
-            Node upNode = GetNode(node.x, node.y + 1);
-            if (upNode != null) adjacentNodes.Add(upNode);
-
-            Node downNode = GetNode(node.x, node.y - 1);
-            if (downNode != null) adjacentNodes.Add(downNode);
-
-            Node leftNode = GetNode(node.x - 1, node.y);
-            if (leftNode != null) adjacentNodes.Add(leftNode);
-
-            Node rightNode = GetNode(node.x + 1, node.y);
-            if (rightNode != null) adjacentNodes.Add(rightNode);
-
-            return adjacentNodes;
         }
 
         bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
@@ -797,19 +774,20 @@ namespace RD
             switch (speed)
             {
                 case 1:
-                    return 0.3f;
+                    return 0.3f / 1.5f; // Now returns 0.2f
                 case 2:
-                    return 0.25f;
+                    return 0.25f / 1.5f; // Approximately 0.1667f
                 case 3:
-                    return 0.2f;
+                    return 0.2f / 1.5f; // Approximately 0.1333f
                 case 4:
-                    return 0.15f;
+                    return 0.15f / 1.5f; // 0.1f
                 case 5:
-                    return 0.1f;
+                    return 0.1f / 1.5f; // Approximately 0.0667f
                 default:
-                    return 0.2f;  // Default speed if no valid value is found
+                    return 0.2f / 1.5f;  // Default speed if no valid value is found
             }
         }
+
 
         public void ToggleInputButtonPressed()
         {

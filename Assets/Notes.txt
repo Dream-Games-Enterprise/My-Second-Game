@@ -18,10 +18,10 @@ Have a leaderboard for most points held - just count the bank balance not with s
 
 
 BUG
-
+Since smoothing movemenet player turning into obstacle seems weird, may need to check if issue of pausing/moment of stillness carries on
 Price resets when changing scenes even though already equipped - also removes currency again so needs fixing and loading at start to see which ones are unlocked and don't need to cost or have a number displaying
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
-food spawning in tail - Fixed? 
+food spawning in tail -  
 Player can swipe when paused and when unpause the player changes to the direction, exploit that needs fixing
 
 
@@ -48,8 +48,7 @@ Enhance Rotation Logic:
 
 Tail segment rotation (MoveTail()) calculates direction and rotation but might produce incorrect results for segments turning around corners. Using segment-to-segment direction comparison would enhance accuracy.
 
-
 Consider adding haptic feedback or sound effects for swipes and collisions to improve player engagement.
 
-Performance Optimization:
+Performance Optimisation:
 Instead of repeatedly using tail.Exists and foodNodes.Contains, consider a HashSet<Node> for constant-time lookups.
