@@ -71,7 +71,7 @@ namespace RD
         [SerializeField] GameObject buttonControl;
         public bool isButtonControl; // Must be public to access from SwipeInput
 
-        public float moveRate = 0.2f;
+        public float moveRate = 0.1f;
         float timer;
 
         Vector2 touchStartPos;
@@ -81,7 +81,7 @@ namespace RD
         public float smoothSpeed = 0.5f;
 
         bool isMoving = false;
-        float moveDuration = 0.1f;
+        float moveDuration = 0.09f;
 
         #endregion
 
@@ -107,7 +107,6 @@ namespace RD
         #endregion
 
         #region EVENTS
-
 
         public UnityEvent onStart;
         public UnityEvent onGameOver;
