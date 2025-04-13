@@ -90,7 +90,7 @@ namespace RD
         SpriteRenderer mapRenderer;
         public int maxHeight = 16;
         public int maxWidth = 16;
-        
+
         Node[,] grid;
         List<Node> availableNodes = new List<Node>();
         List<SpecialNode> tail = new List<SpecialNode>();
@@ -107,7 +107,6 @@ namespace RD
         #endregion
 
         #region EVENTS
-
 
         public UnityEvent onStart;
         public UnityEvent onGameOver;
@@ -257,23 +256,23 @@ namespace RD
                     }
                     else if (touch.phase == TouchPhase.Ended)
                     {
-                        touchStartPos = Vector2.zero; 
+                        touchStartPos = Vector2.zero;
                     }
                 }
 
                 #region MOUSE
-                if (Input.GetMouseButtonDown(0)) 
+                if (Input.GetMouseButtonDown(0))
                 {
                     touchStartPos = Input.mousePosition;
                 }
-                else if (Input.GetMouseButton(0)) 
+                else if (Input.GetMouseButton(0))
                 {
                     touchEndPos = Input.mousePosition;
                     DetectSwipe(touchStartPos, touchEndPos);
                 }
-                else if (Input.GetMouseButtonUp(0)) 
+                else if (Input.GetMouseButtonUp(0))
                 {
-                    touchStartPos = Vector2.zero; 
+                    touchStartPos = Vector2.zero;
                 }
                 #endregion
             }
@@ -958,7 +957,7 @@ namespace RD
         {
             if (x < 0 || x >= maxWidth || y < 0 || y >= maxHeight)
             {
-                return null; 
+                return null;
             }
 
             return grid[x, y];
@@ -1219,7 +1218,7 @@ namespace RD
             }
         }
 
-        void ApplyInputListeners() 
+        void ApplyInputListeners()
         {
             upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
@@ -1227,6 +1226,6 @@ namespace RD
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
         }
 
-        #endregion
+        #endregion 
     }
 }
