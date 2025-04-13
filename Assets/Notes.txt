@@ -5,6 +5,7 @@ CUSTOMISAABLE OBSTACLE SPRITES
 
 
 CORE
+Make faster player speeds since 5 feels slow since smoothing the movement
 Add particle effects for when food is picked up.
 A fading swiping effect for where player inputs
 Make turning and swiping practically instant

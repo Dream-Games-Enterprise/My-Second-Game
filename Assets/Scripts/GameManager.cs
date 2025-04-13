@@ -102,7 +102,7 @@ namespace RD
         List<Node> foodNodes = new List<Node>();
         bool isPaused = false;
 
-        public float smoothSpeed = 0.1f;
+        public float smoothSpeed = 0.5f;
         bool isCameraAdjusting = false;
 
         int playerSkinIndex;
@@ -112,153 +112,6 @@ namespace RD
         bool isMoving = false;
         float moveDuration = 0.1f; // Movement time in seconds, can be based on speed level too
 
-
-        void Awake()
-        {
-            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
-            {
-                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
-                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid snake index. Using default sprite.");
-            }
-
-            int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
-            if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
-            {
-                customTailSprite = customisationManager.tailSkins[tailSkinIndex].sprite;
-                Debug.Log("Tail skin sprite loaded: " + customTailSprite);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid tail index. Using default tail sprite.");
-            }
-
-            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-            if (foodIndex >= 0 && foodIndex < customisationManager.foodSkins.Count)
-            {
-                customFoodSprite = customisationManager.foodSkins[foodIndex].sprite;
-                Debug.Log("Food skin sprite loaded: " + customFoodSprite);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid food index. Using default food sprite.");
-            }
-
-            FetchColours();
-
-            scoreManager = GetComponent<ScoreManager>();
-            gameOverUI = GetComponent<GameOverUI>();
-
-            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
-            Debug.Log("Input type is button control: " + isButtonControl);
-
-            ToggleInputType(isButtonControl);
-        }
-
-        void FetchColours()
-        {
-            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
-            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
-            {
-                playerColour = customisationManager.snakeColours[playerColourIndex];
-                Debug.Log("Player color loaded: " + playerColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid player color index. Using default color.");
-                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-
-            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
-            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
-            {
-                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
-                Debug.Log("Tail color loaded: " + snakeTailColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid tail color index. Using default color.");
-                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-
-            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
-            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
-            {
-                foodColour = customisationManager.snakeColours[foodColourIndex];
-                Debug.Log("Food color loaded: " + foodColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid food color index. Using default color.");
-                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-        }
-
-        void Start()
-        {
-            LoadSpeedSettings();
-            int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-
-            playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
-            playerTailIndex = customisationManager.GetSelectedTailIndex();
-            customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
-
-            onStart.Invoke();
-            maxWidth = PlayerPrefs.GetInt("width");
-            maxHeight = PlayerPrefs.GetInt("height");
-            StartNewGame();
-
-            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
-            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
-            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
-            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
-        }
-
-        void Update()
-        {
-            if (isGameOver)
-            {
-                return;
-            }
-
-            if (!isCameraAdjusting)
-            {
-                isCameraAdjusting = true;
-                UpdateCameraPosition();
-                AdjustCameraSize();
-                isCameraAdjusting = false;
-            }
-
-            HandleTouchInput();
-            GetInput();
-
-            if (!isFirstInput)
-            {
-                if (up || down || left || right)
-                {
-                    isFirstInput = true;
-                    firstInput.Invoke();
-                    SetPlayerDirection();
-                }
-            }
-            else
-            {
-                SetPlayerDirection();
-
-                timer += Time.deltaTime;
-                if (timer >= moveRate)
-                {
-                    timer = 0f;
-                    curDirection = targetDirection;
-                    MovePlayer();
-                }
-            }
-        }
 
         #region CAMERA
 
@@ -372,6 +225,155 @@ namespace RD
         }
 
         #endregion
+
+        void FetchColours()
+        {
+            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
+            {
+                playerColour = customisationManager.snakeColours[playerColourIndex];
+                Debug.Log("Player color loaded: " + playerColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid player color index. Using default color.");
+                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
+            {
+                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
+                Debug.Log("Tail color loaded: " + snakeTailColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail color index. Using default color.");
+                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
+            {
+                foodColour = customisationManager.snakeColours[foodColourIndex];
+                Debug.Log("Food color loaded: " + foodColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food color index. Using default color.");
+                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+        }
+
+        void Awake()
+        {
+            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
+            {
+                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
+                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid snake index. Using default sprite.");
+            }
+
+            int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
+            {
+                customTailSprite = customisationManager.tailSkins[tailSkinIndex].sprite;
+                Debug.Log("Tail skin sprite loaded: " + customTailSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail index. Using default tail sprite.");
+            }
+
+            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+            if (foodIndex >= 0 && foodIndex < customisationManager.foodSkins.Count)
+            {
+                customFoodSprite = customisationManager.foodSkins[foodIndex].sprite;
+                Debug.Log("Food skin sprite loaded: " + customFoodSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food index. Using default food sprite.");
+            }
+
+            FetchColours();
+
+            scoreManager = GetComponent<ScoreManager>();
+            gameOverUI = GetComponent<GameOverUI>();
+
+            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
+            Debug.Log("Input type is button control: " + isButtonControl);
+
+            ToggleInputType(isButtonControl);
+        }
+
+
+        void Start()
+        {
+            LoadSpeedSettings();
+            int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+
+            playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
+            playerTailIndex = customisationManager.GetSelectedTailIndex();
+            customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
+
+            onStart.Invoke();
+            maxWidth = PlayerPrefs.GetInt("width");
+            maxHeight = PlayerPrefs.GetInt("height");
+            StartNewGame();
+
+            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+        }
+
+        void Update()
+        {
+            if (isGameOver)
+            {
+                return;
+            }
+
+            if (!isCameraAdjusting)
+            {
+                isCameraAdjusting = true;
+                UpdateCameraPosition();
+                AdjustCameraSize();
+                isCameraAdjusting = false;
+            }
+
+            HandleTouchInput();
+            GetInput();
+
+            if (!isFirstInput)
+            {
+                if (up || down || left || right)
+                {
+                    isFirstInput = true;
+                    firstInput.Invoke();
+                    SetPlayerDirection();
+                }
+            }
+            else
+            {
+                SetPlayerDirection();
+
+                timer += Time.deltaTime;
+                if (timer >= moveRate)
+                {
+                    timer = 0f;
+                    curDirection = targetDirection;
+                    MovePlayer();
+                }
+            }
+        }
+
 
         #region SETUP
 
@@ -639,106 +641,34 @@ namespace RD
 
                 obstacleNodes.Add(candidateNode);
 
-                if (CreatesDeadEndWithNeighbors(candidateNode))
-                {
-                    obstacleNodes.Remove(candidateNode);
-                }
-                else
-                {
+               
                     availableNodes.Remove(candidateNode); 
                     obstacleCount--;
-                }
+                
 
                 potentialNodes.Remove(candidateNode);
             }
         }
 
-        bool CreatesDeadEndWithNeighbors(Node node)
+        bool TooManyAdjacentObstacles(Node node)
         {
-            var tempObstacleNodes = new HashSet<Node>(obstacleNodes);
-            tempObstacleNodes.Add(node);
+            int adjacentObstacleCount = 0;
 
-            return CheckAllNodesForDeadEnds(tempObstacleNodes);
-        }
-
-        bool CreatesDeadEnd(Node obstacleNode)
-        {
-            HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
-            tempObstacles.Add(obstacleNode);
-
-            Node startNode = playerNode;  
-            HashSet<Node> visitedNodes = new HashSet<Node>();
-            Queue<Node> queue = new Queue<Node>();
-            queue.Enqueue(startNode);
-            visitedNodes.Add(startNode);
-
-            while (queue.Count > 0)
+            foreach (Node neighbor in GetAdjacentNodes(node))
             {
-                Node currentNode = queue.Dequeue();
-
-                if (!tempObstacles.Contains(currentNode))
+                if (obstacleNodes.Contains(neighbor))
                 {
-                    return false;
-                }
-
-                foreach (Node neighbor in GetAdjacentNodes(currentNode))
-                {
-                    if (!visitedNodes.Contains(neighbor) && !tempObstacles.Contains(neighbor))
-                    {
-                        visitedNodes.Add(neighbor);
-                        queue.Enqueue(neighbor);
-                    }
+                    adjacentObstacleCount++;
                 }
             }
 
-            return true;
-        }
-
-        bool CheckAllNodesForDeadEnds(HashSet<Node> tempObstacles)
-        {
-            // Check for dead-ends in all 8 cardinal directions (including diagonals)
-            foreach (Node node in grid)
-            {
-                if (!tempObstacles.Contains(node) && IsDeadEnd(node, tempObstacles))
-                {
-                    return true; // A dead-end exists
-                }
-            }
-            return false;
-        }
-
-        bool IsDeadEnd(Node node, HashSet<Node> tempObstacles)
-        {
-            int x = node.x;
-            int y = node.y;
-
-            // Check all 8 directions (cardinal + diagonal)
-            bool upBlocked = IsBlocked(x, y + 1, tempObstacles);
-            bool downBlocked = IsBlocked(x, y - 1, tempObstacles);
-            bool leftBlocked = IsBlocked(x - 1, y, tempObstacles);
-            bool rightBlocked = IsBlocked(x + 1, y, tempObstacles);
-            bool upLeftBlocked = IsBlocked(x - 1, y + 1, tempObstacles);
-            bool upRightBlocked = IsBlocked(x + 1, y + 1, tempObstacles);
-            bool downLeftBlocked = IsBlocked(x - 1, y - 1, tempObstacles);
-            bool downRightBlocked = IsBlocked(x + 1, y - 1, tempObstacles);
-
-            // A dead-end occurs when all 8 directions are blocked
-            return upBlocked && downBlocked && leftBlocked && rightBlocked &&
-                   upLeftBlocked && upRightBlocked && downLeftBlocked && downRightBlocked;
+            // Allow 0 or 1 adjacent obstacles max, but avoid 2+ neighbors (which could form a C)
+            return adjacentObstacleCount > 1;
         }
 
         bool IsEdge(Node node)
         {
             return node.x == 0 || node.y == 0 || node.x == maxWidth - 1 || node.y == maxHeight - 1;
-        }
-
-        bool CanPlaceObstacle(Node node)
-        {
-            if (IsEdge(node))
-            {
-                return !CreatesDeadEnd(node);
-            }
-            return true;
         }
 
         void CreateObstacles()
@@ -755,7 +685,7 @@ namespace RD
                 int randomIndex = Random.Range(0, potentialNodes.Count);
                 Node candidateNode = potentialNodes[randomIndex];
 
-                if (!CreatesDeadEnd(candidateNode)) 
+                // NEW: Add the extra check here!
                 {
                     obstacleNodes.Add(candidateNode);
                     availableNodes.Remove(candidateNode);
@@ -775,6 +705,7 @@ namespace RD
                 potentialNodes.Remove(candidateNode);
             }
         }
+
 
         List<Node> GetAdjacentNodes(Node node)
         {
@@ -900,7 +831,6 @@ namespace RD
             }
         }
 
-        // Separate method for detecting swipes (used for both touch and mouse)
         public void DetectSwipe(Vector2 startPos, Vector2 endPos)
         {
             Vector2 swipeDirection = endPos - startPos;
@@ -925,8 +855,6 @@ namespace RD
                 }
             }
         }
-
-
 
         void GetInput()
         {
