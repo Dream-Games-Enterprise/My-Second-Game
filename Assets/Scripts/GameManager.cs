@@ -723,7 +723,7 @@ namespace RD
                         }
                     }
                     // If the neighbor would have fewer than 7 free adjacent cells, skip candidate
-                    if (freeCount < 7)
+                    if (freeCount < 6)
                     {
                         return true;
                     }
