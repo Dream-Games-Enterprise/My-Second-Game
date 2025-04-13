@@ -18,7 +18,8 @@ Have a leaderboard for most points held - just count the bank balance not with s
 
 
 BUG
-Since smoothing movemenet player turning into obstacle seems weird, may need to check if issue of pausing/moment of stillness carries on
+Since adding smoothing to movement, the when the player input delay is cut down and made quicker with the smoothing effect working in combination with it, it looks like the player is "sliding on ice" - if that makes sense? 
+
 Price resets when changing scenes even though already equipped - also removes currency again so needs fixing and loading at start to see which ones are unlocked and don't need to cost or have a number displaying
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
 food spawning in tail -  
