@@ -242,7 +242,6 @@ namespace RD
         {
             if (!isButtonControl)
             {
-                // Touch Input (Mobile)
                 if (Input.touchCount > 0)
                 {
                     Touch touch = Input.GetTouch(0);
@@ -258,24 +257,25 @@ namespace RD
                     }
                     else if (touch.phase == TouchPhase.Ended)
                     {
-                        touchStartPos = Vector2.zero; // Reset only when touch ends
+                        touchStartPos = Vector2.zero; 
                     }
                 }
 
-                // Mouse Input (PC Testing)
-                if (Input.GetMouseButtonDown(0)) // Left mouse button pressed
+                #region MOUSE
+                if (Input.GetMouseButtonDown(0)) 
                 {
                     touchStartPos = Input.mousePosition;
                 }
-                else if (Input.GetMouseButton(0)) // Mouse is being dragged
+                else if (Input.GetMouseButton(0)) 
                 {
                     touchEndPos = Input.mousePosition;
                     DetectSwipe(touchStartPos, touchEndPos);
                 }
-                else if (Input.GetMouseButtonUp(0)) // Left mouse button released
+                else if (Input.GetMouseButtonUp(0)) 
                 {
-                    touchStartPos = Vector2.zero; // Reset after release
+                    touchStartPos = Vector2.zero; 
                 }
+                #endregion
             }
         }
 
