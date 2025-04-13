@@ -174,39 +174,40 @@ namespace RD
                 {
                     isFirstInput = true;
                     firstInput.Invoke();
-                    QueueImmediateInput(); // <-- New method
+                    QueueImmediateInput();
                 }
             }
             else
             {
-                QueueImmediateInput(); // <-- New method
+                QueueImmediateInput();
 
                 timer += Time.deltaTime;
                 if (timer >= moveRate)
                 {
                     timer = 0f;
 
-                    // Process buffered input (only one per tick)
-                    while (inputBuffer.Count > 0)
+                    // Only apply one valid (non-opposite) direction per tick
+                    for (int i = 0; i < inputBuffer.Count; i++)
                     {
-                        Direction next = inputBuffer.Dequeue();
-                        if (!isOppositeDir(next))
+                        Direction d = inputBuffer[i];
+                        if (!isOppositeDir(d))
                         {
-                            targetDirection = next;
+                            targetDirection = d;
+                            inputBuffer.RemoveAt(i); // Remove the one we used
                             break;
                         }
                     }
 
                     if (curDirection == Direction.None)
                     {
-                        curDirection = targetDirection; // For the first move
+                        curDirection = targetDirection;
                     }
 
                     MovePlayer();
                 }
             }
-
         }
+
 
         #region INPUT
 
@@ -332,15 +333,8 @@ namespace RD
 
         #region MOVEMENT
 
-        void QueueImmediateInput()
-        {
-            if (up) inputBuffer.Enqueue(Direction.up);
-            else if (down) inputBuffer.Enqueue(Direction.down);
-            else if (left) inputBuffer.Enqueue(Direction.left);
-            else if (right) inputBuffer.Enqueue(Direction.right);
-        }
 
-        Queue<Direction> inputBuffer = new Queue<Direction>();
+        List<Direction> inputBuffer = new List<Direction>();
 
         void SetPlayerDirection()
         {
@@ -364,7 +358,15 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            inputBuffer.Enqueue(d);
+            inputBuffer.Add(d);
+        }
+
+        void QueueImmediateInput()
+        {
+            if (up) inputBuffer.Add(Direction.up);
+            else if (down) inputBuffer.Add(Direction.down);
+            else if (left) inputBuffer.Add(Direction.left);
+            else if (right) inputBuffer.Add(Direction.right);
         }
 
         float GetRotationForDirection(Direction direction)
