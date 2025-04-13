@@ -14,12 +14,20 @@ namespace RD
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
 
+        public Transform cameraHolder;
+        GameObject playerObject;
+        GameObject foodObject;
+        GameObject tailParent;
+        GameObject obstacleParent;
+
+        bool isCameraAdjusting = false;
+
+        #region CUSTOMISATION 
+
         Sprite customPlayerSprite;
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
         public Sprite customObstacleSprite;
-
-        #region CUSTOMISATION 
 
         public Color colour1;
         public Color colour2;
@@ -35,6 +43,10 @@ namespace RD
 
         public List<Sprite> tailSprites;
         public List<Sprite> foodSprites;
+
+        int playerSkinIndex;
+        int playerTailIndex;
+        int foodIndex;
 
         #endregion
 
@@ -62,242 +74,53 @@ namespace RD
         public float moveRate = 0.2f;
         float timer;
 
-        #endregion
-
-        public int maxHeight = 16;
-        public int maxWidth = 16;
-
-        public Transform cameraHolder;
-
-        GameObject playerObject;
-        GameObject foodObject;
-        GameObject tailParent;
-        GameObject obstacleParent;
-        Node playerNode;
-        Node prevPlayerNode;
-        Node foodNode;
-
-        GameObject mapObject;
-        SpriteRenderer mapRenderer;
-
-        Node[,] grid;
-        List<Node> availableNodes = new List<Node>();
-        List<SpecialNode> tail = new List<SpecialNode>();
-        List<Node> obstacleNodes = new List<Node>();
-
-        bool obstaclesToggle;
-
-        public bool isGameOver;
-        public bool isFirstInput;
-
-        public UnityEvent onStart;
-        public UnityEvent onGameOver;
-        public UnityEvent firstInput;
-
         Vector2 touchStartPos;
         Vector2 touchEndPos;
         float minSwipeDistance = 25f;
 
-        public List<GameObject> foodObjects;
-        List<Node> foodNodes = new List<Node>();
-        bool isPaused = false;
-
         public float smoothSpeed = 0.5f;
-        bool isCameraAdjusting = false;
-
-        int playerSkinIndex;
-        int playerTailIndex;
-        int foodIndex;
 
         bool isMoving = false;
-        float moveDuration = 0.1f; // Movement time in seconds, can be based on speed level too
-
-        #region CAMERA
-
-        void PlaceCamera()
-        {
-            Node n = GetNode(maxWidth / 2, maxHeight / 2);
-            Vector3 p = n.worldPosition;
-            p += Vector3.one * 0.5f;
-            cameraHolder.position = p;
-        }
-
-        void UpdateCameraPosition()
-        {
-            AdjustCameraSize();
-
-            float cameraSize = Camera.main.orthographicSize;
-            Vector3 playerPosition = playerObject.transform.position;
-
-            // Define thresholds for small, medium, and large maps
-            float smallMapThreshold = 6f;
-            float mediumMapThreshold = 8f;
-            float largeMapThreshold = 10f;
-
-            bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
-            bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
-            bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
-
-            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f; // Check for vastly different width and height
-
-            if (isSmallMap)
-            {
-                // For small maps, center the camera on the map without following the player
-                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
-            }
-            else if (isMediumMap)
-            {
-                // For medium maps, adjust the camera to follow the player, and allow it to move beyond the map
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
-
-                // Adjust the camera size based on the medium map size
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
-
-                // Allow camera to go beyond the map boundaries like large maps
-                float halfWidth = maxWidth * 0.5f;
-                float halfHeight = maxHeight * 0.5f;
-
-                // The camera should be able to move beyond the map boundaries, hence removing the clamp
-                cameraHolder.position = new Vector3(
-                    Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
-                    Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
-                    cameraHolder.position.z
-                );
-            }
-            else if (isLargeMap || isRectangularMap)  // If it's a large or rectangular map, ignore clamping
-            {
-                // For large or rectangular maps, fully follow the player without clamping
-                Vector3 desiredPosition = playerPosition;
-
-                // Define boundaries for camera movement based on the map size
-                float halfWidth = maxWidth * 0.5f;
-                float halfHeight = maxHeight * 0.5f;
-
-                // If it's a rectangular map, we should avoid clamping the camera position to the map's limits
-                if (isRectangularMap)
-                {
-                    // Follow the player to the left or right (for wide maps) and up or down (for tall maps)
-                    if (maxWidth > maxHeight)  // If it's a wide map
-                    {
-                        // Adjust the x position to follow the player without clamping
-                        desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);  // Follow left and right
-                    }
-                    else  // If it's a tall map
-                    {
-                        // Adjust the y position to follow the player without clamping
-                        desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight);  // Follow top and bottom
-                    }
-                }
-                else
-                {
-                    // For large maps, the camera should still follow the player but within bounds
-                    float cameraHorizontalLimit = halfWidth - cameraSize;
-                    float cameraVerticalLimit = halfHeight - cameraSize;
-
-                    // Adjust the camera position to follow the player within the boundaries of the map
-                    desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-                    desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
-                }
-
-                // Update the camera position
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
-            }
-        }
-
-        void AdjustCameraSize()
-        {
-            float cameraSize = Camera.main.orthographicSize;
-
-            if (maxWidth > 20 && maxHeight > 20)
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
-            }
-            else if (maxWidth > 8 && maxHeight > 8)
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
-            }
-            else
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
-            }
-        }
+        float moveDuration = 0.1f;
 
         #endregion
 
-        void FetchColours()
-        {
-            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
-            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
-            {
-                playerColour = customisationManager.snakeColours[playerColourIndex];
-                Debug.Log("Player color loaded: " + playerColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid player color index. Using default color.");
-                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
+        #region MAP
+        GameObject mapObject;
+        SpriteRenderer mapRenderer;
+        public int maxHeight = 16;
+        public int maxWidth = 16;
+        
+        Node[,] grid;
+        List<Node> availableNodes = new List<Node>();
+        List<SpecialNode> tail = new List<SpecialNode>();
+        List<Node> obstacleNodes = new List<Node>();
+        Node playerNode;
+        Node prevPlayerNode;
+        Node foodNode;
 
-            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
-            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
-            {
-                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
-                Debug.Log("Tail color loaded: " + snakeTailColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid tail color index. Using default color.");
-                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
+        public List<GameObject> foodObjects;
+        List<Node> foodNodes = new List<Node>();
 
-            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
-            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
-            {
-                foodColour = customisationManager.snakeColours[foodColourIndex];
-                Debug.Log("Food color loaded: " + foodColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid food color index. Using default color.");
-                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-        }
+        bool obstaclesToggle;
+
+        #endregion
+
+        #region EVENTS
+
+
+        public UnityEvent onStart;
+        public UnityEvent onGameOver;
+        public UnityEvent firstInput;
+        public bool isGameOver;
+        public bool isFirstInput;
+        bool isPaused = false;
+
+        #endregion
 
         void Awake()
         {
-            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
-            {
-                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
-                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid snake index. Using default sprite.");
-            }
-
-            int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
-            if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
-            {
-                customTailSprite = customisationManager.tailSkins[tailSkinIndex].sprite;
-                Debug.Log("Tail skin sprite loaded: " + customTailSprite);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid tail index. Using default tail sprite.");
-            }
-
-            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-            if (foodIndex >= 0 && foodIndex < customisationManager.foodSkins.Count)
-            {
-                customFoodSprite = customisationManager.foodSkins[foodIndex].sprite;
-                Debug.Log("Food skin sprite loaded: " + customFoodSprite);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid food index. Using default food sprite.");
-            }
+            LoadSpritesBits();
 
             FetchColours();
 
@@ -371,381 +194,6 @@ namespace RD
                 }
             }
         }
-
-        #region SETUP
-
-        public void StartNewGame()
-        {
-            ClearReferences();
-            CreateMap();
-
-            if (obstaclesToggle)
-            {
-                CreateObstacles();
-            }
-
-            int totalMapNodes = maxWidth * maxHeight;
-            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
-
-            SpawnInitialFood(initialFoodCount);
-
-            uiHandler.ResumeGame();
-
-            PlacePlayer();
-            PlaceCamera();
-            AdjustCameraSize();
-
-            isGameOver = false;
-            isFirstInput = false;
-            curDirection = Direction.None;
-            targetDirection = Direction.None;
-        }
-
-        public void ClearReferences()
-        {
-            if (mapObject != null)
-                Destroy(mapObject);
-
-            if (playerObject != null)
-                Destroy(playerObject);
-
-            if (foodObject != null)
-                Destroy(foodObject);
-
-            foreach (var t in tail)
-            {
-                Destroy(t.obj);
-            }
-            tail.Clear();
-
-            if (obstacleParent != null)
-            {
-                foreach (Transform obstacle in obstacleParent.transform)
-                {
-                    Destroy(obstacle.gameObject);
-                }
-                Destroy(obstacleParent);
-            }
-
-            availableNodes.Clear();
-            availableNodes.AddRange(obstacleNodes);
-            obstacleNodes.Clear();
-
-            grid = null;
-        }
-
-        void SetSpeed(float speed)
-        {
-            moveRate = speed;
-        }
-
-        void LoadSpeedSettings()
-        {
-            int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
-            float speedToUse = GetMoveRateFromSpeed(speedInt);
-            SetSpeed(speedToUse);
-
-            bool obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 1) == 1;  // Default is 1 (enabled)
-            Debug.Log("Obstacles Enabled: " + obstaclesEnabled);
-
-            obstaclesToggle = obstaclesEnabled;
-        }
-
-        void CreateMap()
-        {
-            mapObject = new GameObject("Map");
-            mapRenderer = mapObject.AddComponent<SpriteRenderer>();
-
-            grid = new Node[maxWidth, maxHeight];
-
-            Texture2D txt = new Texture2D(maxWidth, maxHeight);
-            for (int x = 0; x < maxWidth; x++)
-            {
-                for (int y = 0; y < maxHeight; y++)
-                {
-                    Vector3 tp = Vector3.zero;
-                    tp.x = x;
-                    tp.y = y;
-
-                    Node n = new Node()
-                    {
-                        x = x,
-                        y = y,
-                        worldPosition = tp
-                    };
-
-                    grid[x, y] = n;
-
-                    availableNodes.Add(n);
-
-                    #region Visual
-
-                    if (x % 2 != 0)
-                    {
-                        if (y % 2 != 0)
-                        {
-                            txt.SetPixel(x, y, colour1);
-                        }
-                        else { txt.SetPixel(x, y, colour2); }
-                    }
-                    else
-                    {
-                        if (y % 2 != 0)
-                        {
-                            txt.SetPixel(x, y, colour2);
-                        }
-                        else { txt.SetPixel(x, y, colour1); }
-                    }
-
-                    #endregion
-                }
-            }
-
-            txt.filterMode = FilterMode.Point;
-
-            txt.Apply();
-            Rect rect = new Rect(0, 0, maxWidth, maxHeight);
-            Sprite sprite = Sprite.Create(txt, rect, Vector2.zero, 1, 0, SpriteMeshType.FullRect);
-            mapRenderer.sprite = sprite;
-        }
-
-        void PlacePlayer()
-        {
-            playerObject = new GameObject("Player");
-            SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
-
-            playerRenderer.sprite = customPlayerSprite;
-            playerRenderer.color = playerColour;
-
-            playerRenderer.sortingOrder = 1;
-
-            int randomIndex = Random.Range(0, availableNodes.Count);
-            playerNode = availableNodes[randomIndex];
-
-            availableNodes.Remove(playerNode);
-            PlacePlayerObject(playerObject, playerNode.worldPosition);
-            playerObject.transform.localScale = Vector3.one * 1.05f;
-
-            tailParent = new GameObject("TailParent");
-        }
-
-        void SpawnInitialFood(int foodToSpawn)
-        {
-            foodObjects.Clear();
-            foodNodes.Clear();
-
-            for (int i = 0; i < foodToSpawn; i++)
-            {
-                List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
-
-                if (validNodes.Count == 0)
-                {
-                    Debug.LogWarning("No valid nodes available to spawn more food items.");
-                    break;
-                }
-
-                int randomIndex = Random.Range(0, validNodes.Count);
-                Node foodNode = validNodes[randomIndex];
-
-                availableNodes.Remove(foodNode);
-                foodNodes.Add(foodNode);
-
-                GameObject foodObject = new GameObject("Food");
-                SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
-
-                // Assign selected food sprite and color
-                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
-                foodRenderer.color = foodColour; //  Apply the saved food color 
-
-                foodRenderer.sortingOrder = 1;
-
-                PlacePlayerObject(foodObject, foodNode.worldPosition);
-                foodObject.transform.localScale = Vector3.one * 0.6f;
-
-                foodObjects.Add(foodObject);
-                StartCoroutine(TweenFoodScale(foodObject));
-            }
-        }
-
-        void CreateFood()
-        {
-            List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
-            if (validNodes.Count == 0)
-            {
-                Debug.LogWarning("No valid nodes available for food placement.");
-                return;
-            }
-
-            int randomIndex = Random.Range(0, validNodes.Count);
-            Node foodNode = validNodes[randomIndex];
-
-            availableNodes.Remove(foodNode);
-            foodNodes.Add(foodNode);
-
-            GameObject foodObject = new GameObject("Food");
-            SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
-
-            foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
-            foodRenderer.color = foodColour;
-
-            foodRenderer.sortingOrder = 1;
-
-            PlacePlayerObject(foodObject, foodNode.worldPosition);
-            foodObject.transform.localScale = Vector3.one * 0.7f;
-
-            foodObjects.Add(foodObject);
-
-            StartCoroutine(TweenFoodScale(foodObject));
-        }
-
-        void PlaceFood()
-        {
-            List<Node> validNodes = new List<Node>(availableNodes);
-
-            validNodes.Remove(playerNode);
-            foreach (var t in tail)
-            {
-                validNodes.Remove(t.node);
-            }
-
-            foreach (var obstacle in obstacleNodes)
-            {
-                validNodes.Remove(obstacle);
-            }
-
-            if (validNodes.Count > 0)
-            {
-                int ran = Random.Range(0, validNodes.Count);
-                Node n = validNodes[ran];
-                PlacePlayerObject(foodObject, n.worldPosition);
-                foodNode = n; // Store the node of the food for tracking
-
-                foodObject.transform.localScale = Vector3.one * 0.6f; // Set to any desired scale factor
-            }
-            else
-            {
-                TriggerVictory();
-            }
-        }
-
-        void PlaceObstacles(int obstacleCount)
-        {
-            List<Node> potentialNodes = new List<Node>(availableNodes); 
-
-            while (obstacleCount > 0 && potentialNodes.Count > 0)
-            {
-                Node candidateNode = potentialNodes[Random.Range(0, potentialNodes.Count)];
-
-                obstacleNodes.Add(candidateNode);
-
-               
-                    availableNodes.Remove(candidateNode); 
-                    obstacleCount--;
-                
-
-                potentialNodes.Remove(candidateNode);
-            }
-        }
-
-        bool IsEdge(Node node)
-        {
-            return node.x == 0 || node.y == 0 || node.x == maxWidth - 1 || node.y == maxHeight - 1;
-        }
-
-        private static readonly (int dx, int dy)[] EightDirections = new (int, int)[]
-        {
-            (-1, -1), (0, -1), (1, -1),
-            (-1,  0),          (1,  0),
-            (-1,  1), (0,  1), (1,  1)
-        };
-
-        void CreateObstacles()
-        {
-            obstacleParent = new GameObject("Obstacles");
-
-            int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
-            // Exclude edge nodes from potential placement
-            List<Node> potentialNodes = availableNodes.Where(node => !IsEdge(node)).ToList();
-
-            while (obstacleCount > 0 && potentialNodes.Count > 0)
-            {
-                int randomIndex = Random.Range(0, potentialNodes.Count);
-                Node candidateNode = potentialNodes[randomIndex];
-
-                // Only place the obstacle if it does not create a dead end
-                if (!CreatesDeadEnd(candidateNode))
-                {
-                    obstacleNodes.Add(candidateNode);
-                    availableNodes.Remove(candidateNode);
-                    obstacleCount--;
-
-                    GameObject obstacleObj = new GameObject("Obstacle");
-                    obstacleObj.transform.parent = obstacleParent.transform;
-                    PlacePlayerObject(obstacleObj, candidateNode.worldPosition);
-
-                    SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
-                    obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
-                    obstacleRenderer.color = obstacleColor;
-                    obstacleRenderer.sortingOrder = 1;
-                    obstacleObj.transform.localScale = Vector3.one * 0.9f;
-                }
-
-                potentialNodes.Remove(candidateNode);
-            }
-        }
-
-        bool CreatesDeadEnd(Node candidateNode)
-        {
-            HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
-            tempObstacles.Add(candidateNode);
-
-            foreach (var (dx, dy) in EightDirections)
-            {
-                Node neighbor = GetNode(candidateNode.x + dx, candidateNode.y + dy);
-                if (neighbor == null)
-                    continue;
-
-                if (!tempObstacles.Contains(neighbor) && !tail.Any(t => t.node == neighbor))
-                {
-                    int freeCount = 0;
-
-                    foreach (var (dx2, dy2) in EightDirections)
-                    {
-                        Node adjacent = GetNode(neighbor.x + dx2, neighbor.y + dy2);
-
-                        if (adjacent != null && !tempObstacles.Contains(adjacent) && !tail.Any(t => t.node == adjacent))
-                        {
-                            freeCount++;
-                        }
-                    }
-
-                    if (freeCount < 6)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
-        {
-            // Check grid boundaries
-            if (x < 0 || y < 0 || x >= maxWidth || y >= maxHeight) return true;
-
-            // Check if the node is an obstacle or part of the snake (using the temporary obstacles set)
-            Node node = grid[x, y];
-            return tempObstacles.Contains(node) || tail.Any(t => t.node == node);
-        }
-
-        void PlacePlayerObject(GameObject obj, Vector3 pos)
-        {
-            pos += Vector3.one * 0.5f;
-            obj.transform.position = pos;
-        }
-
-        #endregion
 
         #region INPUT
 
@@ -1065,6 +513,381 @@ namespace RD
 
         #endregion
 
+        #region SETUP
+
+        public void StartNewGame()
+        {
+            ClearReferences();
+            CreateMap();
+
+            if (obstaclesToggle)
+            {
+                CreateObstacles();
+            }
+
+            int totalMapNodes = maxWidth * maxHeight;
+            int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
+
+            SpawnInitialFood(initialFoodCount);
+
+            uiHandler.ResumeGame();
+
+            PlacePlayer();
+            PlaceCamera();
+            AdjustCameraSize();
+
+            isGameOver = false;
+            isFirstInput = false;
+            curDirection = Direction.None;
+            targetDirection = Direction.None;
+        }
+
+        public void ClearReferences()
+        {
+            if (mapObject != null)
+                Destroy(mapObject);
+
+            if (playerObject != null)
+                Destroy(playerObject);
+
+            if (foodObject != null)
+                Destroy(foodObject);
+
+            foreach (var t in tail)
+            {
+                Destroy(t.obj);
+            }
+            tail.Clear();
+
+            if (obstacleParent != null)
+            {
+                foreach (Transform obstacle in obstacleParent.transform)
+                {
+                    Destroy(obstacle.gameObject);
+                }
+                Destroy(obstacleParent);
+            }
+
+            availableNodes.Clear();
+            availableNodes.AddRange(obstacleNodes);
+            obstacleNodes.Clear();
+
+            grid = null;
+        }
+
+        void SetSpeed(float speed)
+        {
+            moveRate = speed;
+        }
+
+        void LoadSpeedSettings()
+        {
+            int speedInt = PlayerPrefs.GetInt("speed", 3);  // Default is 3 (speed = 2)
+            float speedToUse = GetMoveRateFromSpeed(speedInt);
+            SetSpeed(speedToUse);
+
+            bool obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 1) == 1;  // Default is 1 (enabled)
+            Debug.Log("Obstacles Enabled: " + obstaclesEnabled);
+
+            obstaclesToggle = obstaclesEnabled;
+        }
+
+        void CreateMap()
+        {
+            mapObject = new GameObject("Map");
+            mapRenderer = mapObject.AddComponent<SpriteRenderer>();
+
+            grid = new Node[maxWidth, maxHeight];
+
+            Texture2D txt = new Texture2D(maxWidth, maxHeight);
+            for (int x = 0; x < maxWidth; x++)
+            {
+                for (int y = 0; y < maxHeight; y++)
+                {
+                    Vector3 tp = Vector3.zero;
+                    tp.x = x;
+                    tp.y = y;
+
+                    Node n = new Node()
+                    {
+                        x = x,
+                        y = y,
+                        worldPosition = tp
+                    };
+
+                    grid[x, y] = n;
+
+                    availableNodes.Add(n);
+
+                    #region Visual
+
+                    if (x % 2 != 0)
+                    {
+                        if (y % 2 != 0)
+                        {
+                            txt.SetPixel(x, y, colour1);
+                        }
+                        else { txt.SetPixel(x, y, colour2); }
+                    }
+                    else
+                    {
+                        if (y % 2 != 0)
+                        {
+                            txt.SetPixel(x, y, colour2);
+                        }
+                        else { txt.SetPixel(x, y, colour1); }
+                    }
+
+                    #endregion
+                }
+            }
+
+            txt.filterMode = FilterMode.Point;
+
+            txt.Apply();
+            Rect rect = new Rect(0, 0, maxWidth, maxHeight);
+            Sprite sprite = Sprite.Create(txt, rect, Vector2.zero, 1, 0, SpriteMeshType.FullRect);
+            mapRenderer.sprite = sprite;
+        }
+
+        void PlacePlayer()
+        {
+            playerObject = new GameObject("Player");
+            SpriteRenderer playerRenderer = playerObject.AddComponent<SpriteRenderer>();
+
+            playerRenderer.sprite = customPlayerSprite;
+            playerRenderer.color = playerColour;
+
+            playerRenderer.sortingOrder = 1;
+
+            int randomIndex = Random.Range(0, availableNodes.Count);
+            playerNode = availableNodes[randomIndex];
+
+            availableNodes.Remove(playerNode);
+            PlacePlayerObject(playerObject, playerNode.worldPosition);
+            playerObject.transform.localScale = Vector3.one * 1.05f;
+
+            tailParent = new GameObject("TailParent");
+        }
+
+        void SpawnInitialFood(int foodToSpawn)
+        {
+            foodObjects.Clear();
+            foodNodes.Clear();
+
+            for (int i = 0; i < foodToSpawn; i++)
+            {
+                List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+
+                if (validNodes.Count == 0)
+                {
+                    Debug.LogWarning("No valid nodes available to spawn more food items.");
+                    break;
+                }
+
+                int randomIndex = Random.Range(0, validNodes.Count);
+                Node foodNode = validNodes[randomIndex];
+
+                availableNodes.Remove(foodNode);
+                foodNodes.Add(foodNode);
+
+                GameObject foodObject = new GameObject("Food");
+                SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+
+                // Assign selected food sprite and color
+                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
+                foodRenderer.color = foodColour; //  Apply the saved food color 
+
+                foodRenderer.sortingOrder = 1;
+
+                PlacePlayerObject(foodObject, foodNode.worldPosition);
+                foodObject.transform.localScale = Vector3.one * 0.6f;
+
+                foodObjects.Add(foodObject);
+                StartCoroutine(TweenFoodScale(foodObject));
+            }
+        }
+
+        void CreateFood()
+        {
+            List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+            if (validNodes.Count == 0)
+            {
+                Debug.LogWarning("No valid nodes available for food placement.");
+                return;
+            }
+
+            int randomIndex = Random.Range(0, validNodes.Count);
+            Node foodNode = validNodes[randomIndex];
+
+            availableNodes.Remove(foodNode);
+            foodNodes.Add(foodNode);
+
+            GameObject foodObject = new GameObject("Food");
+            SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+
+            foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
+            foodRenderer.color = foodColour;
+
+            foodRenderer.sortingOrder = 1;
+
+            PlacePlayerObject(foodObject, foodNode.worldPosition);
+            foodObject.transform.localScale = Vector3.one * 0.7f;
+
+            foodObjects.Add(foodObject);
+
+            StartCoroutine(TweenFoodScale(foodObject));
+        }
+
+        void PlaceFood()
+        {
+            List<Node> validNodes = new List<Node>(availableNodes);
+
+            validNodes.Remove(playerNode);
+            foreach (var t in tail)
+            {
+                validNodes.Remove(t.node);
+            }
+
+            foreach (var obstacle in obstacleNodes)
+            {
+                validNodes.Remove(obstacle);
+            }
+
+            if (validNodes.Count > 0)
+            {
+                int ran = Random.Range(0, validNodes.Count);
+                Node n = validNodes[ran];
+                PlacePlayerObject(foodObject, n.worldPosition);
+                foodNode = n; // Store the node of the food for tracking
+
+                foodObject.transform.localScale = Vector3.one * 0.6f; // Set to any desired scale factor
+            }
+            else
+            {
+                TriggerVictory();
+            }
+        }
+
+        void PlaceObstacles(int obstacleCount)
+        {
+            List<Node> potentialNodes = new List<Node>(availableNodes);
+
+            while (obstacleCount > 0 && potentialNodes.Count > 0)
+            {
+                Node candidateNode = potentialNodes[Random.Range(0, potentialNodes.Count)];
+
+                obstacleNodes.Add(candidateNode);
+
+
+                availableNodes.Remove(candidateNode);
+                obstacleCount--;
+
+
+                potentialNodes.Remove(candidateNode);
+            }
+        }
+
+        bool IsEdge(Node node)
+        {
+            return node.x == 0 || node.y == 0 || node.x == maxWidth - 1 || node.y == maxHeight - 1;
+        }
+
+        private static readonly (int dx, int dy)[] EightDirections = new (int, int)[]
+        {
+            (-1, -1), (0, -1), (1, -1),
+            (-1,  0),          (1,  0),
+            (-1,  1), (0,  1), (1,  1)
+        };
+
+        void CreateObstacles()
+        {
+            obstacleParent = new GameObject("Obstacles");
+
+            int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
+            // Exclude edge nodes from potential placement
+            List<Node> potentialNodes = availableNodes.Where(node => !IsEdge(node)).ToList();
+
+            while (obstacleCount > 0 && potentialNodes.Count > 0)
+            {
+                int randomIndex = Random.Range(0, potentialNodes.Count);
+                Node candidateNode = potentialNodes[randomIndex];
+
+                // Only place the obstacle if it does not create a dead end
+                if (!CreatesDeadEnd(candidateNode))
+                {
+                    obstacleNodes.Add(candidateNode);
+                    availableNodes.Remove(candidateNode);
+                    obstacleCount--;
+
+                    GameObject obstacleObj = new GameObject("Obstacle");
+                    obstacleObj.transform.parent = obstacleParent.transform;
+                    PlacePlayerObject(obstacleObj, candidateNode.worldPosition);
+
+                    SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
+                    obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
+                    obstacleRenderer.color = obstacleColor;
+                    obstacleRenderer.sortingOrder = 1;
+                    obstacleObj.transform.localScale = Vector3.one * 0.9f;
+                }
+
+                potentialNodes.Remove(candidateNode);
+            }
+        }
+
+        bool CreatesDeadEnd(Node candidateNode)
+        {
+            HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
+            tempObstacles.Add(candidateNode);
+
+            foreach (var (dx, dy) in EightDirections)
+            {
+                Node neighbor = GetNode(candidateNode.x + dx, candidateNode.y + dy);
+                if (neighbor == null)
+                    continue;
+
+                if (!tempObstacles.Contains(neighbor) && !tail.Any(t => t.node == neighbor))
+                {
+                    int freeCount = 0;
+
+                    foreach (var (dx2, dy2) in EightDirections)
+                    {
+                        Node adjacent = GetNode(neighbor.x + dx2, neighbor.y + dy2);
+
+                        if (adjacent != null && !tempObstacles.Contains(adjacent) && !tail.Any(t => t.node == adjacent))
+                        {
+                            freeCount++;
+                        }
+                    }
+
+                    if (freeCount < 6)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
+        {
+            // Check grid boundaries
+            if (x < 0 || y < 0 || x >= maxWidth || y >= maxHeight) return true;
+
+            // Check if the node is an obstacle or part of the snake (using the temporary obstacles set)
+            Node node = grid[x, y];
+            return tempObstacles.Contains(node) || tail.Any(t => t.node == node);
+        }
+
+        void PlacePlayerObject(GameObject obj, Vector3 pos)
+        {
+            pos += Vector3.one * 0.5f;
+            obj.transform.position = pos;
+        }
+
+        #endregion
+
         #region CHECKS
 
         bool isOppositeDir(Direction d)
@@ -1104,7 +927,7 @@ namespace RD
 
         #endregion
 
-        #region Utilities
+        #region UTILITIES
 
         public void RestartGame()
         {
@@ -1205,6 +1028,198 @@ namespace RD
             }
 
             target.localScale = end;
+        }
+
+        void FetchColours()
+        {
+            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
+            {
+                playerColour = customisationManager.snakeColours[playerColourIndex];
+                Debug.Log("Player color loaded: " + playerColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid player color index. Using default color.");
+                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
+            {
+                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
+                Debug.Log("Tail color loaded: " + snakeTailColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail color index. Using default color.");
+                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
+            {
+                foodColour = customisationManager.snakeColours[foodColourIndex];
+                Debug.Log("Food color loaded: " + foodColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food color index. Using default color.");
+                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+        }
+
+        #endregion
+
+        #region CAMERA
+
+        void PlaceCamera()
+        {
+            Node n = GetNode(maxWidth / 2, maxHeight / 2);
+            Vector3 p = n.worldPosition;
+            p += Vector3.one * 0.5f;
+            cameraHolder.position = p;
+        }
+
+        void UpdateCameraPosition()
+        {
+            AdjustCameraSize();
+
+            float cameraSize = Camera.main.orthographicSize;
+            Vector3 playerPosition = playerObject.transform.position;
+
+            // Define thresholds for small, medium, and large maps
+            float smallMapThreshold = 6f;
+            float mediumMapThreshold = 8f;
+            float largeMapThreshold = 10f;
+
+            bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
+            bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
+            bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
+
+            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f; // Check for vastly different width and height
+
+            if (isSmallMap)
+            {
+                // For small maps, center the camera on the map without following the player
+                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
+            }
+            else if (isMediumMap)
+            {
+                // For medium maps, adjust the camera to follow the player, and allow it to move beyond the map
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
+
+                // Adjust the camera size based on the medium map size
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
+
+                // Allow camera to go beyond the map boundaries like large maps
+                float halfWidth = maxWidth * 0.5f;
+                float halfHeight = maxHeight * 0.5f;
+
+                // The camera should be able to move beyond the map boundaries, hence removing the clamp
+                cameraHolder.position = new Vector3(
+                    Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
+                    Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
+                    cameraHolder.position.z
+                );
+            }
+            else if (isLargeMap || isRectangularMap)  // If it's a large or rectangular map, ignore clamping
+            {
+                // For large or rectangular maps, fully follow the player without clamping
+                Vector3 desiredPosition = playerPosition;
+
+                // Define boundaries for camera movement based on the map size
+                float halfWidth = maxWidth * 0.5f;
+                float halfHeight = maxHeight * 0.5f;
+
+                // If it's a rectangular map, we should avoid clamping the camera position to the map's limits
+                if (isRectangularMap)
+                {
+                    // Follow the player to the left or right (for wide maps) and up or down (for tall maps)
+                    if (maxWidth > maxHeight)  // If it's a wide map
+                    {
+                        // Adjust the x position to follow the player without clamping
+                        desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);  // Follow left and right
+                    }
+                    else  // If it's a tall map
+                    {
+                        // Adjust the y position to follow the player without clamping
+                        desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight);  // Follow top and bottom
+                    }
+                }
+                else
+                {
+                    // For large maps, the camera should still follow the player but within bounds
+                    float cameraHorizontalLimit = halfWidth - cameraSize;
+                    float cameraVerticalLimit = halfHeight - cameraSize;
+
+                    // Adjust the camera position to follow the player within the boundaries of the map
+                    desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+                    desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+                }
+
+                // Update the camera position
+                cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+            }
+        }
+
+        void AdjustCameraSize()
+        {
+            float cameraSize = Camera.main.orthographicSize;
+
+            if (maxWidth > 20 && maxHeight > 20)
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
+            }
+            else if (maxWidth > 8 && maxHeight > 8)
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
+            }
+            else
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
+            }
+        }
+
+        #endregion
+
+        #region REFACTORS
+
+        void LoadSpritesBits()
+        {
+            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
+            {
+                customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
+                Debug.Log("Player skin sprite loaded: " + customPlayerSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid snake index. Using default sprite.");
+            }
+
+            int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
+            {
+                customTailSprite = customisationManager.tailSkins[tailSkinIndex].sprite;
+                Debug.Log("Tail skin sprite loaded: " + customTailSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail index. Using default tail sprite.");
+            }
+
+            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+            if (foodIndex >= 0 && foodIndex < customisationManager.foodSkins.Count)
+            {
+                customFoodSprite = customisationManager.foodSkins[foodIndex].sprite;
+                Debug.Log("Food skin sprite loaded: " + customFoodSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food index. Using default food sprite.");
+            }
         }
 
         #endregion
