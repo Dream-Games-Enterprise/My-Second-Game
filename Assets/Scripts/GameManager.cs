@@ -208,8 +208,9 @@ namespace RD
             }
         }
 
-
         #region INPUT
+
+        List<Direction> inputBuffer = new List<Direction>();
 
         void ToggleInputType(bool useButtons)
         {
@@ -332,9 +333,6 @@ namespace RD
         #endregion
 
         #region MOVEMENT
-
-
-        List<Direction> inputBuffer = new List<Direction>();
 
         void SetPlayerDirection()
         {
