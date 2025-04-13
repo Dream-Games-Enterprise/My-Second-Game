@@ -148,10 +148,7 @@ namespace RD
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
 
-            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
-            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
-            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
-            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+            ApplyInputListeners();
         }
 
         void Update()
@@ -1220,6 +1217,14 @@ namespace RD
             {
                 Debug.LogWarning("Invalid food index. Using default food sprite.");
             }
+        }
+
+        void ApplyInputListeners() 
+        {
+            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
         }
 
         #endregion
