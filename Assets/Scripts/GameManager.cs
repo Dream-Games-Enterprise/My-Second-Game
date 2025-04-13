@@ -774,7 +774,7 @@ namespace RD
             switch (speed)
             {
                 case 1:
-                    return 0.3f / 1.5f; // Now returns 0.2f
+                    return 0.3f / 1.4f;
                 case 2:
                     return 0.25f / 1.5f; // Approximately 0.1667f
                 case 3:
@@ -787,7 +787,6 @@ namespace RD
                     return 0.2f / 1.5f;  // Default speed if no valid value is found
             }
         }
-
 
         public void ToggleInputButtonPressed()
         {
@@ -934,12 +933,13 @@ namespace RD
                 return;
             }
 
+            // Update current direction to the latest target direction
+            curDirection = targetDirection;
+
             int x = 0;
             int y = 0;
 
-            Direction moveDirection = curDirection;
-
-            switch (moveDirection)
+            switch (curDirection)
             {
                 case Direction.up:
                     y = 1;
@@ -957,7 +957,7 @@ namespace RD
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
 
-            if (tail.Count > 0 && isTailNode(targetNode) || isObstacleNode(targetNode))
+            if ((tail.Count > 0 && isTailNode(targetNode)) || isObstacleNode(targetNode))
             {
                 if (targetNode == tail[0].node)
                 {
@@ -1005,7 +1005,7 @@ namespace RD
 
                 MoveTail();
 
-                playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(moveDirection));
+                playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
                 StartCoroutine(SmoothMove(playerObject, playerNode.worldPosition, targetNode.worldPosition));
 
                 playerNode = targetNode;
