@@ -85,9 +85,6 @@ namespace RD
 
         #endregion
 
-        Queue<Direction> inputBuffer = new Queue<Direction>();
-
-
         #region MAP
         GameObject mapObject;
         SpriteRenderer mapRenderer;
@@ -177,35 +174,38 @@ namespace RD
                 {
                     isFirstInput = true;
                     firstInput.Invoke();
-                    SetPlayerDirection();
+                    QueueImmediateInput(); // <-- New method
                 }
             }
             else
             {
-                SetPlayerDirection();
+                QueueImmediateInput(); // <-- New method
 
                 timer += Time.deltaTime;
                 if (timer >= moveRate)
                 {
                     timer = 0f;
 
-                    // Only allow one valid input per move
+                    // Process buffered input (only one per tick)
                     while (inputBuffer.Count > 0)
                     {
-                        Direction nextDir = inputBuffer.Dequeue();
-
-                        if (!isOppositeDir(nextDir))
+                        Direction next = inputBuffer.Dequeue();
+                        if (!isOppositeDir(next))
                         {
-                            targetDirection = nextDir;
+                            targetDirection = next;
                             break;
                         }
                     }
 
-                    curDirection = targetDirection;
+                    if (curDirection == Direction.None)
+                    {
+                        curDirection = targetDirection; // For the first move
+                    }
+
                     MovePlayer();
                 }
-
             }
+
         }
 
         #region INPUT
@@ -332,6 +332,16 @@ namespace RD
 
         #region MOVEMENT
 
+        void QueueImmediateInput()
+        {
+            if (up) inputBuffer.Enqueue(Direction.up);
+            else if (down) inputBuffer.Enqueue(Direction.down);
+            else if (left) inputBuffer.Enqueue(Direction.left);
+            else if (right) inputBuffer.Enqueue(Direction.right);
+        }
+
+        Queue<Direction> inputBuffer = new Queue<Direction>();
+
         void SetPlayerDirection()
         {
             if (up)
@@ -354,15 +364,6 @@ namespace RD
 
         void SetDirection(Direction d)
         {
-            if (curDirection == Direction.None)
-            {
-                curDirection = d;
-                targetDirection = d;
-                return;
-            }
-
-            // Add direction to the buffer regardless of validity;
-            // we'll check validity when consuming it during movement
             inputBuffer.Enqueue(d);
         }
 
