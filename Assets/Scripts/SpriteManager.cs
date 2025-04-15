@@ -9,9 +9,12 @@ public class SpriteManager : MonoBehaviour
     [SerializeField] GameObject snakePanel;
     [SerializeField] GameObject tailPanel;
     [SerializeField] GameObject foodPanel;
+    [SerializeField] GameObject trapPanel;
+
     [SerializeField] TMP_Text snakeHeader; //Should say "SNAKE HEAD"
     [SerializeField] TMP_Text tailHeader; //Should say "SNAKE TAIL"
     [SerializeField] TMP_Text foodHeader; //Should say "Food"
+    [SerializeField] TMP_Text trapHeader; //Should say "Trap"
     [SerializeField] GameObject bottomPanel;
 
     string pointDisplay;
@@ -28,6 +31,7 @@ public class SpriteManager : MonoBehaviour
         snakePanel.SetActive(false);
         tailPanel.SetActive(false);
         foodPanel.SetActive(false);
+        trapPanel.SetActive(false);
 
         bottomPanel.SetActive(true);
 
@@ -44,7 +48,6 @@ public class SpriteManager : MonoBehaviour
         panelToOpen.SetActive(true);
         bottomPanel.SetActive(false);
 
-
         if (panelToOpen == snakePanel)
         {
             snakeHeader.text = "HEAD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
@@ -59,6 +62,11 @@ public class SpriteManager : MonoBehaviour
         {
             foodHeader.text = "FOOD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
             //StartToggle(foodHeader, "FOOD");
+        }
+        else if (panelToOpen == trapPanel)
+        {
+            foodHeader.text = "TRAP\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+            //StartToggle(trapHeader, "TRAP");
         }
     }
 
@@ -126,6 +134,7 @@ public class SpriteManager : MonoBehaviour
         snakeHeader.text = "UNLOCK SUCCESSFUL";
         tailHeader.text = "UNLOCK SUCCESSFUL";
         foodHeader.text = "UNLOCK SUCCESSFUL";
+        trapHeader.text = "UNLOCK SUCCESSFUL";
 
         StartCoroutine(ResetHeaderAfterDelay());
     }
@@ -135,6 +144,7 @@ public class SpriteManager : MonoBehaviour
         snakeHeader.text = "HEAD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
         tailHeader.text = "TAIL\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
         foodHeader.text = "FOOD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+        trapHeader.text = "TRAP\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
     }
 
     public void ShowNotEnoughPointsMessage()
@@ -142,6 +152,7 @@ public class SpriteManager : MonoBehaviour
         snakeHeader.text = "NOT ENOUGH POINTS";
         tailHeader.text = "NOT ENOUGH POINTS";
         foodHeader.text = "NOT ENOUGH POINTS";
+        trapHeader.text = "NOT ENOUGH POINTS";
 
         StartCoroutine(ResetHeaderAfterDelay());
     }

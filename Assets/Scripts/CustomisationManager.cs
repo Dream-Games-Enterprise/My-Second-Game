@@ -26,33 +26,48 @@ public class FoodSkin
     public bool isUnlocked;
 }
 
+[System.Serializable]
+public class TrapSkin
+{
+    public Sprite sprite;
+    public int cost;
+    public bool isUnlocked;
+}
+
 public class CustomisationManager : MonoBehaviour
 {
     [SerializeField] SpriteManager spriteManager;
     public List<SnakeSkin> snakeSkins;
     public List<TailSkin> tailSkins;
     public List<FoodSkin> foodSkins;
+    public List<TrapSkin> trapSkins;
     public Transform skinPanelContainer;
     public Transform tailPanelContainer;
     public Transform foodPanelContainer;
+    public Transform trapPanelContainer;
     public GameObject skinPanelPrefab;
     public GameObject tailPanelPrefab;
     public GameObject foodPanelPrefab;
+    public GameObject trapPanelPrefab;
 
     [SerializeField] Image previewSnake;
     [SerializeField] Image previewTail;
     [SerializeField] Image previewFood;
+    [SerializeField] Image previewTrap;
 
     List<SkinPanel> skinPanels = new List<SkinPanel>();
     List<TailPanel> tailPanels = new List<TailPanel>();
     List<FoodPanel> foodPanels = new List<FoodPanel>();
+    List<TrapPanel> trapPanels = new List<TrapPanel>();
     int selectedSnakeIndex = 0;
     int selectedTailIndex = 0;
     int selectedFoodIndex = 0;
+    int selectedTrapIndex = 0;
 
     Color snakeColour;
     Color snakeTailColour;
     Color foodColour;
+    Color trapColour;
     [SerializeField] public List<Color> snakeColours;
 
     int currency;
@@ -105,6 +120,18 @@ public class CustomisationManager : MonoBehaviour
             panel.selectButton.onClick.AddListener(() => TryUnlockFood(index));
 
             foodPanels.Add(panel);
+        }
+        
+        foreach (var trap in trapSkins)
+        {
+            GameObject panelObj = Instantiate(trapPanelPrefab, trapPanelContainer);
+            TrapPanel panel = panelObj.GetComponent<TrapPanel>();
+            panel.TrapSetup(trap, trap.isUnlocked);
+
+            int index = trapPanels.Count;
+            panel.selectButton.onClick.AddListener(() => TryUnlockTrap(index));
+
+            trapPanels.Add(panel);
         }
     }
 
@@ -179,6 +206,29 @@ public class CustomisationManager : MonoBehaviour
             spriteManager.ShowNotEnoughPointsMessage();
         }
     }
+   
+    public void TryUnlockTrap(int index)
+    {
+        if (trapSkins[index].isUnlocked)
+        {
+            selectedTrapIndex = index;
+            SelectTrap(index);
+        }
+        else if (currency >= trapSkins[index].cost)
+        {
+            currency -= trapSkins[index].cost;
+            PlayerPrefs.SetInt("currency", currency);
+            spriteManager.ShowUnlockSuccessfulMessage();
+            trapSkins[index].isUnlocked = true;
+            trapPanels[index].UpdateTrapStatus(true, currency);
+            UpdateSelectedTrap(index);
+        }
+        else
+        {
+            Debug.Log("Not enough currency to unlock this food.");
+            spriteManager.ShowNotEnoughPointsMessage();
+        }
+    }
 
     public void SelectSkin(int index)
     {
@@ -204,6 +254,15 @@ public class CustomisationManager : MonoBehaviour
         {
             selectedFoodIndex = index;
             UpdateSelectedFood(index);
+        }
+    }
+
+    public void SelectTrap(int index)
+    {
+        if (trapSkins[index].isUnlocked)
+        {
+            selectedTrapIndex = index;
+            UpdateSelectedTrap(index);
         }
     }
 
@@ -237,6 +296,16 @@ public class CustomisationManager : MonoBehaviour
         Debug.Log("Food Skin Selected: " + foodSkins[index].sprite);
     }
 
+    void UpdateSelectedTrap(int index)
+    {
+        PlayerPrefs.SetInt("SelectedTrapIndex", index);
+        PlayerPrefs.Save();
+
+        previewTrap.sprite = trapSkins[index].sprite;
+
+        Debug.Log("Trap Skin Selected: " + trapSkins[index].sprite);
+    }
+
     public int GetSelectedSnakeIndex()
     {
         return PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
@@ -250,6 +319,11 @@ public class CustomisationManager : MonoBehaviour
     public int GetSelectedFoodIndex()
     {
         return PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+    }
+
+    public int GetSelectedTrapIndex()
+    {
+        return PlayerPrefs.GetInt("SelectedTrapIndex", 0);
     }
 
     public void SelectColour(int index)
@@ -299,6 +373,24 @@ public class CustomisationManager : MonoBehaviour
             previewFood.color = foodColour;
 
             Debug.Log("Colour Selected: " + foodColour);
+        }
+        else
+        {
+            Debug.LogWarning("Invalid colour index selected: " + index);
+        }
+    }
+    
+    public void SelectTrapColour(int index)
+    {
+        if (index >= 0 && index < snakeColours.Count)
+        {
+            trapColour = snakeColours[index];
+            PlayerPrefs.SetInt("SelectedTrapColourIndex", index);
+            PlayerPrefs.Save();
+
+            previewTrap.color = trapColour;
+
+            Debug.Log("Colour Selected: " + trapColour);
         }
         else
         {
