@@ -1,3 +1,13 @@
+NEXT
+Link up Traps to game manager so the sprites and colour is loaded
+
+
+
+
+
+
+
+
 EXTRA
 HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER

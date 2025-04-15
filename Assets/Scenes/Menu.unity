@@ -28455,38 +28455,6 @@ PrefabInstance:
       propertyPath: trapPanelContainer
       value: 
       objectReference: {fileID: 1012322263}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[1].cost
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[2].cost
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[0].sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 5a0ca204643bc47419d1f8ca05d5da60, type: 3}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[1].sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 22727b53a0e857b47a1139e8a6bbc7c8, type: 3}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[2].sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: ff698ffd5b3473841845972ddaf7d058, type: 3}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[0].isUnlocked
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: trapSkins.Array.data[1].isUnlocked
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2329680655283942787, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: m_Name
       value: Customisation_Manager
