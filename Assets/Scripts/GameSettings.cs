@@ -73,21 +73,21 @@ public class GameSettings : MonoBehaviour
 
     void UpdateWidthText(float value)
     {
-        widthValue.text = value.ToString("WIDTH | 0");
+        widthValue.text = value.ToString("MAP WIDTH | 0");
         int currentWidthChosen = (int)value;
         PlayerPrefs.SetInt("width", currentWidthChosen);
     }
 
     void UpdateHeightText(float value)
     {
-        heightValue.text = value.ToString("HEIGHT | 0");
+        heightValue.text = value.ToString("MAP HEIGHT | 0");
         int currentHeightChosen = (int)value;
         PlayerPrefs.SetInt("height", currentHeightChosen);
     }
 
     void UpdateSpeedText(float value)
     {
-        speedValue.text = value.ToString("SPEED | 0");
+        speedValue.text = value.ToString("PLAYER SPEED | 0");
         int currentSpeedChosen = (int)value;
         PlayerPrefs.SetInt("speed", currentSpeedChosen);
         Debug.Log(currentSpeedChosen);
