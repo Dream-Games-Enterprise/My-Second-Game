@@ -11,10 +11,10 @@ public class SpriteManager : MonoBehaviour
     [SerializeField] GameObject foodPanel;
     [SerializeField] GameObject trapPanel;
 
-    [SerializeField] TMP_Text snakeHeader; //Should say "SNAKE HEAD"
-    [SerializeField] TMP_Text tailHeader; //Should say "SNAKE TAIL"
-    [SerializeField] TMP_Text foodHeader; //Should say "Food"
-    [SerializeField] TMP_Text trapHeader; //Should say "Trap"
+    [SerializeField] TMP_Text snakeHeader;
+    [SerializeField] TMP_Text tailHeader; 
+    [SerializeField] TMP_Text foodHeader; 
+    [SerializeField] TMP_Text trapHeader; 
     [SerializeField] GameObject bottomPanel;
 
     string pointDisplay;

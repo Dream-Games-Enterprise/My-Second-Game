@@ -82,6 +82,7 @@ public class CustomisationManager : MonoBehaviour
         UpdateSelectedSkin(GetSelectedSnakeIndex());
         UpdateSelectedTail(GetSelectedTailIndex());
         UpdateSelectedFood(GetSelectedFoodIndex());
+        UpdateSelectedTrap(GetSelectedTrapIndex());
     }
 
     void InitializePanels()
@@ -225,7 +226,7 @@ public class CustomisationManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Not enough currency to unlock this food.");
+            Debug.Log("Not enough currency to unlock this trap.");
             spriteManager.ShowNotEnoughPointsMessage();
         }
     }

@@ -28,13 +28,14 @@ namespace RD
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
         public Sprite customObstacleSprite;
+        public Sprite customTrapSprite;
 
         public Color colour1;
         public Color colour2;
         public Color foodColour;
         public Color playerColour;
         public Color snakeTailColour;
-        public Color obstacleColor = Color.black;
+        public Color trapColour = Color.black;
 
         Sprite playerSprite;
 
@@ -835,8 +836,8 @@ namespace RD
                     PlacePlayerObject(obstacleObj, candidateNode.worldPosition);
 
                     SpriteRenderer obstacleRenderer = obstacleObj.AddComponent<SpriteRenderer>();
-                    obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(obstacleColor);
-                    obstacleRenderer.color = obstacleColor;
+                    obstacleRenderer.sprite = customObstacleSprite != null ? customObstacleSprite : CreateSprite(trapColour);
+                    obstacleRenderer.color = trapColour;
                     obstacleRenderer.sortingOrder = 1;
                     obstacleObj.transform.localScale = Vector3.one * 0.9f;
                 }
@@ -1077,6 +1078,19 @@ namespace RD
                 Debug.LogWarning("Invalid food color index. Using default color.");
                 foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
             }
+
+            int trapColourIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
+            if (trapColourIndex >= 0 && trapColourIndex < customisationManager.snakeColours.Count)
+            {
+                trapColour = customisationManager.snakeColours[trapColourIndex];
+                Debug.Log("Trap color loaded: " + trapColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid trap color index. Using default color.");
+                trapColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
         }
 
         #endregion
@@ -1229,6 +1243,17 @@ namespace RD
             else
             {
                 Debug.LogWarning("Invalid food index. Using default food sprite.");
+            }
+
+            int trapIndex = PlayerPrefs.GetInt("SelectedTrapIndex", 0);
+            if (trapIndex >= 0 && trapIndex < customisationManager.trapSkins.Count)
+            {
+                customTrapSprite = customisationManager.trapSkins[trapIndex].sprite;
+                Debug.Log("Trap skin sprite loaded: " + customTrapSprite);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid trap index. Using default trap sprite.");
             }
         }
 
