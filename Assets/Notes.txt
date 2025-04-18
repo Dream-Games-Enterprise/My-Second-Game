@@ -1,6 +1,5 @@
 NEXT
 Link up Traps to game manager so the sprites and colour is loaded
-Weird bug where trap colour updates food colour
 
 
 

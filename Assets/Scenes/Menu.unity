@@ -2009,7 +2009,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2219,7 +2219,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2351,7 +2351,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3368,7 +3368,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9215,7 +9215,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13221,7 +13221,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14579,7 +14579,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16680,7 +16680,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17344,11 +17344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdae9e1ab3aa0ed4dac0e9e9c1c29346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrows:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  rotationSpeed: 50
 --- !u!1 &1323004831
 GameObject:
   m_ObjectHideFlags: 0
@@ -20962,7 +20957,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22457,7 +22452,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22664,7 +22659,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22796,7 +22791,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -23483,7 +23478,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -27116,7 +27111,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1296573347}
         m_TargetAssemblyTypeName: CustomisationManager, Assembly-CSharp
-        m_MethodName: SelectFoodColour
+        m_MethodName: SelectTrapColour
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
