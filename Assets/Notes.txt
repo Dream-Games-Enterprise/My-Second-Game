@@ -1,6 +1,7 @@
 NEXT
-Link up Traps to game manager so the sprites and colour is loaded
 
+
+Jess Minecraft coords for Nether
 -45, 73, 82
 
 
@@ -14,6 +15,7 @@ CUSTOMISAABLE OBSTACLE SPRITES
 
 
 CORE
+ask chatgpt to make a modular panel swipe manager where we can just give a entrance and exit direction for the game to swipe/close and open it
 Make faster player speeds since 5 feels slow since smoothing the movement
 Add particle effects for when food is picked up.
 A fading swiping effect for where player inputs
@@ -27,7 +29,6 @@ Have a leaderboard for most points held - just count the bank balance not with s
 
 
 BUG
-PLAYER FREEZES WHEN INPUTTING TWO DIRECTIONS QUICKLY SINCE IT SEE OPPOSITE DIRECTION 
 Price resets when changing scenes even though already equipped - also removes currency again so needs fixing and loading at start to see which ones are unlocked and don't need to cost or have a number displaying
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
 food spawning in tail -  
