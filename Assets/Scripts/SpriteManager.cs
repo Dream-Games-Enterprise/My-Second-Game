@@ -65,7 +65,7 @@ public class SpriteManager : MonoBehaviour
         }
         else if (panelToOpen == trapPanel)
         {
-            foodHeader.text = "TRAP\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+            trapHeader.text = "TRAP\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
             //StartToggle(trapHeader, "TRAP");
         }
     }

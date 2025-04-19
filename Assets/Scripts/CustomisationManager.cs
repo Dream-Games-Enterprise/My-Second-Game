@@ -79,10 +79,22 @@ public class CustomisationManager : MonoBehaviour
         spriteManager = FindObjectOfType<SpriteManager>();
         InitializePanels();
 
+        // Load selected skin indices and apply
         UpdateSelectedSkin(GetSelectedSnakeIndex());
         UpdateSelectedTail(GetSelectedTailIndex());
         UpdateSelectedFood(GetSelectedFoodIndex());
         UpdateSelectedTrap(GetSelectedTrapIndex());
+
+        // Load and apply saved colors
+        int snakeColorIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+        int tailColorIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+        int foodColorIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+        int trapColorIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
+
+        SelectColour(snakeColorIndex);
+        SelectTailColour(tailColorIndex);
+        SelectFoodColour(foodColorIndex);
+        SelectTrapColour(trapColorIndex);
     }
 
     void InitializePanels()
