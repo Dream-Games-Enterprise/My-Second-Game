@@ -6126,7 +6126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -28434,10 +28434,6 @@ PrefabInstance:
       propertyPath: previewSnake
       value: 
       objectReference: {fileID: 1284100134}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: spriteManager
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: foodPanelContainer
       value: 
