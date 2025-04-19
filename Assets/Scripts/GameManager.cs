@@ -73,7 +73,7 @@ namespace RD
         [SerializeField] GameObject buttonControl;
         public bool isButtonControl; // Must be public to access from SwipeInput
 
-        public float moveRate = 0.1f;
+        public float moveRate = 0.05f;
         float timer;
 
         Vector2 touchStartPos;
