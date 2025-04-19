@@ -1,7 +1,7 @@
 NEXT
 Link up Traps to game manager so the sprites and colour is loaded
 
-
+-45, 73, 82
 
 
 

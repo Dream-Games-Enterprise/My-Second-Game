@@ -47,6 +47,7 @@ namespace RD
 
         int playerSkinIndex;
         int playerTailIndex;
+        int trapIndexGetter;
         int foodIndex;
 
         #endregion
@@ -138,9 +139,11 @@ namespace RD
             LoadSpeedSettings();
             int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
             int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+            int trapIndex = PlayerPrefs.GetInt("SelectedTrapIndex", 0);
 
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
+            trapIndexGetter = customisationManager.GetSelectedTrapIndex();
             customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
 
             onStart.Invoke();
@@ -1249,6 +1252,7 @@ namespace RD
             if (trapIndex >= 0 && trapIndex < customisationManager.trapSkins.Count)
             {
                 customTrapSprite = customisationManager.trapSkins[trapIndex].sprite;
+                customObstacleSprite = customTrapSprite;
                 Debug.Log("Trap skin sprite loaded: " + customTrapSprite);
             }
             else
