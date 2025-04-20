@@ -68,7 +68,10 @@ public class CustomisationManager : MonoBehaviour
     Color snakeTailColour;
     Color foodColour;
     Color trapColour;
+    Color mapPrimaryColor;
+    Color mapSecondaryColor;
     [SerializeField] public List<Color> snakeColours;
+    [SerializeField] public List<Color> mapColours;
 
     int currency;
 
@@ -88,12 +91,39 @@ public class CustomisationManager : MonoBehaviour
         int tailColorIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
         int foodColorIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
         int trapColorIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
+        int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
+        int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
 
+        SelectMapPrimaryColor(mapPrimaryColorIndex);
+        SelectMapSecondaryColor(mapSecondaryColorIndex);
         SelectColour(snakeColorIndex);
         SelectTailColour(tailColorIndex);
         SelectFoodColour(foodColorIndex);
         SelectTrapColour(trapColorIndex);
     }
+
+    public void SelectMapPrimaryColor(int index)
+    {
+        if (index >= 0 && index < mapColours.Count)
+        {
+            mapPrimaryColor = mapColours[index];
+            PlayerPrefs.SetInt("SelectedMapPrimaryColorIndex", index);
+            PlayerPrefs.Save();
+            // Apply the color to your map background here if needed
+        }
+    }
+
+    public void SelectMapSecondaryColor(int index)
+    {
+        if (index >= 0 && index < mapColours.Count)
+        {
+            mapSecondaryColor = mapColours[index];
+            PlayerPrefs.SetInt("SelectedMapSecondaryColorIndex", index);
+            PlayerPrefs.Save();
+            // Apply the color to your map background here if needed
+        }
+    }
+
 
     void InitializePanels()
     {

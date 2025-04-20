@@ -1094,6 +1094,29 @@ namespace RD
                 trapColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
             }
 
+            int mapPrimaryIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
+            if (mapPrimaryIndex >= 0 && mapPrimaryIndex < customisationManager.mapColours.Count)
+            {
+                colour1 = customisationManager.mapColours[mapPrimaryIndex];
+                Debug.Log("Map Primary color loaded: " + colour1);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid map primary color index. Using default color.");
+                colour1 = Color.gray;
+            }
+
+            int mapSecondaryIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
+            if (mapSecondaryIndex >= 0 && mapSecondaryIndex < customisationManager.mapColours.Count)
+            {
+                colour2 = customisationManager.mapColours[mapSecondaryIndex];
+                Debug.Log("Map Secondary color loaded: " + colour2);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid map secondary color index. Using default color.");
+                colour2 = Color.black;
+            }
         }
 
         #endregion
