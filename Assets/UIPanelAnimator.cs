@@ -5,35 +5,34 @@ using UnityEngine;
 public class UIPanelAnimator : MonoBehaviour
 {
     public float animationDuration = 0.3f;
-    public Vector3 hiddenOffset = new Vector3(0, -2000, 0);
+    public Vector3 hiddenOffset = new Vector3(0, -2000, 0); // Off-screen offset
     public AnimationCurve easeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-    // Cache original positions
-    private Dictionary<Transform, Vector3> originalPositions = new Dictionary<Transform, Vector3>();
+    private Dictionary<Transform, Vector3> onScreenPositions = new Dictionary<Transform, Vector3>();
 
     public void AnimateIn(GameObject panel)
     {
         var tf = panel.transform;
 
-        if (!originalPositions.ContainsKey(tf))
-            originalPositions[tf] = tf.localPosition;
+        if (!onScreenPositions.ContainsKey(tf))
+            onScreenPositions[tf] = tf.localPosition;
 
-        Vector3 originalPos = originalPositions[tf];
-        tf.localPosition = originalPos + hiddenOffset;
+        Vector3 visiblePos = onScreenPositions[tf];
+        tf.localPosition = visiblePos + hiddenOffset;
         panel.SetActive(true);
 
-        StartCoroutine(MovePanel(tf, originalPos));
+        StartCoroutine(MovePanel(tf, visiblePos));
     }
 
     public void AnimateOut(GameObject panel)
     {
         var tf = panel.transform;
 
-        if (!originalPositions.ContainsKey(tf))
-            originalPositions[tf] = tf.localPosition;
+        if (!onScreenPositions.ContainsKey(tf))
+            onScreenPositions[tf] = tf.localPosition;
 
-        Vector3 targetPos = originalPositions[tf] + hiddenOffset;
-        StartCoroutine(MovePanel(tf, targetPos, () => panel.SetActive(false)));
+        Vector3 hiddenPos = onScreenPositions[tf] + hiddenOffset;
+        StartCoroutine(MovePanel(tf, hiddenPos, () => panel.SetActive(false)));
     }
 
     private IEnumerator MovePanel(Transform panel, Vector3 targetPos, System.Action onComplete = null)
@@ -52,7 +51,31 @@ public class UIPanelAnimator : MonoBehaviour
         panel.localPosition = targetPos;
         onComplete?.Invoke();
     }
+
+    public void AnimateInFromTop(GameObject panel)
+    {
+        var tf = panel.transform;
+
+        if (!onScreenPositions.ContainsKey(tf))
+            onScreenPositions[tf] = tf.localPosition;
+
+        Vector3 visiblePos = onScreenPositions[tf];
+        Vector3 topOffset = new Vector3(0, 2000, 0); // Slide in from above
+        tf.localPosition = visiblePos + topOffset;
+        panel.SetActive(true);
+
+        StartCoroutine(MovePanel(tf, visiblePos));
+    }
+
+    public void AnimateOutToTop(GameObject panel)
+    {
+        var tf = panel.transform;
+
+        if (!onScreenPositions.ContainsKey(tf))
+            onScreenPositions[tf] = tf.localPosition;
+
+        Vector3 topOffset = new Vector3(0, 2000, 0); // Slide out above
+        Vector3 hiddenPos = onScreenPositions[tf] + topOffset;
+        StartCoroutine(MovePanel(tf, hiddenPos, () => panel.SetActive(false)));
+    }
 }
-
-
-//ORIGINAL POS SHOULD BE OFF SCREEN THEN ANIMATE IN ONTO THE SCREEN AND VICE VERSA

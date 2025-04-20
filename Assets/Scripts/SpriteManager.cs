@@ -6,15 +6,17 @@ using TMPro;
 
 public class SpriteManager : MonoBehaviour
 {
+    [SerializeField] UIPanelAnimator uiPanelAnimator;
+
     [SerializeField] GameObject snakePanel;
     [SerializeField] GameObject tailPanel;
     [SerializeField] GameObject foodPanel;
     [SerializeField] GameObject trapPanel;
 
     [SerializeField] TMP_Text snakeHeader;
-    [SerializeField] TMP_Text tailHeader; 
-    [SerializeField] TMP_Text foodHeader; 
-    [SerializeField] TMP_Text trapHeader; 
+    [SerializeField] TMP_Text tailHeader;
+    [SerializeField] TMP_Text foodHeader;
+    [SerializeField] TMP_Text trapHeader;
     [SerializeField] GameObject bottomPanel;
 
     string pointDisplay;
@@ -28,10 +30,14 @@ public class SpriteManager : MonoBehaviour
 
     public void DisablePanels()
     {
-        snakePanel.SetActive(false);
-        tailPanel.SetActive(false);
-        foodPanel.SetActive(false);
-        trapPanel.SetActive(false);
+        if (snakePanel.activeSelf)
+            uiPanelAnimator.AnimateOutToTop(snakePanel);
+        if (tailPanel.activeSelf)
+            uiPanelAnimator.AnimateOutToTop(tailPanel);
+        if (foodPanel.activeSelf)
+            uiPanelAnimator.AnimateOutToTop(foodPanel);
+        if (trapPanel.activeSelf)
+            uiPanelAnimator.AnimateOutToTop(trapPanel);
 
         bottomPanel.SetActive(true);
 
@@ -44,39 +50,27 @@ public class SpriteManager : MonoBehaviour
 
     public void OpenPanel(GameObject panelToOpen)
     {
-        DisablePanels();
-        panelToOpen.SetActive(true);
+        DisablePanels(); // Animate out to top
+        uiPanelAnimator.AnimateInFromTop(panelToOpen); // Animate in from top
         bottomPanel.SetActive(false);
 
+        int currency = PlayerPrefs.GetInt("currency");
+
         if (panelToOpen == snakePanel)
-        {
-            snakeHeader.text = "HEAD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-            //StartToggle(snakeHeader, "SNAKE HEAD");
-        }
+            snakeHeader.text = "HEAD\nTOTAL POINTS: " + currency;
         else if (panelToOpen == tailPanel)
-        {
-            tailHeader.text = "TAIL\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-            //StartToggle(tailHeader, "SNAKE TAIL");
-        }
+            tailHeader.text = "TAIL\nTOTAL POINTS: " + currency;
         else if (panelToOpen == foodPanel)
-        {
-            foodHeader.text = "FOOD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-            //StartToggle(foodHeader, "FOOD");
-        }
+            foodHeader.text = "FOOD\nTOTAL POINTS: " + currency;
         else if (panelToOpen == trapPanel)
-        {
-            trapHeader.text = "TRAP\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-            //StartToggle(trapHeader, "TRAP");
-        }
+            trapHeader.text = "TRAP\nTOTAL POINTS: " + currency;
     }
 
     void StartToggle(TMP_Text header, string originalText)
     {
-        // Stop any ongoing toggles
         if (toggleCoroutine != null)
-        {
             StopCoroutine(toggleCoroutine);
-        }
+
         toggleCoroutine = StartCoroutine(ToggleHeaderText(header, originalText));
     }
 
@@ -87,18 +81,12 @@ public class SpriteManager : MonoBehaviour
             yield return StartCoroutine(FadeOutText(header));
 
             header.text = originalText;
-
             yield return StartCoroutine(FadeInText(header));
-
             yield return new WaitForSeconds(1.5f);
 
             yield return StartCoroutine(FadeOutText(header));
-
-            pointDisplay = "TOTAL POINTS\n" + PlayerPrefs.GetInt("currency").ToString();
-            header.text = pointDisplay;
-
+            header.text = "TOTAL POINTS\n" + PlayerPrefs.GetInt("currency").ToString();
             yield return StartCoroutine(FadeInText(header));
-
             yield return new WaitForSeconds(1.5f);
         }
     }
@@ -141,10 +129,10 @@ public class SpriteManager : MonoBehaviour
 
     public void UpdateCurrencyHeader(int newCurrency)
     {
-        snakeHeader.text = "HEAD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-        tailHeader.text = "TAIL\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-        foodHeader.text = "FOOD\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
-        trapHeader.text = "TRAP\nTOTAL POINTS: " + PlayerPrefs.GetInt("currency").ToString();
+        snakeHeader.text = "HEAD\nTOTAL POINTS: " + newCurrency;
+        tailHeader.text = "TAIL\nTOTAL POINTS: " + newCurrency;
+        foodHeader.text = "FOOD\nTOTAL POINTS: " + newCurrency;
+        trapHeader.text = "TRAP\nTOTAL POINTS: " + newCurrency;
     }
 
     public void ShowNotEnoughPointsMessage()

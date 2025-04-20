@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 public class Leaderboard : MonoBehaviour
 {
     [SerializeField] GameObject leaderboardPanel;
     [SerializeField] GameObject bottomPanel;
     [SerializeField] TMP_Text personalBest;
+    [SerializeField] UIPanelAnimator uiPanelAnimator;
+
+    private bool isLeaderboardActive = false;
 
     void Start()
     {
@@ -18,8 +20,19 @@ public class Leaderboard : MonoBehaviour
 
     public void ToggleLeaderboardPanel()
     {
-        bottomPanel.SetActive(!bottomPanel.activeSelf);
-        leaderboardPanel.SetActive(!leaderboardPanel.activeSelf);
+        isLeaderboardActive = !isLeaderboardActive;
+
         personalBest.text = "HIGH SCORE\n" + PlayerPrefs.GetInt("highScore");
+
+        if (isLeaderboardActive)
+        {
+            bottomPanel.SetActive(false);
+            uiPanelAnimator.AnimateIn(leaderboardPanel);
+        }
+        else
+        {
+            uiPanelAnimator.AnimateOut(leaderboardPanel);
+            bottomPanel.SetActive(true);
+        }
     }
 }

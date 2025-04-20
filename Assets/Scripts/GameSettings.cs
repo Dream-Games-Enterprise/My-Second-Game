@@ -126,9 +126,4 @@ public class GameSettings : MonoBehaviour
         else
             panelAnimator.AnimateOut(settingsPanel);
     }
-
-    /*public void CloseSettings()
-    {
-        settingsPanel.SetActive(false);
-    }*/
 }

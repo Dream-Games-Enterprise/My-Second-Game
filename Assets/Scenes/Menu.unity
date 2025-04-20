@@ -6472,7 +6472,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 313538773}
   m_Direction: 0
   m_MinValue: 5
-  m_MaxValue: 20
+  m_MaxValue: 15
   m_WholeNumbers: 1
   m_Value: 5
   m_OnValueChanged:
@@ -16843,7 +16843,7 @@ MonoBehaviour:
   bottomPanel: {fileID: 533785205}
   inputTypeText: {fileID: 5580326}
   toggleInputTypeButton: {fileID: 1741100445}
-  panelAnimator: {fileID: 0}
+  panelAnimator: {fileID: 1320675193}
 --- !u!4 &1290690119
 Transform:
   m_ObjectHideFlags: 0
@@ -19479,7 +19479,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 728915835}
   m_Direction: 0
   m_MinValue: 5
-  m_MaxValue: 20
+  m_MaxValue: 15
   m_WholeNumbers: 1
   m_Value: 5
   m_OnValueChanged:
@@ -25382,6 +25382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7b7fbf168856c8489c268af0d0e7f6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiPanelAnimator: {fileID: 1320675193}
   snakePanel: {fileID: 827687902}
   tailPanel: {fileID: 105287979}
   foodPanel: {fileID: 2060114605}
@@ -27218,6 +27219,7 @@ MonoBehaviour:
   leaderboardPanel: {fileID: 325521113}
   bottomPanel: {fileID: 533785205}
   personalBest: {fileID: 1842371643}
+  uiPanelAnimator: {fileID: 1320675193}
 --- !u!4 &2028437652
 Transform:
   m_ObjectHideFlags: 0
@@ -27605,7 +27607,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1290690118}
         m_TargetAssemblyTypeName: GameSettings, Assembly-CSharp
-        m_MethodName: CloseSettings
+        m_MethodName: ToggleSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
