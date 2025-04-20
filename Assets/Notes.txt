@@ -1,5 +1,5 @@
 NEXT
-
+Add map colour selector for both colours
 
 Jess Minecraft coords for Nether
 -45, 73, 82
