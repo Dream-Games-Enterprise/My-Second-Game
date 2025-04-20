@@ -1,6 +1,9 @@
 NEXT
 Add map colour selector for both colours - make map colours buttons open panel with options of colours to choose from
 Some food is not picked up when obstacles are turned off??? weird bug
+Make trap selector disppdear if obstacles toggled off
+
+
 Jess Minecraft coords for Nether
 -45, 73, 82
 
