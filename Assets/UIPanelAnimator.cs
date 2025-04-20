@@ -5,34 +5,69 @@ using UnityEngine;
 public class UIPanelAnimator : MonoBehaviour
 {
     public float animationDuration = 0.3f;
-    public Vector3 hiddenOffset = new Vector3(0, -2000, 0); // Off-screen offset
+    public float buffer = 200f; // Extra space to ensure panel is fully off-screen
     public AnimationCurve easeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     private Dictionary<Transform, Vector3> onScreenPositions = new Dictionary<Transform, Vector3>();
 
     public void AnimateIn(GameObject panel)
     {
-        var tf = panel.transform;
+        var rt = panel.GetComponent<RectTransform>();
+        if (!onScreenPositions.ContainsKey(rt))
+            onScreenPositions[rt] = rt.localPosition;
 
-        if (!onScreenPositions.ContainsKey(tf))
-            onScreenPositions[tf] = tf.localPosition;
+        Vector3 visiblePos = onScreenPositions[rt];
+        float panelHeight = GetDynamicOffset(rt);
+        Vector3 offset = new Vector3(0, -panelHeight, 0);
 
-        Vector3 visiblePos = onScreenPositions[tf];
-        tf.localPosition = visiblePos + hiddenOffset;
+        rt.localPosition = visiblePos + offset;
         panel.SetActive(true);
 
-        StartCoroutine(MovePanel(tf, visiblePos));
+        StartCoroutine(MovePanel(rt, visiblePos));
     }
 
     public void AnimateOut(GameObject panel)
     {
-        var tf = panel.transform;
+        var rt = panel.GetComponent<RectTransform>();
+        if (!onScreenPositions.ContainsKey(rt))
+            onScreenPositions[rt] = rt.localPosition;
 
-        if (!onScreenPositions.ContainsKey(tf))
-            onScreenPositions[tf] = tf.localPosition;
+        Vector3 visiblePos = onScreenPositions[rt];
+        float panelHeight = GetDynamicOffset(rt);
+        Vector3 offset = new Vector3(0, -panelHeight, 0);
 
-        Vector3 hiddenPos = onScreenPositions[tf] + hiddenOffset;
-        StartCoroutine(MovePanel(tf, hiddenPos, () => panel.SetActive(false)));
+        Vector3 hiddenPos = visiblePos + offset;
+        StartCoroutine(MovePanel(rt, hiddenPos, () => panel.SetActive(false)));
+    }
+
+    public void AnimateInFromTop(GameObject panel)
+    {
+        var rt = panel.GetComponent<RectTransform>();
+        if (!onScreenPositions.ContainsKey(rt))
+            onScreenPositions[rt] = rt.localPosition;
+
+        Vector3 visiblePos = onScreenPositions[rt];
+        float panelHeight = GetDynamicOffset(rt);
+        Vector3 offset = new Vector3(0, panelHeight, 0);
+
+        rt.localPosition = visiblePos + offset;
+        panel.SetActive(true);
+
+        StartCoroutine(MovePanel(rt, visiblePos));
+    }
+
+    public void AnimateOutToTop(GameObject panel)
+    {
+        var rt = panel.GetComponent<RectTransform>();
+        if (!onScreenPositions.ContainsKey(rt))
+            onScreenPositions[rt] = rt.localPosition;
+
+        Vector3 visiblePos = onScreenPositions[rt];
+        float panelHeight = GetDynamicOffset(rt);
+        Vector3 offset = new Vector3(0, panelHeight, 0);
+
+        Vector3 hiddenPos = visiblePos + offset;
+        StartCoroutine(MovePanel(rt, hiddenPos, () => panel.SetActive(false)));
     }
 
     private IEnumerator MovePanel(Transform panel, Vector3 targetPos, System.Action onComplete = null)
@@ -52,30 +87,9 @@ public class UIPanelAnimator : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    public void AnimateInFromTop(GameObject panel)
+    private float GetDynamicOffset(RectTransform rt)
     {
-        var tf = panel.transform;
-
-        if (!onScreenPositions.ContainsKey(tf))
-            onScreenPositions[tf] = tf.localPosition;
-
-        Vector3 visiblePos = onScreenPositions[tf];
-        Vector3 topOffset = new Vector3(0, 2000, 0); // Slide in from above
-        tf.localPosition = visiblePos + topOffset;
-        panel.SetActive(true);
-
-        StartCoroutine(MovePanel(tf, visiblePos));
-    }
-
-    public void AnimateOutToTop(GameObject panel)
-    {
-        var tf = panel.transform;
-
-        if (!onScreenPositions.ContainsKey(tf))
-            onScreenPositions[tf] = tf.localPosition;
-
-        Vector3 topOffset = new Vector3(0, 2000, 0); // Slide out above
-        Vector3 hiddenPos = onScreenPositions[tf] + topOffset;
-        StartCoroutine(MovePanel(tf, hiddenPos, () => panel.SetActive(false)));
+        float height = rt.rect.height * rt.lossyScale.y;
+        return height + buffer; // Add extra buffer to ensure full off-screen move
     }
 }
