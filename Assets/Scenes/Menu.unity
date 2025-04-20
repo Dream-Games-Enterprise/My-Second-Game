@@ -360,7 +360,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -5662,7 +5662,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -16843,6 +16843,7 @@ MonoBehaviour:
   bottomPanel: {fileID: 533785205}
   inputTypeText: {fileID: 5580326}
   toggleInputTypeButton: {fileID: 1741100445}
+  panelAnimator: {fileID: 0}
 --- !u!4 &1290690119
 Transform:
   m_ObjectHideFlags: 0
@@ -16975,7 +16976,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -17341,9 +17342,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 1320675188}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdae9e1ab3aa0ed4dac0e9e9c1c29346, type: 3}
+  m_Script: {fileID: 11500000, guid: 19f25dbe9351748408a965d7c5fa2ed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationDuration: 0.3
+  hiddenOffset: {x: 0, y: -2000, z: 0}
+  easeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1323004831
 GameObject:
   m_ObjectHideFlags: 0

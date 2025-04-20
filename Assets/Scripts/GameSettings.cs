@@ -28,6 +28,9 @@ public class GameSettings : MonoBehaviour
     enum InputType { Swipe, Buttons }
     InputType currentInputType;
 
+    [SerializeField] UIPanelAnimator panelAnimator;
+
+
     void Start()
     {
         Time.timeScale = 1f;
@@ -117,16 +120,15 @@ public class GameSettings : MonoBehaviour
     // New ToggleSettings function with Lerp for position
     public void ToggleSettings()
     {
-        Debug.Log("BEING CLICKED");
-
-        settingsPanel.SetActive(true);
-
         isSettingsActive = !isSettingsActive;
-
+        if (isSettingsActive)
+            panelAnimator.AnimateIn(settingsPanel);
+        else
+            panelAnimator.AnimateOut(settingsPanel);
     }
 
-    public void CloseSettings()
+    /*public void CloseSettings()
     {
         settingsPanel.SetActive(false);
-    }
+    }*/
 }
