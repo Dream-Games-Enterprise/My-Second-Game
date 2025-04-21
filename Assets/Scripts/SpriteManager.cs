@@ -54,7 +54,6 @@ public class SpriteManager : MonoBehaviour
         }
     }
 
-
     public void OpenPanel(GameObject panelToOpen)
     {
         DisablePanels(); // Animate out to top

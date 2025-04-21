@@ -111,6 +111,9 @@ public class CustomisationManager : MonoBehaviour
             mapPrimaryColor = mapColours[index];
             PlayerPrefs.SetInt("SelectedMapPrimaryColorIndex", index);
             PlayerPrefs.Save();
+
+            // Apply to preview
+            previewPrimary.color = mapPrimaryColor;
         }
     }
 
@@ -121,8 +124,12 @@ public class CustomisationManager : MonoBehaviour
             mapSecondaryColor = mapColours[index];
             PlayerPrefs.SetInt("SelectedMapSecondaryColorIndex", index);
             PlayerPrefs.Save();
+
+            // Apply to preview
+            previewSecondary.color = mapSecondaryColor;
         }
     }
+
 
     void InitializePanels()
     {
