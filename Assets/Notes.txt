@@ -1,5 +1,5 @@
 NEXT
-Some food is not picked up when obstacles are turned off??? weird bug
+Some food is not picked up (potentially when obstacles are turned off???) weird bug
 
 
 Jess Minecraft coords for Nether
@@ -16,30 +16,23 @@ CUSTOMISAABLE OBSTACLE SPRITES
 
 
 CORE
-ask chatgpt to make a modular panel swipe manager where we can just give a entrance and exit direction for the game to swipe/close and open it
-Make faster player speeds since 5 feels slow since smoothing the movement
 Add particle effects for when food is picked up.
 A fading swiping effect for where player inputs
 Make turning and swiping practically instant
 Personal widget
 Leaderboard
-Map colours
-If hgigher player speed then +1 to each map size camera size so easier to see upcoming obstacles
 
 Have a leaderboard for most points held - just count the bank balance not with sprites and stuff have them toggle to opt in to leaderboard. so need high score for 1 match then total score ever achieved...
 
 
 BUG
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
-food spawning in tail -  
 Player can swipe when paused and when unpause the player changes to the direction, exploit that needs fixing
 Toy with speed settings - keep within range of 10 but 3 and 10 feel like same speed and 1 might still be too fast
 
 
 Update in Future If Played:
 
-- Fix obstacles creating dead ends, happens maybe 50% of map generations but can be more, can be less...
-- Camera size to zoom out/increase/decrease when player gets bigger
 - Moving obstacle nodes?
 - Have speed up on food pick up
 
