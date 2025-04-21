@@ -165,7 +165,7 @@ namespace RD
             {
                 isCameraAdjusting = true;
                 UpdateCameraPosition();
-                AdjustCameraSize();
+                //AdjustCameraSize();
                 isCameraAdjusting = false;
             }
 
@@ -463,7 +463,14 @@ namespace RD
                     availableNodes.Remove(previousNode);
                     foodNodes.Remove(targetNode);
                     CreateFood();
+
+                    // Increase camera size by 0.05f for large maps
+                    if (maxWidth > 10 || maxHeight > 10)
+                    {
+                        Camera.main.orthographicSize += 0.005f;
+                    }
                 }
+
 
                 MoveTail();
 
@@ -1133,83 +1140,71 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            AdjustCameraSize();
+            //AdjustCameraSize();
 
             float cameraSize = Camera.main.orthographicSize;
             Vector3 playerPosition = playerObject.transform.position;
 
             // Define thresholds for small, medium, and large maps
             float smallMapThreshold = 6f;
-            float mediumMapThreshold = 8f;
+            float mediumMapThreshold = 9f;
             float largeMapThreshold = 10f;
 
             bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
             bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
             bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
 
-            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f; // Check for vastly different width and height
+            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f;
 
             if (isSmallMap)
             {
-                // For small maps, center the camera on the map without following the player
                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
             }
             else if (isMediumMap)
             {
-                // For medium maps, adjust the camera to follow the player, and allow it to move beyond the map
+                Debug.Log("is this called cuuuh");
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
 
-                // Adjust the camera size based on the medium map size
                 Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
 
-                // Allow camera to go beyond the map boundaries like large maps
                 float halfWidth = maxWidth * 0.5f;
                 float halfHeight = maxHeight * 0.5f;
 
-                // The camera should be able to move beyond the map boundaries, hence removing the clamp
                 cameraHolder.position = new Vector3(
                     Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
                     Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
                     cameraHolder.position.z
                 );
             }
-            else if (isLargeMap || isRectangularMap)  // If it's a large or rectangular map, ignore clamping
+            else if (isLargeMap || isRectangularMap)  
             {
-                // For large or rectangular maps, fully follow the player without clamping
+                Debug.Log("THIS IS BIGG");
                 Vector3 desiredPosition = playerPosition;
 
-                // Define boundaries for camera movement based on the map size
                 float halfWidth = maxWidth * 0.5f;
                 float halfHeight = maxHeight * 0.5f;
 
-                // If it's a rectangular map, we should avoid clamping the camera position to the map's limits
                 if (isRectangularMap)
                 {
-                    // Follow the player to the left or right (for wide maps) and up or down (for tall maps)
-                    if (maxWidth > maxHeight)  // If it's a wide map
+                    if (maxWidth > maxHeight)
                     {
-                        // Adjust the x position to follow the player without clamping
-                        desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);  // Follow left and right
+                        desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);  
                     }
-                    else  // If it's a tall map
+                    else 
                     {
-                        // Adjust the y position to follow the player without clamping
-                        desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight);  // Follow top and bottom
+                        desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight); 
                     }
                 }
                 else
                 {
-                    // For large maps, the camera should still follow the player but within bounds
                     float cameraHorizontalLimit = halfWidth - cameraSize;
                     float cameraVerticalLimit = halfHeight - cameraSize;
 
-                    // Adjust the camera position to follow the player within the boundaries of the map
                     desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
                     desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
                 }
 
-                // Update the camera position
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
             }
         }
