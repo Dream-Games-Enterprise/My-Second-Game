@@ -1020,12 +1020,16 @@ namespace RD
         {
             Vector3 minScale = Vector3.one * 0.6f;
             Vector3 maxScale = Vector3.one * 0.7f;
+            float duration = 0.5f;
 
-            float duration = 0.5f; 
-
-            while (foodObject != null) 
+            // Loop as long as the GameObject and its Transform exist
+            while (foodObject != null && foodObject.transform != null)
             {
                 yield return TweenScale(foodObject.transform, minScale, maxScale, duration);
+
+                // Break early if destroyed mid-animation
+                if (foodObject == null || foodObject.transform == null)
+                    yield break;
 
                 yield return TweenScale(foodObject.transform, maxScale, minScale, duration);
             }
@@ -1037,12 +1041,16 @@ namespace RD
 
             while (elapsedTime < duration)
             {
+                if (target == null)
+                    yield break;
+
                 target.localScale = Vector3.Lerp(start, end, elapsedTime / duration);
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
 
-            target.localScale = end;
+            if (target != null)
+                target.localScale = end;
         }
 
         void FetchColours()
