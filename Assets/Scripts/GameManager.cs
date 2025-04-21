@@ -119,6 +119,8 @@ namespace RD
 
         #endregion
 
+        bool cameraStartedAtMax = false;
+
         void Awake()
         {
             LoadSpritesBits();
@@ -463,9 +465,9 @@ namespace RD
                     foodNodes.Remove(targetNode);
                     CreateFood();
 
-                    if (maxWidth > 10 || maxHeight > 10)
+                    if (cameraStartedAtMax && Camera.main.orthographicSize < 12f) // Hard cap if needed
                     {
-                        Camera.main.orthographicSize += 0.005f;
+                        Camera.main.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 0.005f, 12f);
                     }
                 }
 
@@ -1181,18 +1183,24 @@ namespace RD
 
         void AdjustCameraSize()
         {
-            // Calculate how many units wide/tall the camera needs to see
             float verticalSize = maxHeight / 2f;
             float horizontalSize = (maxWidth / Camera.main.aspect) / 2f;
-
-            // Use the larger of the two to ensure full map is visible
             float requiredSize = Mathf.Max(verticalSize, horizontalSize);
 
-            // Optional padding (0.5–1f looks clean)
             float padding = 0.5f;
-            Camera.main.orthographicSize = requiredSize + padding;
-        }
+            float adjustedSize = requiredSize + padding;
 
+            if (adjustedSize > 8.2f)
+            {
+                Camera.main.orthographicSize = 8.2f;
+                cameraStartedAtMax = true;
+            }
+            else
+            {
+                Camera.main.orthographicSize = adjustedSize;
+                cameraStartedAtMax = false;
+            }
+        }
 
 
         #endregion
