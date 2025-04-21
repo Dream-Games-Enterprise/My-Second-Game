@@ -130,7 +130,6 @@ public class CustomisationManager : MonoBehaviour
         }
     }
 
-
     void InitializePanels()
     {
         for (int i = 0; i < snakeSkins.Count; i++)

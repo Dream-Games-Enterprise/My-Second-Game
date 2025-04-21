@@ -198,7 +198,7 @@ namespace RD
                         if (!isOppositeDir(d))
                         {
                             targetDirection = d;
-                            inputBuffer.RemoveAt(i); // Remove the one we used
+                            inputBuffer.RemoveAt(i);
                             break;
                         }
                     }
@@ -958,7 +958,7 @@ namespace RD
         public void GameOver()
         {
             isGameOver = true;
-            Time.timeScale = 1f; //set to 0.3f once particle system of dying snake is added
+            Time.timeScale = 1f;
             isFirstInput = false;
             scoreManager.ApplyEndMultipliers();
             uiHandler.GameEndMenu();
@@ -969,7 +969,7 @@ namespace RD
         void TriggerVictory()
         {
             isGameOver = true;
-            Time.timeScale = 0.3f; // Slow down time to celebrate the win
+            Time.timeScale = 0.3f;
 
             scoreManager.ApplyEndMultipliers();
             scoreManager.AddWinMultiplier();
@@ -997,10 +997,8 @@ namespace RD
             s.obj.transform.localScale = Vector3.one * 0.75f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
 
-            // Assign the selected custom tail sprite
             r.sprite = customTailSprite != null ? customTailSprite : playerSprite;
 
-            // Apply the selected tail color
             r.color = snakeTailColour;
 
             r.sortingOrder = 1;
@@ -1020,18 +1018,15 @@ namespace RD
 
         IEnumerator TweenFoodScale(GameObject foodObject)
         {
-            // Define the tweening scale values
             Vector3 minScale = Vector3.one * 0.6f;
             Vector3 maxScale = Vector3.one * 0.7f;
 
-            float duration = 0.5f; // Duration of one tween cycle (expand or shrink)
+            float duration = 0.5f; 
 
-            while (foodObject != null)  // Loop until foodObject is destroyed
+            while (foodObject != null) 
             {
-                // Scale up
                 yield return TweenScale(foodObject.transform, minScale, maxScale, duration);
 
-                // Scale down
                 yield return TweenScale(foodObject.transform, maxScale, minScale, duration);
             }
         }
