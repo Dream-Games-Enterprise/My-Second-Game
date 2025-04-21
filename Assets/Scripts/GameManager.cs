@@ -242,19 +242,20 @@ namespace RD
             switch (speed)
             {
                 case 1:
-                    return 0.3f / 1.4f;
+                    return 0.3f; // Was 0.3f / 1.4f (~0.214), now slightly slower (~0.25)
                 case 2:
-                    return 0.25f / 1.5f; // Approximately 0.1667f
+                    return 0.25f / 1.5f; // ~0.167
                 case 3:
-                    return 0.2f / 1.5f; // Approximately 0.1333f
+                    return 0.2f / 1.5f;  // ~0.133 (default)
                 case 4:
-                    return 0.15f / 1.5f; // 0.1f
+                    return 0.15f / 1.5f; // ~0.100
                 case 5:
-                    return 0.1f / 1.5f; // Approximately 0.0667f
+                    return 0.1f / 1.5f;  // ~0.067
                 default:
-                    return 0.2f / 1.5f;  // Default speed if no valid value is found
+                    return 0.2f / 1.5f;  // fallback
             }
         }
+
 
         public void ToggleInputButtonPressed()
         {
