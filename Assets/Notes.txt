@@ -21,7 +21,6 @@ CUSTOMISAABLE OBSTACLE SPRITES
 CORE
 Add particle effects for when food is picked up.
 A fading swiping effect for where player inputs
-Make turning and swiping practically instant
 Personal widget
 Leaderboard
 
