@@ -12,6 +12,7 @@ public class GameSettings : MonoBehaviour
     [SerializeField] Slider heightSlider;
     [SerializeField] Slider speedSlider;
     [SerializeField] Toggle obstaclesToggle;
+    [SerializeField] GameObject trapSpriteSelector;
 
     [SerializeField] GameObject settingsPanel;
     [SerializeField] GameObject bottomPanel;
@@ -46,6 +47,7 @@ public class GameSettings : MonoBehaviour
 
         obstaclesToggle.onValueChanged.AddListener(OnObstaclesToggleChanged);
         obstaclesToggle.isOn = obstacles;
+        trapSpriteSelector.SetActive(obstacles);
 
         toggleInputTypeButton.onClick.AddListener(ToggleInputType);
         UpdateInputTypeText();
@@ -100,8 +102,10 @@ public class GameSettings : MonoBehaviour
     {
         obstacles = isOn;
         PlayerPrefs.SetInt("obstacles", isOn ? 1 : 0);
+        trapSpriteSelector.SetActive(isOn);
         Debug.Log("Obstacles enabled: " + obstacles);
     }
+
 
     void ToggleInputType()
     {
