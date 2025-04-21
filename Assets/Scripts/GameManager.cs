@@ -464,13 +464,11 @@ namespace RD
                     foodNodes.Remove(targetNode);
                     CreateFood();
 
-                    // Increase camera size by 0.05f for large maps
                     if (maxWidth > 10 || maxHeight > 10)
                     {
                         Camera.main.orthographicSize += 0.005f;
                     }
                 }
-
 
                 MoveTail();
 
