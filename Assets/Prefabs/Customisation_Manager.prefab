@@ -358,6 +358,30 @@ MonoBehaviour:
   - sprite: {fileID: 21300000, guid: ff698ffd5b3473841845972ddaf7d058, type: 3}
     cost: 100
     isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: d424e6ca5f79f164b842c6952bad7db3, type: 3}
+    cost: 200
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 7ec8a4baf04f54b4b8703408b8569554, type: 3}
+    cost: 200
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 9b9b6b1bd8c3ddb4bbd8c5148d05ef08, type: 3}
+    cost: 400
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 139261388dc3dae439fb4e001a0f634f, type: 3}
+    cost: 400
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: a49e7c83c0b4297449c19542dee755e9, type: 3}
+    cost: 200
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 1bfbdc7d886478747bec635df56212bb, type: 3}
+    cost: 1000
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 1bfbdc7d886478747bec635df56212bb, type: 3}
+    cost: 1000
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 1bfbdc7d886478747bec635df56212bb, type: 3}
+    cost: 1000
+    isUnlocked: 0
   skinPanelContainer: {fileID: 0}
   tailPanelContainer: {fileID: 0}
   foodPanelContainer: {fileID: 0}

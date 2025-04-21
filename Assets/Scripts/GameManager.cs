@@ -165,7 +165,6 @@ namespace RD
             {
                 isCameraAdjusting = true;
                 UpdateCameraPosition();
-                //AdjustCameraSize();
                 isCameraAdjusting = false;
             }
 
@@ -1138,92 +1137,63 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            //AdjustCameraSize();
-
-            float cameraSize = Camera.main.orthographicSize;
-            Vector3 playerPosition = playerObject.transform.position;
-
-            // Define thresholds for small, medium, and large maps
-            float smallMapThreshold = 6f;
-            float mediumMapThreshold = 9f;
-            float largeMapThreshold = 10f;
-
-            bool isSmallMap = maxWidth <= smallMapThreshold && maxHeight <= smallMapThreshold;
-            bool isMediumMap = maxWidth <= mediumMapThreshold && maxHeight <= mediumMapThreshold;
-            bool isLargeMap = maxWidth > largeMapThreshold || maxHeight > largeMapThreshold;
-
-            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f;
-
-            if (isSmallMap)
+            // If small map (10x10 or less), just center and get out
+            if (maxWidth <= 10 && maxHeight <= 10)
             {
                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
+                return;
             }
-            else if (isMediumMap)
+
+            // For larger maps, follow player
+            float cameraSize = Camera.main.orthographicSize;
+            Vector3 playerPosition = playerObject.transform.position;
+
+            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f;
+            Vector3 desiredPosition = playerPosition;
+
+            float halfWidth = maxWidth * 0.5f;
+            float halfHeight = maxHeight * 0.5f;
+
+            if (isRectangularMap)
             {
-                Debug.Log("is this called cuuuh");
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, playerPosition, smoothSpeed);
-
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, Mathf.Max(maxWidth, maxHeight) / 2f, 0.1f);
-
-                float halfWidth = maxWidth * 0.5f;
-                float halfHeight = maxHeight * 0.5f;
-
-                cameraHolder.position = new Vector3(
-                    Mathf.Clamp(cameraHolder.position.x, -halfWidth, halfWidth),
-                    Mathf.Clamp(cameraHolder.position.y, -halfHeight, halfHeight),
-                    cameraHolder.position.z
-                );
-            }
-            else if (isLargeMap || isRectangularMap)  
-            {
-                Debug.Log("THIS IS BIGG");
-                Vector3 desiredPosition = playerPosition;
-
-                float halfWidth = maxWidth * 0.5f;
-                float halfHeight = maxHeight * 0.5f;
-
-                if (isRectangularMap)
+                if (maxWidth > maxHeight)
                 {
-                    if (maxWidth > maxHeight)
-                    {
-                        desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);  
-                    }
-                    else 
-                    {
-                        desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight); 
-                    }
+                    desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);
                 }
                 else
                 {
-                    float cameraHorizontalLimit = halfWidth - cameraSize;
-                    float cameraVerticalLimit = halfHeight - cameraSize;
-
-                    desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-                    desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+                    desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight);
                 }
-
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
-            }
-        }
-
-        void AdjustCameraSize()
-        {
-            float cameraSize = Camera.main.orthographicSize;
-
-            if (maxWidth > 20 && maxHeight > 20)
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 10f, 0.1f);
-            }
-            else if (maxWidth > 8 && maxHeight > 8)
-            {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 8f, 0.1f);
             }
             else
             {
-                Camera.main.orthographicSize = Mathf.Lerp(cameraSize, 6f, 0.1f);
+                float cameraHorizontalLimit = halfWidth - cameraSize;
+                float cameraVerticalLimit = halfHeight - cameraSize;
+
+                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
             }
+
+            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
         }
+
+
+        void AdjustCameraSize()
+        {
+            // Calculate how many units wide/tall the camera needs to see
+            float verticalSize = maxHeight / 2f;
+            float horizontalSize = (maxWidth / Camera.main.aspect) / 2f;
+
+            // Use the larger of the two to ensure full map is visible
+            float requiredSize = Mathf.Max(verticalSize, horizontalSize);
+
+            // Optional padding (0.5–1f looks clean)
+            float padding = 0.5f;
+            Camera.main.orthographicSize = requiredSize + padding;
+        }
+
+
 
         #endregion
 

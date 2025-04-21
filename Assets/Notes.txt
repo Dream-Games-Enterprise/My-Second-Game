@@ -1,6 +1,9 @@
 NEXT
 Some food is not picked up (potentially when obstacles are turned off???) weird bug
 try object pooling for food...?
+Middle esque maps have a really zoomed in map????
+
+
 
 Jess Minecraft coords for Nether
 -45, 73, 82
