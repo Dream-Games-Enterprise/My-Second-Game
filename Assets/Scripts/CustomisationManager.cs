@@ -54,6 +54,8 @@ public class CustomisationManager : MonoBehaviour
     [SerializeField] Image previewTail;
     [SerializeField] Image previewFood;
     [SerializeField] Image previewTrap;
+    [SerializeField] Image previewPrimary;
+    [SerializeField] Image previewSecondary;
 
     List<SkinPanel> skinPanels = new List<SkinPanel>();
     List<TailPanel> tailPanels = new List<TailPanel>();
@@ -109,7 +111,6 @@ public class CustomisationManager : MonoBehaviour
             mapPrimaryColor = mapColours[index];
             PlayerPrefs.SetInt("SelectedMapPrimaryColorIndex", index);
             PlayerPrefs.Save();
-            // Apply the color to your map background here if needed
         }
     }
 
@@ -120,10 +121,8 @@ public class CustomisationManager : MonoBehaviour
             mapSecondaryColor = mapColours[index];
             PlayerPrefs.SetInt("SelectedMapSecondaryColorIndex", index);
             PlayerPrefs.Save();
-            // Apply the color to your map background here if needed
         }
     }
-
 
     void InitializePanels()
     {

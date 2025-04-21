@@ -12,6 +12,8 @@ public class SpriteManager : MonoBehaviour
     [SerializeField] GameObject tailPanel;
     [SerializeField] GameObject foodPanel;
     [SerializeField] GameObject trapPanel;
+    [SerializeField] GameObject primaryPanel;
+    [SerializeField] GameObject secondaryPanel;
 
     [SerializeField] TMP_Text snakeHeader;
     [SerializeField] TMP_Text tailHeader;
@@ -38,6 +40,10 @@ public class SpriteManager : MonoBehaviour
             uiPanelAnimator.AnimateOutToTop(foodPanel);
         if (trapPanel.activeSelf)
             uiPanelAnimator.AnimateOutToTop(trapPanel);
+        if (primaryPanel.activeSelf)
+            uiPanelAnimator.AnimateOutToTop(primaryPanel);
+        if (secondaryPanel.activeSelf)
+            uiPanelAnimator.AnimateOutToTop(secondaryPanel);
 
         bottomPanel.SetActive(true);
 
@@ -47,6 +53,7 @@ public class SpriteManager : MonoBehaviour
             toggleCoroutine = null;
         }
     }
+
 
     public void OpenPanel(GameObject panelToOpen)
     {
