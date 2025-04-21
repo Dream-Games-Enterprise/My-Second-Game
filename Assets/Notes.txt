@@ -1,7 +1,6 @@
 NEXT
 Add map colour selector for both colours - make map colours buttons open panel with options of colours to choose from
 Some food is not picked up when obstacles are turned off??? weird bug
-Make trap selector disppdear if obstacles toggled off
 
 
 Jess Minecraft coords for Nether
@@ -35,7 +34,7 @@ BUG
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
 food spawning in tail -  
 Player can swipe when paused and when unpause the player changes to the direction, exploit that needs fixing
-
+Toy with speed settings - keep within range of 10 but 3 and 10 feel like same speed and 1 might still be too fast
 
 
 Update in Future If Played:

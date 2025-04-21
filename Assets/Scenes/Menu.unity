@@ -1672,11 +1672,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1939727174}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -80.20675, y: 150}
-  m_SizeDelta: {x: 966.5, y: 121.92001}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -141.52083}
+  m_SizeDelta: {x: 965, y: 122}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &112468354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1698,7 +1698,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 125}
-  m_Spacing: {x: 175.5, y: 328.08}
+  m_Spacing: {x: 175, y: 328.08}
   m_Constraint: 1
   m_ConstraintCount: 4
 --- !u!114 &112468355
@@ -2051,7 +2051,7 @@ GameObject:
   m_Component:
   - component: {fileID: 140536795}
   m_Layer: 5
-  m_Name: Colour_Content
+  m_Name: Sprite_Selector_Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11082,7 +11082,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -15582,11 +15582,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1961839865}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 6.556244}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -141.52083}
+  m_SizeDelta: {x: 965, y: 122}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1012322264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19373,6 +19373,7 @@ MonoBehaviour:
   heightSlider: {fileID: 555814492}
   speedSlider: {fileID: 560120765}
   obstaclesToggle: {fileID: 1528289402}
+  trapSpriteSelector: {fileID: 1792641351}
   settingsPanel: {fileID: 1522332163}
   bottomPanel: {fileID: 533785205}
   inputTypeText: {fileID: 5580326}
@@ -20313,11 +20314,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1047058967}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 6.556732}
-  m_SizeDelta: {x: 966.5, y: 121.92001}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -141.52083}
+  m_SizeDelta: {x: 965, y: 122}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1330795878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24059,7 +24060,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -28237,11 +28238,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1880322353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 6.556732}
-  m_SizeDelta: {x: 966.5, y: 121.92001}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -141.52083}
+  m_SizeDelta: {x: 965, y: 122}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1837329947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28273,7 +28274,7 @@ MonoBehaviour:
     m_Right: 20
     m_Top: 175
     m_Bottom: 275
-  m_ChildAlignment: 4
+  m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 125}
@@ -28696,7 +28697,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -29735,10 +29736,10 @@ RectTransform:
   m_Father: {fileID: 1818333379}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 216, y: 300}
-  m_Pivot: {x: 0, y: 1}
+  m_SizeDelta: {x: 0, y: 300}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1945140821
 GameObject:
   m_ObjectHideFlags: 0
@@ -31883,7 +31884,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
