@@ -1,6 +1,4 @@
 NEXT
-Add and order obstacle sprites selection
-Add all colour options to all the sprite selections
 Particle system for food eating
 Add widget
 Sound for buttons, food eating and obstacle - if can find something suitable. food one will probably need to be vague just a nice sound to listen to  (make similar to collisions/bounces from Wrong Pong where slightly varied between each call of the sound) with toggle from settings/options

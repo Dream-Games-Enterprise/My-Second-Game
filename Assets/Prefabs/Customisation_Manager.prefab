@@ -349,37 +349,124 @@ MonoBehaviour:
     cost: 1000
     isUnlocked: 0
   trapSkins:
-  - sprite: {fileID: 21300000, guid: 5a0ca204643bc47419d1f8ca05d5da60, type: 3}
+  - sprite: {fileID: 21300000, guid: 14fda62809838824a97bcc9955047d4f, type: 3}
     cost: 0
     isUnlocked: 1
-  - sprite: {fileID: 21300000, guid: 22727b53a0e857b47a1139e8a6bbc7c8, type: 3}
-    cost: 5
-    isUnlocked: 0
-  - sprite: {fileID: 21300000, guid: ff698ffd5b3473841845972ddaf7d058, type: 3}
-    cost: 100
-    isUnlocked: 0
   - sprite: {fileID: 21300000, guid: d424e6ca5f79f164b842c6952bad7db3, type: 3}
-    cost: 200
+    cost: 25
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 7ec8a4baf04f54b4b8703408b8569554, type: 3}
-    cost: 200
+    cost: 25
     isUnlocked: 0
-  - sprite: {fileID: 21300000, guid: 9b9b6b1bd8c3ddb4bbd8c5148d05ef08, type: 3}
-    cost: 400
-    isUnlocked: 0
-  - sprite: {fileID: 21300000, guid: 139261388dc3dae439fb4e001a0f634f, type: 3}
-    cost: 400
+  - sprite: {fileID: 21300000, guid: c68e96dfe9dc58b4283cf660c2d9d989, type: 3}
+    cost: 25
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: a49e7c83c0b4297449c19542dee755e9, type: 3}
+    cost: 25
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: d5984fddec4791e4397b40004a6857e4, type: 3}
+    cost: 50
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 2d688e7e8a8352949bed62d0ee485041, type: 3}
+    cost: 75
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: c74df1c7ae63ca5489011cb5e76861d4, type: 3}
+    cost: 75
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 1ec7059f866462c4791b551b1d0f6c36, type: 3}
+    cost: 75
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 0278e6776d231ea4798e21fea57bf9b7, type: 3}
+    cost: 150
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 4794421ab3526fc4b824b654b6f76af0, type: 3}
+    cost: 150
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 43421a6ed05d2a04a86fc547fe860c71, type: 3}
     cost: 200
     isUnlocked: 0
-  - sprite: {fileID: 21300000, guid: 1bfbdc7d886478747bec635df56212bb, type: 3}
-    cost: 1000
+  - sprite: {fileID: 21300000, guid: 40a6c2e83b7e3fa45a86ac6ed387eadf, type: 3}
+    cost: 200
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 4794421ab3526fc4b824b654b6f76af0, type: 3}
+    cost: 200
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: ce96bae7104bd9b489478803df55c332, type: 3}
+    cost: 225
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: d5066f552a90ad64cb699d6b170bc99e, type: 3}
+    cost: 225
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 1115ad2d2226b8f46a722bffc20ee0f9, type: 3}
+    cost: 250
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: f7d48f6719a400e4f949c13663e44579, type: 3}
+    cost: 250
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 27b0301a250fd94488a35e8c53233992, type: 3}
+    cost: 300
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: d27e48e502fce3d4cb8e71ae66eafebb, type: 3}
+    cost: 400
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 047b3b316f7f71042bbf36d41cfafdc2, type: 3}
+    cost: 500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: d5426f3b531ce834597c1f34690f0bb0, type: 3}
+    cost: 500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 787d66d7fad257e40899ccfaabcc787e, type: 3}
+    cost: 500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 2a1f5ee5027f2304ebf66d61cddf8f82, type: 3}
+    cost: 500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 6ab2d4f35e6a7a641afd3194bd6c1876, type: 3}
+    cost: 500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 6de392c0ab0e9694794fe19dfa24ea62, type: 3}
+    cost: 500
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 139261388dc3dae439fb4e001a0f634f, type: 3}
+    cost: 600
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 9b9b6b1bd8c3ddb4bbd8c5148d05ef08, type: 3}
+    cost: 600
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 34d5c64e4f3683140be1726c9d945fbe, type: 3}
+    cost: 600
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 22727b53a0e857b47a1139e8a6bbc7c8, type: 3}
+    cost: 600
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 79876533e0a261b4ebac119ab2993dc2, type: 3}
+    cost: 600
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 2287f93104bd9c342ba15d1521df3231, type: 3}
+    cost: 700
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: c1f66778ac27f1d43a92052611ca5a08, type: 3}
+    cost: 700
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 70c6e4e6512ec3449a4321a1caa71b25, type: 3}
+    cost: 700
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 601423d4eb3b6464786dc6302125ad0e, type: 3}
+    cost: 700
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: f6747bf08cadc214b938a8f362817291, type: 3}
+    cost: 800
     isUnlocked: 0
   - sprite: {fileID: 21300000, guid: 1bfbdc7d886478747bec635df56212bb, type: 3}
+    cost: 900
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: ff698ffd5b3473841845972ddaf7d058, type: 3}
+    cost: 900
+    isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: d8d95240253fede4abd7a1dae14341a2, type: 3}
     cost: 1000
     isUnlocked: 0
-  - sprite: {fileID: 21300000, guid: 1bfbdc7d886478747bec635df56212bb, type: 3}
+  - sprite: {fileID: 21300000, guid: 7391c7909ea7f8a4f81203363ffbf897, type: 3}
     cost: 1000
     isUnlocked: 0
   skinPanelContainer: {fileID: 0}
