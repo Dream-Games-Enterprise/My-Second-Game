@@ -39,6 +39,7 @@ Player can swipe when paused and when unpause the player changes to the directio
 Update in Future If Played:
 - Moving obstacle nodes?
 - Have speed up on food pick up
+- Make the colour scroll within sprite selections symmetrical. Left end has more padding than the very end of the scroll on the right (only by a few pixels).
 
 
 
