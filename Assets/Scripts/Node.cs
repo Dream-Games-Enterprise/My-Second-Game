@@ -1,11 +1,21 @@
 using UnityEngine;
 
-namespace RD
+public class Node
 {
-    public class Node
+    public int x, y;
+    public Vector3 worldPosition;
+
+    public override bool Equals(object obj)
     {
-        public int x;
-        public int y;
-        public Vector3 worldPosition;
+        if (obj is Node other)
+        {
+            return x == other.x && y == other.y;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return x * 31 + y;
     }
 }

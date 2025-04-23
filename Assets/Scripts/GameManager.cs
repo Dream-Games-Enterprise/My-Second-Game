@@ -434,11 +434,10 @@ namespace RD
 
                 for (int i = 0; i < foodNodes.Count; i++)
                 {
-                    if (foodNodes[i] == targetNode)
+                    if (foodNodes[i].x == targetNode.x && foodNodes[i].y == targetNode.y)
                     {
                         isFood = true;
 
-                        // Recycle food object instead of destroying
                         GameObject consumedFood = foodObjects[i];
                         consumedFood.SetActive(false);
                         foodPool.Enqueue(consumedFood);
@@ -459,7 +458,7 @@ namespace RD
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
                     foodNodes.Remove(targetNode);
-                    CreateFood(); // Uses pooled food
+                    CreateFood(); 
 
                     if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
                     {
