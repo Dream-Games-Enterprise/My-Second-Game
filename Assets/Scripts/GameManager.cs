@@ -103,6 +103,7 @@ namespace RD
 
         public List<GameObject> foodObjects;
         List<Node> foodNodes = new List<Node>();
+        Queue<GameObject> foodPool = new Queue<GameObject>();
 
         bool obstaclesToggle;
 
@@ -120,6 +121,9 @@ namespace RD
         #endregion
 
         bool cameraStartedAtMax = false;
+
+        int initialFoodPoolSize;
+
 
         void Awake()
         {
@@ -191,7 +195,6 @@ namespace RD
                 {
                     timer = 0f;
 
-                    // Only apply one valid (non-opposite) direction per tick
                     for (int i = 0; i < inputBuffer.Count; i++)
                     {
                         Direction d = inputBuffer[i];
@@ -255,8 +258,6 @@ namespace RD
                     return 0.2f / 1.5f;  // fallback
             }
         }
-
-
         public void ToggleInputButtonPressed()
         {
             ToggleInputType(!isButtonControl);
@@ -393,11 +394,8 @@ namespace RD
         void MovePlayer()
         {
             if (curDirection == Direction.None || isMoving)
-            {
                 return;
-            }
 
-            // Update current direction to the latest target direction
             curDirection = targetDirection;
 
             int x = 0;
@@ -405,18 +403,10 @@ namespace RD
 
             switch (curDirection)
             {
-                case Direction.up:
-                    y = 1;
-                    break;
-                case Direction.down:
-                    y = -1;
-                    break;
-                case Direction.left:
-                    x = -1;
-                    break;
-                case Direction.right:
-                    x = 1;
-                    break;
+                case Direction.up: y = 1; break;
+                case Direction.down: y = -1; break;
+                case Direction.left: x = -1; break;
+                case Direction.right: x = 1; break;
             }
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
@@ -430,11 +420,13 @@ namespace RD
                 else
                 {
                     onGameOver.Invoke();
+                    return;
                 }
             }
             else if (targetNode == null)
             {
                 onGameOver.Invoke();
+                return;
             }
             else
             {
@@ -446,12 +438,15 @@ namespace RD
                     {
                         isFood = true;
 
-                        Destroy(foodObjects[i]);
+                        // Recycle food object instead of destroying
+                        GameObject consumedFood = foodObjects[i];
+                        consumedFood.SetActive(false);
+                        foodPool.Enqueue(consumedFood);
+
                         foodObjects.RemoveAt(i);
                         foodNodes.RemoveAt(i);
 
                         scoreManager.AddScore();
-
                         break;
                     }
                 }
@@ -464,9 +459,9 @@ namespace RD
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
                     foodNodes.Remove(targetNode);
-                    CreateFood();
+                    CreateFood(); // Uses pooled food
 
-                    if (cameraStartedAtMax && Camera.main.orthographicSize < 12f) // Hard cap if needed
+                    if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
                     {
                         Camera.main.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 0.005f, 12f);
                     }
@@ -481,6 +476,7 @@ namespace RD
                 availableNodes.Remove(playerNode);
             }
         }
+
 
         IEnumerator SmoothMove(GameObject obj, Vector3 startPos, Vector3 endPos)
         {
@@ -535,11 +531,24 @@ namespace RD
         #endregion
 
         #region SETUP
+        void InitializePools()
+        {
+            int totalTiles = maxWidth * maxHeight;
+            initialFoodPoolSize = Mathf.FloorToInt(totalTiles * 0.05f);
+            initialFoodPoolSize = Mathf.Max(initialFoodPoolSize, 5);
+
+            for (int i = 0; i < initialFoodPoolSize; i++)
+            {
+                foodPool.Enqueue(CreatePooledFood());
+
+            }
+        }
 
         public void StartNewGame()
         {
             ClearReferences();
             CreateMap();
+            InitializePools();
 
             if (obstaclesToggle)
             {
@@ -549,7 +558,7 @@ namespace RD
             int totalMapNodes = maxWidth * maxHeight;
             int initialFoodCount = Mathf.FloorToInt(totalMapNodes * 0.05f);
 
-            SpawnInitialFood(initialFoodCount);
+            SpawnInitialFood();
 
             uiHandler.ResumeGame();
 
@@ -691,10 +700,27 @@ namespace RD
             tailParent = new GameObject("TailParent");
         }
 
-        void SpawnInitialFood(int foodToSpawn)
+        GameObject CreatePooledFood(string name = "PooledFood")
+        {
+            GameObject food = new GameObject(name);
+            SpriteRenderer renderer = food.AddComponent<SpriteRenderer>();
+            renderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
+            renderer.color = foodColour;
+            renderer.sortingOrder = 1;
+
+            food.transform.localScale = Vector3.one * 0.6f;
+            food.SetActive(false);
+            return food;
+        }
+
+        void SpawnInitialFood()
         {
             foodObjects.Clear();
             foodNodes.Clear();
+
+            int totalTiles = maxWidth * maxHeight;
+            int foodToSpawn = Mathf.FloorToInt(totalTiles * 0.05f);
+            foodToSpawn = Mathf.Max(foodToSpawn, 1); // ensure at least 1 food
 
             for (int i = 0; i < foodToSpawn; i++)
             {
@@ -706,19 +732,27 @@ namespace RD
                     break;
                 }
 
+                if (foodPool.Count == 0)
+                {
+                    foodPool.Enqueue(CreatePooledFood("ExtraPooledFood"));
+
+                }
+
                 int randomIndex = Random.Range(0, validNodes.Count);
                 Node foodNode = validNodes[randomIndex];
 
                 availableNodes.Remove(foodNode);
                 foodNodes.Add(foodNode);
 
-                GameObject foodObject = new GameObject("Food");
-                SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+                GameObject foodObject = foodPool.Dequeue();
+                foodObject.SetActive(true);
 
-                // Assign selected food sprite and color
+                SpriteRenderer foodRenderer = foodObject.GetComponent<SpriteRenderer>();
+                if (foodRenderer == null)
+                    foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+
                 foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
-                foodRenderer.color = foodColour; //  Apply the saved food color 
-
+                foodRenderer.color = foodColour;
                 foodRenderer.sortingOrder = 1;
 
                 PlacePlayerObject(foodObject, foodNode.worldPosition);
@@ -729,8 +763,15 @@ namespace RD
             }
         }
 
+
         void CreateFood()
         {
+            if (foodPool.Count == 0)
+            {
+                Debug.LogWarning("Food pool exhausted! Consider increasing pool size.");
+                return;
+            }
+
             List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
             if (validNodes.Count == 0)
             {
@@ -744,20 +785,22 @@ namespace RD
             availableNodes.Remove(foodNode);
             foodNodes.Add(foodNode);
 
-            GameObject foodObject = new GameObject("Food");
-            SpriteRenderer foodRenderer = foodObject.AddComponent<SpriteRenderer>();
+            GameObject food = foodPool.Dequeue();
+            food.SetActive(true);
+
+            SpriteRenderer foodRenderer = food.GetComponent<SpriteRenderer>();
+            if (foodRenderer == null)
+                foodRenderer = food.AddComponent<SpriteRenderer>();
 
             foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
             foodRenderer.color = foodColour;
-
             foodRenderer.sortingOrder = 1;
 
-            PlacePlayerObject(foodObject, foodNode.worldPosition);
-            foodObject.transform.localScale = Vector3.one * 0.7f;
+            PlacePlayerObject(food, foodNode.worldPosition);
+            food.transform.localScale = Vector3.one * 0.7f;
 
-            foodObjects.Add(foodObject);
-
-            StartCoroutine(TweenFoodScale(foodObject));
+            foodObjects.Add(food);
+            StartCoroutine(TweenFoodScale(food));
         }
 
         void PlaceFood()
@@ -780,9 +823,9 @@ namespace RD
                 int ran = Random.Range(0, validNodes.Count);
                 Node n = validNodes[ran];
                 PlacePlayerObject(foodObject, n.worldPosition);
-                foodNode = n; // Store the node of the food for tracking
+                foodNode = n; 
 
-                foodObject.transform.localScale = Vector3.one * 0.6f; // Set to any desired scale factor
+                foodObject.transform.localScale = Vector3.one * 0.6f; 
             }
             else
             {
@@ -1023,12 +1066,10 @@ namespace RD
             Vector3 maxScale = Vector3.one * 0.7f;
             float duration = 0.5f;
 
-            // Loop as long as the GameObject and its Transform exist
             while (foodObject != null && foodObject.transform != null)
             {
                 yield return TweenScale(foodObject.transform, minScale, maxScale, duration);
 
-                // Break early if destroyed mid-animation
                 if (foodObject == null || foodObject.transform == null)
                     yield break;
 
