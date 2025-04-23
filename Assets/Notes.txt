@@ -1,5 +1,4 @@
 NEXT
-Add all colour options to all the sprite selections
 Particle system for food eating
 Add widget
 Sound for buttons, food eating and obstacle - if can find something suitable. food one will probably need to be vague just a nice sound to listen to  (make similar to collisions/bounces from Wrong Pong where slightly varied between each call of the sound) with toggle from settings/options
@@ -27,7 +26,7 @@ HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
 CORE
 Leaderboard
 
-Have a leaderboard for most points held - just count the bank balance not with sprites and stuff have them toggle to opt in to leaderboard. so need high score for 1 match then total score ever achieved...
+Have a leaderboard for most points held - just count the bank balance not with sprites and stuff have them toggle to opt in to leaderboard. so need high score for 1 match then total score ever achieved... maybe need time score here too
 
 
 BUG
@@ -40,8 +39,7 @@ Update in Future If Played:
 - Moving obstacle nodes?
 - Have speed up on food pick up
 - Make the colour scroll within sprite selections symmetrical. Left end has more padding than the very end of the scroll on the right (only by a few pixels).
-
-
+- Add camera options e.g. zoom in/out, follow player, etc. show whole map from start.
 
 Refactor Repeated Logic: The MovePlayer() and MoveTail() methods share some logic that could be abstracted into smaller helper functions for better reusability and readability.
 
