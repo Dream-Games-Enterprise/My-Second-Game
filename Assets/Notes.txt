@@ -6,9 +6,6 @@ Add the swiping effect - it needs to overlay on the UI panel/section at the bott
 Expand leaderboard
 Clean up end of game scoreboard
 
-Some food is not picked up (potentially when obstacles are turned off???) weird bug
-try object pooling for food...?
-
 
 
 Jess Minecraft coords for Nether
