@@ -474,17 +474,29 @@ namespace RD
                         if (foodRenderer != null)
                         {
                             Color foodColor = foodRenderer.color;
+                            Sprite foodSprite = foodRenderer.sprite;
 
+                            // Color
                             ParticleSystem ps = fx.GetComponent<ParticleSystem>();
                             if (ps != null)
                             {
                                 var main = ps.main;
                                 main.startColor = foodColor;
                             }
+
+                            // Sprite as texture
+                            ParticleSystemRenderer psr = fx.GetComponent<ParticleSystemRenderer>();
+                            if (psr != null && foodSprite != null)
+                            {
+                                Material mat = new Material(Shader.Find("Sprites/Default"));
+                                mat.mainTexture = foodSprite.texture; // apply the texture
+                                psr.material = mat;
+                            }
                         }
 
                         Destroy(fx, 2f);
                     }
+
 
                     if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
                     {
