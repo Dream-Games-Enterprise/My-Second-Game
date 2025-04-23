@@ -123,6 +123,7 @@ namespace RD
         bool cameraStartedAtMax = false;
 
         int initialFoodPoolSize;
+        [SerializeField] GameObject foodPickupParticlePrefab;
 
 
         void Awake()
@@ -431,6 +432,8 @@ namespace RD
             else
             {
                 bool isFood = false;
+                Vector3 foodPosition = Vector3.zero;
+                GameObject consumedFood = null;
 
                 for (int i = 0; i < foodNodes.Count; i++)
                 {
@@ -438,9 +441,11 @@ namespace RD
                     {
                         isFood = true;
 
-                        GameObject consumedFood = foodObjects[i];
+                        consumedFood = foodObjects[i];
                         consumedFood.SetActive(false);
                         foodPool.Enqueue(consumedFood);
+
+                        foodPosition = consumedFood.transform.position;
 
                         foodObjects.RemoveAt(i);
                         foodNodes.RemoveAt(i);
@@ -458,7 +463,28 @@ namespace RD
                     tail.Add(CreateTailNode(previousNode.x, previousNode.y));
                     availableNodes.Remove(previousNode);
                     foodNodes.Remove(targetNode);
-                    CreateFood(); 
+                    CreateFood();
+
+                    // === PARTICLE EFFECT ON FOOD PICKUP ===
+                    if (foodPickupParticlePrefab != null && consumedFood != null)
+                    {
+                        GameObject fx = Instantiate(foodPickupParticlePrefab, foodPosition, Quaternion.identity);
+
+                        SpriteRenderer foodRenderer = consumedFood.GetComponent<SpriteRenderer>();
+                        if (foodRenderer != null)
+                        {
+                            Color foodColor = foodRenderer.color;
+
+                            ParticleSystem ps = fx.GetComponent<ParticleSystem>();
+                            if (ps != null)
+                            {
+                                var main = ps.main;
+                                main.startColor = foodColor;
+                            }
+                        }
+
+                        Destroy(fx, 2f);
+                    }
 
                     if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
                     {
@@ -475,6 +501,8 @@ namespace RD
                 availableNodes.Remove(playerNode);
             }
         }
+
+
 
 
         IEnumerator SmoothMove(GameObject obj, Vector3 startPos, Vector3 endPos)
