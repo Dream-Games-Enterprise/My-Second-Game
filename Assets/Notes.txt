@@ -6,7 +6,6 @@ Clean up end of game scoreboard
 Border colour/camera colour selection (put within player options)
 
 ON SMALLEST MAP LOTS OF THINGS SPAWN AT THE START WHICH I THINK IS BROKEN
-SWIPE INPUT SEEMS DELAYED
 
 
 Add rotating bit to the tail - so it rotates to the direction of the next node in the tail. (this is a bit tricky since it needs to be done for each node in the tail and not just the head)
