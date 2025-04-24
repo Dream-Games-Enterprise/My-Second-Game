@@ -238,8 +238,10 @@ namespace RD
                 firstInput.Invoke();
             }
 
-            SetDirection(direction);
+            // Clear and override swipe buffer with just the swipe (like a fresh input)
+            inputBuffer.Insert(0, direction);
         }
+
 
         float GetMoveRateFromSpeed(int speed)
         {
@@ -259,6 +261,7 @@ namespace RD
                     return 0.2f / 1.5f;  // fallback
             }
         }
+
         public void ToggleInputButtonPressed()
         {
             ToggleInputType(!isButtonControl);
@@ -276,11 +279,13 @@ namespace RD
                     {
                         touchStartPos = touch.position;
                     }
-                    else if (touch.phase == TouchPhase.Moved)
+                    else if (touch.phase == TouchPhase.Ended)
                     {
                         touchEndPos = touch.position;
                         DetectSwipe(touchStartPos, touchEndPos);
+                        touchStartPos = Vector2.zero;
                     }
+
                     else if (touch.phase == TouchPhase.Ended)
                     {
                         touchStartPos = Vector2.zero;
@@ -299,8 +304,11 @@ namespace RD
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
+                    touchEndPos = Input.mousePosition;
+                    DetectSwipe(touchStartPos, touchEndPos);
                     touchStartPos = Vector2.zero;
                 }
+
                 #endregion
             }
         }
@@ -1239,8 +1247,6 @@ namespace RD
             cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
         }
 
-
-
         void AdjustCameraSize()
         {
             float verticalSize = maxHeight / 2f;
@@ -1261,8 +1267,6 @@ namespace RD
                 cameraStartedAtMax = false;
             }
         }
-
-
 
         #endregion
 
