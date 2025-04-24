@@ -465,7 +465,6 @@ namespace RD
                     foodNodes.Remove(targetNode);
                     CreateFood();
 
-                    // === PARTICLE EFFECT ON FOOD PICKUP ===
                     if (foodPickupParticlePrefab != null && consumedFood != null)
                     {
                         GameObject fx = Instantiate(foodPickupParticlePrefab, foodPosition, Quaternion.identity);
@@ -476,7 +475,6 @@ namespace RD
                             Color foodColor = foodRenderer.color;
                             Sprite foodSprite = foodRenderer.sprite;
 
-                            // Color
                             ParticleSystem ps = fx.GetComponent<ParticleSystem>();
                             if (ps != null)
                             {
@@ -484,7 +482,6 @@ namespace RD
                                 main.startColor = foodColor;
                             }
 
-                            // Sprite as texture
                             ParticleSystemRenderer psr = fx.GetComponent<ParticleSystemRenderer>();
                             if (psr != null && foodSprite != null)
                             {
@@ -513,9 +510,6 @@ namespace RD
                 availableNodes.Remove(playerNode);
             }
         }
-
-
-
 
         IEnumerator SmoothMove(GameObject obj, Vector3 startPos, Vector3 endPos)
         {
@@ -558,7 +552,6 @@ namespace RD
                     prevNode = previousSegmentNode;
                 }
 
-                // Calculate rotation for the tail segment based on its new position
                 Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
 
@@ -1223,46 +1216,29 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            // If small map (10x10 or less), just center and get out
-            if (maxWidth <= 10 && maxHeight <= 10)
+            if (!cameraStartedAtMax)
             {
                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
                 return;
             }
 
-            // For larger maps, follow player
             float cameraSize = Camera.main.orthographicSize;
             Vector3 playerPosition = playerObject.transform.position;
-
-            bool isRectangularMap = Mathf.Abs(maxWidth - maxHeight) > Mathf.Min(maxWidth, maxHeight) * 0.5f;
             Vector3 desiredPosition = playerPosition;
 
             float halfWidth = maxWidth * 0.5f;
             float halfHeight = maxHeight * 0.5f;
 
-            if (isRectangularMap)
-            {
-                if (maxWidth > maxHeight)
-                {
-                    desiredPosition.x = Mathf.Clamp(desiredPosition.x, 0, maxWidth);
-                }
-                else
-                {
-                    desiredPosition.y = Mathf.Clamp(desiredPosition.y, 0, maxHeight);
-                }
-            }
-            else
-            {
-                float cameraHorizontalLimit = halfWidth - cameraSize;
-                float cameraVerticalLimit = halfHeight - cameraSize;
+            float cameraHorizontalLimit = halfWidth - cameraSize;
+            float cameraVerticalLimit = halfHeight - cameraSize;
 
-                desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-                desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
-            }
+            desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+            desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
 
             cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
         }
+
 
 
         void AdjustCameraSize()
@@ -1285,6 +1261,7 @@ namespace RD
                 cameraStartedAtMax = false;
             }
         }
+
 
 
         #endregion

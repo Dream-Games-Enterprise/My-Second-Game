@@ -4,8 +4,11 @@ Sound for buttons, food eating and obstacle - if can find something suitable. fo
 Add the swiping effect - it needs to overlay on the UI panel/section at the bottom of the screen.
 Expand leaderboard
 Clean up end of game scoreboard
+Border colour/camera colour selection (put within player options)
 
 
+Add rotating bit to the tail - so it rotates to the direction of the next node in the tail. (this is a bit tricky since it needs to be done for each node in the tail and not just the head)
+add rotating sprite to obstacle selection to prompt user they can change it
 
 Jess Minecraft coords for Nether
 -45, 73, 82

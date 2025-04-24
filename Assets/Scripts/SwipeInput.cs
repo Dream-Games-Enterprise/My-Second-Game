@@ -1,116 +1,38 @@
-﻿using System.Collections;
+﻿using UnityEngine.EventSystems;
 using UnityEngine;
 
-public class SwipeInput : MonoBehaviour
+public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    public LineRenderer swipeLine;
-    public float fadeDuration = 0.5f;
+    public RectTransform swipeEffectPrefab; // The swipe effect to spawn
+    private Vector2 startTouchPosition;
 
-    Vector2 touchStartPos;
-    Coroutine fadeCoroutine;
-
-    void Update()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        HandleInput();
+        startTouchPosition = eventData.position;
     }
 
-    void HandleInput()
+    public void OnDrag(PointerEventData eventData)
     {
-        bool isTouching = false;
-        Vector2 currentPos = Vector2.zero;
-
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            currentPos = touch.position;
-
-            switch (touch.phase)
-            {
-                case TouchPhase.Began:
-                    touchStartPos = currentPos;
-                    StartSwipeEffect(touchStartPos);
-                    break;
-                case TouchPhase.Moved:
-                case TouchPhase.Stationary:
-                    UpdateSwipeEffect(currentPos);
-                    break;
-                case TouchPhase.Ended:
-                case TouchPhase.Canceled:
-                    EndSwipeEffect();
-                    break;
-            }
-
-            isTouching = true;
-        }
-
-        if (!isTouching)
-        {
-            currentPos = Input.mousePosition;
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                touchStartPos = currentPos;
-                StartSwipeEffect(touchStartPos);
-            }
-            else if (Input.GetMouseButton(0))
-            {
-                UpdateSwipeEffect(currentPos);
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                EndSwipeEffect();
-            }
-        }
+        // Optional: live preview while dragging
     }
 
-    void StartSwipeEffect(Vector2 startPos)
+    public void OnPointerUp(PointerEventData eventData)
     {
-        if (fadeCoroutine != null)
-            StopCoroutine(fadeCoroutine);
+        Vector2 endTouchPosition = eventData.position;
+        Vector2 swipeDirection = (endTouchPosition - startTouchPosition).normalized;
 
-        swipeLine.gameObject.SetActive(true);
-        swipeLine.positionCount = 2;
-        Vector3 worldPos = ScreenToWorld(startPos);
-        swipeLine.SetPosition(0, worldPos);
-        swipeLine.SetPosition(1, worldPos);
-        SetLineAlpha(1f);
+        ShowSwipeEffect(startTouchPosition, endTouchPosition);
+        // Trigger your movement logic here
     }
 
-    void UpdateSwipeEffect(Vector2 endPos)
+    void ShowSwipeEffect(Vector2 start, Vector2 end)
     {
-        swipeLine.SetPosition(1, ScreenToWorld(endPos));
-    }
-
-    void EndSwipeEffect()
-    {
-        fadeCoroutine = StartCoroutine(FadeSwipeEffect());
-    }
-
-    IEnumerator FadeSwipeEffect()
-    {
-        float timer = 0f;
-        while (timer < fadeDuration)
-        {
-            float alpha = Mathf.Lerp(1f, 0f, timer / fadeDuration);
-            SetLineAlpha(alpha);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        swipeLine.gameObject.SetActive(false);
-    }
-
-    void SetLineAlpha(float alpha)
-    {
-        Color start = swipeLine.startColor;
-        Color end = swipeLine.endColor;
-        start.a = end.a = alpha;
-        swipeLine.startColor = start;
-        swipeLine.endColor = end;
-    }
-
-    Vector3 ScreenToWorld(Vector2 screenPos)
-    {
-        Vector3 screenToWorld = new Vector3(screenPos.x, screenPos.y, 10f); // z = distance from camera
-        return Camera.main.ScreenToWorldPoint(screenToWorld);
+        var swipe = Instantiate(swipeEffectPrefab, transform);
+        swipe.position = start;
+        var direction = (end - start).normalized;
+        float distance = Vector2.Distance(start, end);
+        swipe.sizeDelta = new Vector2(distance, 10f); // Adjust height as needed
+        swipe.rotation = Quaternion.FromToRotation(Vector3.right, direction);
+        Destroy(swipe.gameObject, 0.5f); // Optional: auto-destroy after fade
     }
 }

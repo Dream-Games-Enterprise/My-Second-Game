@@ -15,11 +15,13 @@ public class GameSettings : MonoBehaviour
     [SerializeField] GameObject trapSpriteSelector;
 
     [SerializeField] GameObject settingsPanel;
+    [SerializeField] GameObject widgetPanel;
     [SerializeField] GameObject bottomPanel;
     [SerializeField] TMP_Text inputTypeText;
     [SerializeField] Button toggleInputTypeButton;
 
     private bool isSettingsActive = false;
+    private bool isWidgetActive = false;
 
     int widthInt;
     int heightInt;
@@ -128,5 +130,14 @@ public class GameSettings : MonoBehaviour
             panelAnimator.AnimateIn(settingsPanel);
         else
             panelAnimator.AnimateOut(settingsPanel);
+    } 
+    
+    public void ToggleWidget()
+    {
+        isWidgetActive = !isWidgetActive;
+        if (isWidgetActive)
+            panelAnimator.AnimateIn(widgetPanel);
+        else
+            panelAnimator.AnimateOut(widgetPanel);
     }
 }
