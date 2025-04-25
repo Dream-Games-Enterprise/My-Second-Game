@@ -77,31 +77,37 @@ public class CustomisationManager : MonoBehaviour
 
     int currency;
 
+    [SerializeField] bool isInCustomizationScene;
+
     void Start()
     {
         currency = PlayerPrefs.GetInt("currency");
         Debug.Log(currency);
         spriteManager = Object.FindFirstObjectByType<SpriteManager>();
-        InitializePanels();
 
-        UpdateSelectedSkin(GetSelectedSnakeIndex());
-        UpdateSelectedTail(GetSelectedTailIndex());
-        UpdateSelectedFood(GetSelectedFoodIndex());
-        UpdateSelectedTrap(GetSelectedTrapIndex());
+        if (isInCustomizationScene)
+        {
+            InitializePanels();
 
-        int snakeColorIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
-        int tailColorIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
-        int foodColorIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
-        int trapColorIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
-        int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
-        int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
+            UpdateSelectedSkin(GetSelectedSnakeIndex());
+            UpdateSelectedTail(GetSelectedTailIndex());
+            UpdateSelectedFood(GetSelectedFoodIndex());
+            UpdateSelectedTrap(GetSelectedTrapIndex());
 
-        SelectMapPrimaryColor(mapPrimaryColorIndex);
-        SelectMapSecondaryColor(mapSecondaryColorIndex);
-        SelectColour(snakeColorIndex);
-        SelectTailColour(tailColorIndex);
-        SelectFoodColour(foodColorIndex);
-        SelectTrapColour(trapColorIndex);
+            int snakeColorIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            int tailColorIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+            int foodColorIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+            int trapColorIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
+            int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
+            int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
+
+            SelectMapPrimaryColor(mapPrimaryColorIndex);
+            SelectMapSecondaryColor(mapSecondaryColorIndex);
+            SelectColour(snakeColorIndex);
+            SelectTailColour(tailColorIndex);
+            SelectFoodColour(foodColorIndex);
+            SelectTrapColour(trapColorIndex);
+        }
     }
 
     public void SelectMapPrimaryColor(int index)
