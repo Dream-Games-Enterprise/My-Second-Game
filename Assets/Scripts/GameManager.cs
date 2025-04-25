@@ -155,12 +155,17 @@ namespace RD
         bool _obstaclesEnabled;
         bool _isButtonControl;
 
+        Queue<ParticleSystem> particlePool = new Queue<ParticleSystem>();
+        Material foodParticleMaterial;
+
 
         void Awake()
         {
             LoadPlayerPrefs();
             LoadSpritesBits();
             FetchColours();
+            foodParticleMaterial = new Material(Shader.Find("Sprites/Default"));
+
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
@@ -490,23 +495,30 @@ namespace RD
 
                 if (foodPickupParticlePrefab != null && consumed != null)
                 {
-                    GameObject fx = Instantiate(foodPickupParticlePrefab, foodPosition, Quaternion.identity);
-                    var ps = fx.GetComponent<ParticleSystem>();
-                    if (ps != null)
+                    ParticleSystem ps = GetPooledParticle();
+                    ps.transform.position = foodPosition;
+
+                    SpriteRenderer consumedSR = consumed.GetComponent<SpriteRenderer>();
+                    if (consumedSR != null)
                     {
                         var main = ps.main;
-                        main.startColor = consumed.GetComponent<SpriteRenderer>().color;
+                        main.startColor = consumedSR.color;
 
-                        var psr = fx.GetComponent<ParticleSystemRenderer>();
+                        var psr = ps.GetComponent<ParticleSystemRenderer>();
                         if (psr != null)
                         {
-                            var mat = new Material(Shader.Find("Sprites/Default"));
-                            mat.mainTexture = consumed.GetComponent<SpriteRenderer>().sprite.texture;
-                            psr.material = mat;
+                            // Assign shared material
+                            psr.material = foodParticleMaterial;
+
+                            // Update main texture to match the consumed food's sprite
+                            psr.material.mainTexture = consumedSR.sprite.texture;
                         }
                     }
-                    Destroy(fx, 2f);
+
+                    ps.Play();
+                    StartCoroutine(RecycleAfter(ps, 2f));
                 }
+
 
                 if (cameraStartedAtMax && _mainCam.orthographicSize < 12f)
                     _mainCam.orthographicSize = Mathf.Min(_mainCam.orthographicSize + 0.005f, 12f);
@@ -790,9 +802,6 @@ namespace RD
                 runningFoodTweens[f] = tween;
             }
         }
-
-
-
 
         void CreateFood()
         {
@@ -1201,6 +1210,36 @@ namespace RD
                 colour2 = Color.black;
             }
         }
+
+        ParticleSystem GetPooledParticle()
+        {
+            if (particlePool.Count > 0)
+            {
+                var ps = particlePool.Dequeue();
+                ps.gameObject.SetActive(true);
+                return ps;
+            }
+
+            var newGO = Instantiate(foodPickupParticlePrefab);
+            var psNew = newGO.GetComponent<ParticleSystem>();
+            newGO.SetActive(true);
+            return psNew;
+        }
+
+        void RecycleParticle(ParticleSystem ps)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ps.gameObject.SetActive(false);
+            particlePool.Enqueue(ps);
+        }
+
+        IEnumerator RecycleAfter(ParticleSystem ps, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (ps != null)
+                RecycleParticle(ps);
+        }
+
 
         #endregion
 
