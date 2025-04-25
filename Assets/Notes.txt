@@ -7,17 +7,10 @@ Border colour/camera colour selection (put within player options)
 
 
 
-ON SMALLEST MAP LOTS OF THINGS SPAWN AT THE START WHICH I THINK IS BROKEN
-
-
 Add rotating bit to the tail - so it rotates to the direction of the next node in the tail. (this is a bit tricky since it needs to be done for each node in the tail and not just the head)
-add rotating sprite to obstacle selection to prompt user they can change it
 
 Jess Minecraft coords for Nether
 -45, 73, 82
-
-
-
 
 
 EXTRA
@@ -42,6 +35,7 @@ Update in Future If Played:
 - Have speed up on food pick up
 - Make the colour scroll within sprite selections symmetrical. Left end has more padding than the very end of the scroll on the right (only by a few pixels).
 - Add camera options e.g. zoom in/out, follow player, etc. show whole map from start.
+- Leaderboard with time on map size completion
 
 Refactor Repeated Logic: The MovePlayer() and MoveTail() methods share some logic that could be abstracted into smaller helper functions for better reusability and readability.
 
