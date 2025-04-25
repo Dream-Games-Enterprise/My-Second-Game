@@ -2,8 +2,10 @@ NEXT
 Add widget
 Sound for buttons, food eating and obstacle - if can find something suitable. food one will probably need to be vague just a nice sound to listen to  (make similar to collisions/bounces from Wrong Pong where slightly varied between each call of the sound) with toggle from settings/options
 Expand leaderboard
-Clean up end of game scoreboard
+Clean up end of game scoreboard - add leaderboard button at end next to other buttons - then have another button in player options so there are two places to see the leaderboard
 Border colour/camera colour selection (put within player options)
+
+
 
 ON SMALLEST MAP LOTS OF THINGS SPAWN AT THE START WHICH I THINK IS BROKEN
 

@@ -285,6 +285,9 @@ MonoBehaviour:
   - sprite: {fileID: 21300000, guid: 0057389429ff67d459882b231e5b7787, type: 3}
     cost: 100
     isUnlocked: 0
+  - sprite: {fileID: 21300000, guid: 61a835fe7c7c39c42a01e39f43c45d4a, type: 3}
+    cost: 110
+    isUnlocked: 0
   - sprite: {fileID: 21300000, guid: c1d66be43a6fc79408607a9bda79f858, type: 3}
     cost: 125
     isUnlocked: 0
