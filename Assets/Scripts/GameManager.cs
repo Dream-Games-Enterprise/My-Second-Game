@@ -133,19 +133,39 @@ namespace RD
 
         List<Node> validNodesBuffer = new List<Node>();
 
+        Texture2D _mapTex;
+        Sprite _mapSprite;
+
+        int _speedInt;
+        int _snakeSkinIndex;
+        int _tailSkinIndex;
+        int _foodSkinIndex;
+        int _trapSkinIndex;
+
+        int _playerColourIndex;
+        int _tailColourIndex;
+        int _foodColourIndex;
+        int _trapColourIndex;
+        int _mapPrimaryColourIndex;
+        int _mapSecondaryColourIndex;
+
+        int _mapWidth;
+        int _mapHeight;
+
+        bool _obstaclesEnabled;
+        bool _isButtonControl;
+
 
         void Awake()
         {
+            LoadPlayerPrefs();
             LoadSpritesBits();
-
             FetchColours();
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
             isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
-            Debug.Log("Input type is button control: " + isButtonControl);
-
             ToggleInputType(isButtonControl);
 
             _mainCam = Camera.main;
@@ -171,11 +191,6 @@ namespace RD
 
         void Start()
         {
-            LoadSpeedSettings();
-            int snakeIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
-            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
-            int trapIndex = PlayerPrefs.GetInt("SelectedTrapIndex", 0);
-
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
             trapIndexGetter = customisationManager.GetSelectedTrapIndex();
@@ -575,6 +590,9 @@ namespace RD
             CreateMap();
             InitializePools();
 
+            // FIX: set the toggle based on the cached PlayerPrefs value
+            obstaclesToggle = _obstaclesEnabled;
+
             if (obstaclesToggle)
             {
                 CreateObstacles();
@@ -649,60 +667,47 @@ namespace RD
 
         void CreateMap()
         {
-            mapObject = new GameObject("Map");
-            mapRenderer = mapObject.AddComponent<SpriteRenderer>();
+            if (_mapTex == null || _mapTex.width != maxWidth || _mapTex.height != maxHeight)
+            {
+                _mapTex = new Texture2D(maxWidth, maxHeight);
+                _mapTex.filterMode = FilterMode.Point;
+
+                Rect rect = new Rect(0, 0, maxWidth, maxHeight);
+                _mapSprite = Sprite.Create(_mapTex, rect, Vector2.zero, 1, 0, SpriteMeshType.FullRect);
+            }
+
+            if (mapObject == null)
+            {
+                mapObject = new GameObject("Map");
+                mapRenderer = mapObject.AddComponent<SpriteRenderer>();
+                mapRenderer.sprite = _mapSprite;
+            }
 
             grid = new Node[maxWidth, maxHeight];
+            availableNodes.Clear();
 
-            Texture2D txt = new Texture2D(maxWidth, maxHeight);
             for (int x = 0; x < maxWidth; x++)
             {
                 for (int y = 0; y < maxHeight; y++)
                 {
-                    Vector3 tp = Vector3.zero;
-                    tp.x = x;
-                    tp.y = y;
-
+                    Vector3 worldPos = new Vector3(x, y, 0);
                     Node n = new Node()
                     {
                         x = x,
                         y = y,
-                        worldPosition = tp
+                        worldPosition = worldPos
                     };
-
                     grid[x, y] = n;
-
                     availableNodes.Add(n);
 
-                    #region Visual
-
-                    if (x % 2 != 0)
-                    {
-                        if (y % 2 != 0)
-                        {
-                            txt.SetPixel(x, y, colour1);
-                        }
-                        else { txt.SetPixel(x, y, colour2); }
-                    }
-                    else
-                    {
-                        if (y % 2 != 0)
-                        {
-                            txt.SetPixel(x, y, colour2);
-                        }
-                        else { txt.SetPixel(x, y, colour1); }
-                    }
-
-                    #endregion
+                    // Set pixel color (checkerboard)
+                    bool odd = (x + y) % 2 != 0;
+                    _mapTex.SetPixel(x, y, odd ? colour1 : colour2);
                 }
             }
 
-            txt.filterMode = FilterMode.Point;
-
-            txt.Apply();
-            Rect rect = new Rect(0, 0, maxWidth, maxHeight);
-            Sprite sprite = Sprite.Create(txt, rect, Vector2.zero, 1, 0, SpriteMeshType.FullRect);
-            mapRenderer.sprite = sprite;
+            _mapTex.Apply(); // Apply new color changes
+            mapRenderer.sprite = _mapSprite;
         }
 
         void PlacePlayer()
@@ -1260,7 +1265,7 @@ namespace RD
 
         void LoadSpritesBits()
         {
-            int playerSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            int playerSkinIndex = _snakeSkinIndex;
             if (playerSkinIndex >= 0 && playerSkinIndex < customisationManager.snakeSkins.Count)
             {
                 customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
@@ -1271,7 +1276,7 @@ namespace RD
                 Debug.LogWarning("Invalid snake index. Using default sprite.");
             }
 
-            int tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            int tailSkinIndex = _tailSkinIndex;
             if (tailSkinIndex >= 0 && tailSkinIndex < customisationManager.tailSkins.Count)
             {
                 customTailSprite = customisationManager.tailSkins[tailSkinIndex].sprite;
@@ -1282,7 +1287,7 @@ namespace RD
                 Debug.LogWarning("Invalid tail index. Using default tail sprite.");
             }
 
-            int foodIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+            int foodIndex = _foodSkinIndex;
             if (foodIndex >= 0 && foodIndex < customisationManager.foodSkins.Count)
             {
                 customFoodSprite = customisationManager.foodSkins[foodIndex].sprite;
@@ -1293,7 +1298,7 @@ namespace RD
                 Debug.LogWarning("Invalid food index. Using default food sprite.");
             }
 
-            int trapIndex = PlayerPrefs.GetInt("SelectedTrapIndex", 0);
+            int trapIndex = _trapSkinIndex;
             if (trapIndex >= 0 && trapIndex < customisationManager.trapSkins.Count)
             {
                 customTrapSprite = customisationManager.trapSkins[trapIndex].sprite;
@@ -1312,6 +1317,28 @@ namespace RD
             downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
             leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
             rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+        }
+
+        void LoadPlayerPrefs()
+        {
+            _speedInt = PlayerPrefs.GetInt("speed", 3);
+            _snakeSkinIndex = PlayerPrefs.GetInt("SelectedSnakeIndex", 0);
+            _tailSkinIndex = PlayerPrefs.GetInt("SelectedTailIndex", 0);
+            _foodSkinIndex = PlayerPrefs.GetInt("SelectedFoodIndex", 0);
+            _trapSkinIndex = PlayerPrefs.GetInt("SelectedTrapIndex", 0);
+
+            _playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            _tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+            _foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+            _trapColourIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
+            _mapPrimaryColourIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
+            _mapSecondaryColourIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
+
+            _mapWidth = PlayerPrefs.GetInt("width", 16);
+            _mapHeight = PlayerPrefs.GetInt("height", 16);
+
+            _obstaclesEnabled = PlayerPrefs.GetInt("obstacles", 1) == 1;
+            _isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
         }
 
         #endregion 
