@@ -94,4 +94,15 @@ public class ScoreManager : MonoBehaviour
             Debug.Log("High Score not beaten...OLD HIGH SCORE: " + highScore);
         }
     }
+
+    public int GetRawScore()
+    {
+        return piecesEaten * 3;
+    }
+
+    public int GetPiecesEaten()
+    {
+        return piecesEaten;
+    }
+
 }

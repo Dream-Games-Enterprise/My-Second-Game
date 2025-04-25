@@ -9,7 +9,8 @@ public class GameOverUI : MonoBehaviour
     ScoreManager scoreManager;
     [SerializeField] GameObject gameOverUI;
     [SerializeField] TMP_Text totalScoreText;
-    [SerializeField] TMP_Text multipliers;
+    [SerializeField] TMP_Text multipliersText;
+    [SerializeField] TMP_Text foodScoreText;
 
     bool isVictory = false;
 
@@ -32,7 +33,7 @@ public class GameOverUI : MonoBehaviour
 
     void UpdateText()
     {
-        totalScoreText.text = "TOTAL SCORE  |  " + scoreManager.GetScore().ToString();
+        totalScoreText.text = "TOTAL SCORE  " + scoreManager.GetScore().ToString();
 
         string multiplierText = "MULTIPLIERS  |  ";
         multiplierText += "Speed " + scoreManager.SpeedMultiplier.ToString("0.0") + "x  |  ";
@@ -43,6 +44,11 @@ public class GameOverUI : MonoBehaviour
             multiplierText += "  |  Win 5x";
         }
 
-        multipliers.text = multiplierText;
+        multipliersText.text = multiplierText;
+
+        int rawScore = scoreManager.GetRawScore();
+        int pickups = scoreManager.GetPiecesEaten();
+        foodScoreText.text = "Consumed  " + pickups.ToString() + "x  =  " + rawScore.ToString();
     }
+
 }
