@@ -81,11 +81,6 @@ public class ScoreManager : MonoBehaviour
         Debug.Log("New CURRENCY Total: " + newCurrencyTotal);
     }
 
-    public void RemoveCurrency(int currencyToRemove) //this is where buying sprites and such will remove the currency they cost
-    {
-
-    }
-
     void CheckHighScore()
     {
         if (currentScore > highScore)
