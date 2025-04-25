@@ -14,6 +14,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] GameObject pauseObject;
     [SerializeField] GameObject pauseMenuButtons;
     [SerializeField] TMP_Text swipeText;
+    [SerializeField] GameObject leaderboardButton;
 
     bool isPaused = false;
     Coroutine swipeTextTweenCoroutine;
@@ -26,6 +27,7 @@ public class UIHandler : MonoBehaviour
         pauseButton.onClick.AddListener(TogglePause);
 
         pauseMenuButtons.SetActive(false);
+        leaderboardButton.SetActive(false);
     }
 
     void TogglePause()
@@ -69,28 +71,24 @@ public class UIHandler : MonoBehaviour
 
     public void GameEndMenu()
     {
-        // Disable the pauseObject (likely for hiding the in-game UI)
         pauseObject.SetActive(false);
 
-        // Set the pauseMenu's X position to -290 when the game ends
         RectTransform pauseMenuRect = pauseMenu.GetComponent<RectTransform>();
         if (pauseMenuRect != null)
         {
             Vector3 currentPosition = pauseMenuRect.anchoredPosition;
-            currentPosition.x = -200f;  // Set the X position to -290
+            currentPosition.x = -375f;
             pauseMenuRect.anchoredPosition = currentPosition;
         }
 
-        // Enable the pauseMenu buttons, likely for showing the end game options
         pauseMenuButtons.SetActive(true);
+        leaderboardButton.SetActive(true); 
     }
-
 
     public void ToggleSwipeText(bool isButtonControl)
     {
         swipeText.gameObject.SetActive(!isButtonControl);
 
-        // Start or stop the tween effect based on swipeText's active state
         if (swipeText.gameObject.activeSelf)
         {
             swipeTextTweenCoroutine = StartCoroutine(TweenSwipeText());
@@ -99,22 +97,20 @@ public class UIHandler : MonoBehaviour
         {
             StopCoroutine(swipeTextTweenCoroutine);
             swipeTextTweenCoroutine = null;
-            swipeText.transform.localScale = Vector3.one; // Reset scale when not active
+            swipeText.transform.localScale = Vector3.one; 
         }
     }
 
     IEnumerator TweenSwipeText()
     {
-        Vector3 minScale = Vector3.one * 1f; // Minimum scale factor
-        Vector3 maxScale = Vector3.one * 1.8f; // Maximum scale factor
-        float duration = 0.5f; // Duration for one expand/shrink cycle
+        Vector3 minScale = Vector3.one * 1f; 
+        Vector3 maxScale = Vector3.one * 1.8f; 
+        float duration = 0.5f; 
 
         while (swipeText.gameObject.activeSelf)
         {
-            // Scale up
             yield return TweenScale(swipeText.transform, minScale, maxScale, duration);
 
-            // Scale down
             yield return TweenScale(swipeText.transform, maxScale, minScale, duration);
         }
     }
@@ -131,10 +127,5 @@ public class UIHandler : MonoBehaviour
         }
 
         target.localScale = end;
-    }
-
-    public void WinMenu()
-    {
-
     }
 }
