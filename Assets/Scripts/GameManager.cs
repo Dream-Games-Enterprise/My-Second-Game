@@ -101,8 +101,9 @@ namespace RD
         Node prevPlayerNode;
         Node foodNode;
 
-        public List<GameObject> foodObjects;
-        List<Node> foodNodes = new List<Node>();
+        // Map each occupied node to its food GameObject
+        private Dictionary<Node, GameObject> foodMap = new Dictionary<Node, GameObject>();
+
         Queue<GameObject> foodPool = new Queue<GameObject>();
 
         bool obstaclesToggle;
@@ -124,6 +125,7 @@ namespace RD
 
         int initialFoodPoolSize;
         [SerializeField] GameObject foodPickupParticlePrefab;
+        Dictionary<GameObject, Coroutine> runningFoodTweens = new Dictionary<GameObject, Coroutine>();
 
 
         void Awake()
@@ -407,9 +409,7 @@ namespace RD
 
             curDirection = targetDirection;
 
-            int x = 0;
-            int y = 0;
-
+            int x = 0, y = 0;
             switch (curDirection)
             {
                 case Direction.up: y = 1; break;
@@ -419,104 +419,82 @@ namespace RD
             }
 
             Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
-
             if ((tail.Count > 0 && isTailNode(targetNode)) || isObstacleNode(targetNode))
             {
-                if (targetNode == tail[0].node)
-                {
-                    return;
-                }
-                else
-                {
-                    onGameOver.Invoke();
-                    return;
-                }
+                if (targetNode == tail[0].node) return;
+                onGameOver.Invoke();
+                return;
             }
-            else if (targetNode == null)
+            if (targetNode == null)
             {
                 onGameOver.Invoke();
                 return;
             }
-            else
+
+            bool isFood = false;
+            Vector3 foodPosition = Vector3.zero;
+            GameObject consumed = null;
+
+            if (foodMap.TryGetValue(targetNode, out consumed))
             {
-                bool isFood = false;
-                Vector3 foodPosition = Vector3.zero;
-                GameObject consumedFood = null;
-
-                for (int i = 0; i < foodNodes.Count; i++)
+                if (runningFoodTweens.TryGetValue(consumed, out var tween))
                 {
-                    if (foodNodes[i].x == targetNode.x && foodNodes[i].y == targetNode.y)
-                    {
-                        isFood = true;
-
-                        consumedFood = foodObjects[i];
-                        consumedFood.SetActive(false);
-                        foodPool.Enqueue(consumedFood);
-
-                        foodPosition = consumedFood.transform.position;
-
-                        foodObjects.RemoveAt(i);
-                        foodNodes.RemoveAt(i);
-
-                        scoreManager.AddScore();
-                        break;
-                    }
+                    StopCoroutine(tween);
+                    runningFoodTweens.Remove(consumed);
                 }
 
-                Node previousNode = playerNode;
-                availableNodes.Add(previousNode);
+                foodPosition = consumed.transform.position;
 
-                if (isFood)
-                {
-                    tail.Add(CreateTailNode(previousNode.x, previousNode.y));
-                    availableNodes.Remove(previousNode);
-                    foodNodes.Remove(targetNode);
-                    CreateFood();
+                consumed.SetActive(false);
 
-                    if (foodPickupParticlePrefab != null && consumedFood != null)
-                    {
-                        GameObject fx = Instantiate(foodPickupParticlePrefab, foodPosition, Quaternion.identity);
+                foodPool.Enqueue(consumed);
+                foodMap.Remove(targetNode);
 
-                        SpriteRenderer foodRenderer = consumedFood.GetComponent<SpriteRenderer>();
-                        if (foodRenderer != null)
-                        {
-                            Color foodColor = foodRenderer.color;
-                            Sprite foodSprite = foodRenderer.sprite;
-
-                            ParticleSystem ps = fx.GetComponent<ParticleSystem>();
-                            if (ps != null)
-                            {
-                                var main = ps.main;
-                                main.startColor = foodColor;
-                            }
-
-                            ParticleSystemRenderer psr = fx.GetComponent<ParticleSystemRenderer>();
-                            if (psr != null && foodSprite != null)
-                            {
-                                Material mat = new Material(Shader.Find("Sprites/Default"));
-                                mat.mainTexture = foodSprite.texture; // apply the texture
-                                psr.material = mat;
-                            }
-                        }
-
-                        Destroy(fx, 2f);
-                    }
-
-
-                    if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
-                    {
-                        Camera.main.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 0.005f, 12f);
-                    }
-                }
-
-                MoveTail();
-
-                playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
-                StartCoroutine(SmoothMove(playerObject, playerNode.worldPosition, targetNode.worldPosition));
-
-                playerNode = targetNode;
-                availableNodes.Remove(playerNode);
+                scoreManager.AddScore();
+                isFood = true;
             }
+
+            Node previousNode = playerNode;
+            availableNodes.Add(previousNode);
+
+            if (isFood)
+            {
+                tail.Add(CreateTailNode(previousNode.x, previousNode.y));
+                availableNodes.Remove(previousNode);
+
+                CreateFood();
+
+                if (foodPickupParticlePrefab != null && consumed != null)
+                {
+                    GameObject fx = Instantiate(foodPickupParticlePrefab, foodPosition, Quaternion.identity);
+                    var ps = fx.GetComponent<ParticleSystem>();
+                    if (ps != null)
+                    {
+                        var main = ps.main;
+                        main.startColor = consumed.GetComponent<SpriteRenderer>().color;
+
+                        var psr = fx.GetComponent<ParticleSystemRenderer>();
+                        if (psr != null)
+                        {
+                            var mat = new Material(Shader.Find("Sprites/Default"));
+                            mat.mainTexture = consumed.GetComponent<SpriteRenderer>().sprite.texture;
+                            psr.material = mat;
+                        }
+                    }
+                    Destroy(fx, 2f);
+                }
+
+                if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
+                    Camera.main.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 0.005f, 12f);
+            }
+
+            MoveTail();
+
+            playerObject.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
+            StartCoroutine(SmoothMove(playerObject, playerNode.worldPosition, targetNode.worldPosition));
+
+            playerNode = targetNode;
+            availableNodes.Remove(playerNode);
         }
 
         IEnumerator SmoothMove(GameObject obj, Vector3 startPos, Vector3 endPos)
@@ -755,92 +733,78 @@ namespace RD
 
         void SpawnInitialFood()
         {
-            foodObjects.Clear();
-            foodNodes.Clear();
-
+            foodMap.Clear();
             int totalTiles = maxWidth * maxHeight;
-            int foodToSpawn = Mathf.FloorToInt(totalTiles * 0.05f);
-            foodToSpawn = Mathf.Max(foodToSpawn, 1); // ensure at least 1 food
+            int foodToSpawn = Mathf.Max(Mathf.FloorToInt(totalTiles * 0.05f), 1);
 
-            for (int i = 0; i < foodToSpawn; i++)
+            var valid = availableNodes.Where(n => !isTailNode(n)).ToList();
+            for (int i = 0; i < foodToSpawn && valid.Count > 0; i++)
             {
-                List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
+                int idx = Random.Range(0, valid.Count);
+                Node node = valid[idx];
+                valid.RemoveAt(idx);
+                availableNodes.Remove(node);
 
-                if (validNodes.Count == 0)
+                GameObject f = foodPool.Count > 0
+                    ? foodPool.Dequeue()
+                    : CreatePooledFood();
+
+                f.SetActive(true);
+
+                var sr = f.GetComponent<SpriteRenderer>();
+                sr.sprite = customFoodSprite ?? CreateSprite(Color.white);
+                sr.color = foodColour;
+                sr.enabled = true;
+
+                f.transform.position = node.worldPosition + Vector3.one * 0.5f;
+                f.transform.localScale = Vector3.one * 0.6f;
+
+                foodMap[node] = f;
+
+                if (runningFoodTweens.ContainsKey(f))
                 {
-                    Debug.LogWarning("No valid nodes available to spawn more food items.");
-                    break;
+                    StopCoroutine(runningFoodTweens[f]);
+                    runningFoodTweens.Remove(f);
                 }
-
-                if (foodPool.Count == 0)
-                {
-                    foodPool.Enqueue(CreatePooledFood("ExtraPooledFood"));
-
-                }
-
-                int randomIndex = Random.Range(0, validNodes.Count);
-                Node foodNode = validNodes[randomIndex];
-
-                availableNodes.Remove(foodNode);
-                foodNodes.Add(foodNode);
-
-                GameObject foodObject = foodPool.Dequeue();
-                foodObject.SetActive(true);
-
-                SpriteRenderer foodRenderer = foodObject.GetComponent<SpriteRenderer>();
-                if (foodRenderer == null)
-                    foodRenderer = foodObject.AddComponent<SpriteRenderer>();
-
-                foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
-                foodRenderer.color = foodColour;
-                foodRenderer.sortingOrder = 1;
-
-                PlacePlayerObject(foodObject, foodNode.worldPosition);
-                foodObject.transform.localScale = Vector3.one * 0.6f;
-
-                foodObjects.Add(foodObject);
-                StartCoroutine(TweenFoodScale(foodObject));
+                var tween = StartCoroutine(TweenFoodScale(f));
+                runningFoodTweens[f] = tween;
             }
         }
 
 
+
+
         void CreateFood()
         {
-            if (foodPool.Count == 0)
+            var valid = availableNodes.Where(n => !isTailNode(n)).ToList();
+            if (valid.Count == 0) return;
+
+            Node node = valid[Random.Range(0, valid.Count)];
+            availableNodes.Remove(node);
+
+            GameObject f = foodPool.Count > 0
+                ? foodPool.Dequeue()
+                : CreatePooledFood();
+
+            f.SetActive(true);
+
+            var sr = f.GetComponent<SpriteRenderer>();
+            sr.sprite = customFoodSprite ?? CreateSprite(Color.white);
+            sr.color = foodColour;
+            sr.enabled = true;
+
+            f.transform.position = node.worldPosition + Vector3.one * 0.5f;
+            f.transform.localScale = Vector3.one * 0.7f;
+
+            foodMap[node] = f;
+
+            if (runningFoodTweens.ContainsKey(f))
             {
-                Debug.LogWarning("Food pool exhausted! Consider increasing pool size.");
-                return;
+                StopCoroutine(runningFoodTweens[f]);
+                runningFoodTweens.Remove(f);
             }
-
-            List<Node> validNodes = availableNodes.Where(n => !isTailNode(n)).ToList();
-            if (validNodes.Count == 0)
-            {
-                Debug.LogWarning("No valid nodes available for food placement.");
-                return;
-            }
-
-            int randomIndex = Random.Range(0, validNodes.Count);
-            Node foodNode = validNodes[randomIndex];
-
-            availableNodes.Remove(foodNode);
-            foodNodes.Add(foodNode);
-
-            GameObject food = foodPool.Dequeue();
-            food.SetActive(true);
-
-            SpriteRenderer foodRenderer = food.GetComponent<SpriteRenderer>();
-            if (foodRenderer == null)
-                foodRenderer = food.AddComponent<SpriteRenderer>();
-
-            foodRenderer.sprite = customFoodSprite != null ? customFoodSprite : CreateSprite(Color.white);
-            foodRenderer.color = foodColour;
-            foodRenderer.sortingOrder = 1;
-
-            PlacePlayerObject(food, foodNode.worldPosition);
-            food.transform.localScale = Vector3.one * 0.7f;
-
-            foodObjects.Add(food);
-            StartCoroutine(TweenFoodScale(food));
+            var tween = StartCoroutine(TweenFoodScale(f));
+            runningFoodTweens[f] = tween;
         }
 
         void PlaceFood()
