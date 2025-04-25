@@ -1240,7 +1240,6 @@ namespace RD
                 RecycleParticle(ps);
         }
 
-
         #endregion
 
         #region CAMERA
