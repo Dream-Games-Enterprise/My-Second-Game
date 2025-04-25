@@ -38,13 +38,17 @@ public class GameOverUI : MonoBehaviour
         int pickups = scoreManager.GetPiecesEaten();
 
         string combinedText = "";
-        combinedText += "Consumed " + pickups.ToString() + "x  =  " + rawScore.ToString() + "\n";
+        combinedText += "Consumed " + pickups + "x  =  " + rawScore + "\n";
         combinedText += "Speed " + scoreManager.SpeedMultiplier.ToString("0.0") + "x\n";
-        combinedText += "Obstacles " + scoreManager.ObstacleMultiplier.ToString("0.0") + "x";
+
+        if (scoreManager.ObstacleMultiplier > 1.0f)
+        {
+            combinedText += "Obstacles " + scoreManager.ObstacleMultiplier.ToString("0.0") + "x\n";
+        }
 
         if (isVictory)
         {
-            combinedText += "\nWin 5x";
+            combinedText += "Win 5x";
         }
 
         multipliersText.text = combinedText;
