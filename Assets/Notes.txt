@@ -47,8 +47,6 @@ Collision Detection:
 
 The collision checks (isTailNode(), isObstacleNode()) are functional, but consider combining them into a single method to streamline the logic.
 
-THIS HAS BEEN IMPLEMENTED (NEEDS TO BE CHECKED THO), Touch Input Optimization: You reset touchStartPos after each swipe. This might result in smaller consecutive swipes being misinterpreted. Consider resetting it only at TouchPhase.Ended.
-
 
 Enhance Rotation Logic:
 
