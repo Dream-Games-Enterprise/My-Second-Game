@@ -81,7 +81,7 @@ public class CustomisationManager : MonoBehaviour
     {
         currency = PlayerPrefs.GetInt("currency");
         Debug.Log(currency);
-        spriteManager = FindObjectOfType<SpriteManager>();
+        spriteManager = Object.FindFirstObjectByType<SpriteManager>();
         InitializePanels();
 
         UpdateSelectedSkin(GetSelectedSnakeIndex());
