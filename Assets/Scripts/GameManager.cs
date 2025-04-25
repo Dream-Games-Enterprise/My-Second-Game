@@ -191,6 +191,8 @@ namespace RD
 
         void Start()
         {
+            SetSpeed(GetMoveRateFromSpeed(_speedInt));
+
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
             trapIndexGetter = customisationManager.GetSelectedTrapIndex();
@@ -590,7 +592,6 @@ namespace RD
             CreateMap();
             InitializePools();
 
-            // FIX: set the toggle based on the cached PlayerPrefs value
             obstaclesToggle = _obstaclesEnabled;
 
             if (obstaclesToggle)
