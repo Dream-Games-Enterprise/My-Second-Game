@@ -18,12 +18,6 @@ HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 HAD PARTICLE EFFECT OF SNAKE DISSIPATING WHEN GAME OVER
 
 
-CORE
-Leaderboard
-
-Have a leaderboard for most points held - just count the bank balance not with sprites and stuff have them toggle to opt in to leaderboard. so need high score for 1 match then total score ever achieved... maybe need time score here too
-
-
 BUG
 Food is not disappearing when picked up - i assume its being picked up since a see a new food spawns somewhere 
 Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?

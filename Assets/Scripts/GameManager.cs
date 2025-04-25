@@ -127,6 +127,12 @@ namespace RD
         [SerializeField] GameObject foodPickupParticlePrefab;
         Dictionary<GameObject, Coroutine> runningFoodTweens = new Dictionary<GameObject, Coroutine>();
 
+        Camera _mainCam;
+        Dictionary<Direction, Vector2Int> _dirVectors;
+        Dictionary<Direction, float> _dirAngles;
+
+        List<Node> validNodesBuffer = new List<Node>();
+
 
         void Awake()
         {
@@ -141,6 +147,26 @@ namespace RD
             Debug.Log("Input type is button control: " + isButtonControl);
 
             ToggleInputType(isButtonControl);
+
+            _mainCam = Camera.main;
+
+            _dirVectors = new Dictionary<Direction, Vector2Int>
+{
+    { Direction.up,    new Vector2Int( 0,  1) },
+    { Direction.down,  new Vector2Int( 0, -1) },
+    { Direction.left,  new Vector2Int(-1,  0) },
+    { Direction.right, new Vector2Int( 1,  0) }
+};
+
+            _dirAngles = new Dictionary<Direction, float>
+{
+    { Direction.up,     0f },
+    { Direction.left,  90f },
+    { Direction.down, 180f },
+    { Direction.right,270f },
+    { Direction.None,   0f }
+};
+
         }
 
         void Start()
@@ -387,19 +413,7 @@ namespace RD
 
         float GetRotationForDirection(Direction direction)
         {
-            switch (direction)
-            {
-                case Direction.up:
-                    return 0f;
-                case Direction.left:
-                    return 90f;
-                case Direction.down:
-                    return 180f;
-                case Direction.right:
-                    return 270f;
-                default:
-                    return 0f;
-            }
+            return _dirAngles.TryGetValue(direction, out float angle) ? angle : 0f;
         }
 
         void MovePlayer()
@@ -409,16 +423,9 @@ namespace RD
 
             curDirection = targetDirection;
 
-            int x = 0, y = 0;
-            switch (curDirection)
-            {
-                case Direction.up: y = 1; break;
-                case Direction.down: y = -1; break;
-                case Direction.left: x = -1; break;
-                case Direction.right: x = 1; break;
-            }
+            Vector2Int delta = _dirVectors.TryGetValue(curDirection, out var d) ? d : Vector2Int.zero;
+            Node targetNode = GetNode(playerNode.x + delta.x, playerNode.y + delta.y);
 
-            Node targetNode = GetNode(playerNode.x + x, playerNode.y + y);
             if ((tail.Count > 0 && isTailNode(targetNode)) || isObstacleNode(targetNode))
             {
                 if (targetNode == tail[0].node) return;
@@ -484,8 +491,8 @@ namespace RD
                     Destroy(fx, 2f);
                 }
 
-                if (cameraStartedAtMax && Camera.main.orthographicSize < 12f)
-                    Camera.main.orthographicSize = Mathf.Min(Camera.main.orthographicSize + 0.005f, 12f);
+                if (cameraStartedAtMax && _mainCam.orthographicSize < 12f)
+                    _mainCam.orthographicSize = Mathf.Min(_mainCam.orthographicSize + 0.005f, 12f);
             }
 
             MoveTail();
@@ -737,12 +744,19 @@ namespace RD
             int totalTiles = maxWidth * maxHeight;
             int foodToSpawn = Mathf.Max(Mathf.FloorToInt(totalTiles * 0.05f), 1);
 
-            var valid = availableNodes.Where(n => !isTailNode(n)).ToList();
-            for (int i = 0; i < foodToSpawn && valid.Count > 0; i++)
+            validNodesBuffer.Clear();
+            for (int i = 0; i < availableNodes.Count; i++)
             {
-                int idx = Random.Range(0, valid.Count);
-                Node node = valid[idx];
-                valid.RemoveAt(idx);
+                var node = availableNodes[i];
+                if (!isTailNode(node))
+                    validNodesBuffer.Add(node);
+            }
+
+            for (int i = 0; i < foodToSpawn && validNodesBuffer.Count > 0; i++)
+            {
+                int idx = Random.Range(0, validNodesBuffer.Count);
+                Node node = validNodesBuffer[idx];
+                validNodesBuffer.RemoveAt(idx);
                 availableNodes.Remove(node);
 
                 GameObject f = foodPool.Count > 0
@@ -776,10 +790,18 @@ namespace RD
 
         void CreateFood()
         {
-            var valid = availableNodes.Where(n => !isTailNode(n)).ToList();
-            if (valid.Count == 0) return;
+            validNodesBuffer.Clear();
+            for (int i = 0; i < availableNodes.Count; i++)
+            {
+                var n = availableNodes[i];
+                if (!isTailNode(n))
+                    validNodesBuffer.Add(n);
+            }
+            if (validNodesBuffer.Count == 0) return;
 
-            Node node = valid[Random.Range(0, valid.Count)];
+            Node node = validNodesBuffer[Random.Range(0, validNodesBuffer.Count)];
+
+
             availableNodes.Remove(node);
 
             GameObject f = foodPool.Count > 0
