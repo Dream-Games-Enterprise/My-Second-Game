@@ -125,7 +125,6 @@ namespace RD
 
         int initialFoodPoolSize;
         [SerializeField] GameObject foodPickupParticlePrefab;
-        Dictionary<GameObject, Coroutine> runningFoodTweens = new Dictionary<GameObject, Coroutine>();
 
         Camera _mainCam;
         Dictionary<Direction, Vector2Int> _dirVectors;
@@ -157,6 +156,7 @@ namespace RD
 
         Queue<ParticleSystem> particlePool = new Queue<ParticleSystem>();
         Material foodParticleMaterial;
+        private readonly List<Transform> animatedFoodList = new List<Transform>();
 
 
         void Awake()
@@ -214,9 +214,7 @@ namespace RD
         void Update()
         {
             if (isGameOver)
-            {
                 return;
-            }
 
             if (!isCameraAdjusting)
             {
@@ -227,6 +225,8 @@ namespace RD
 
             HandleTouchInput();
             GetInput();
+
+            AnimateFoodScale(); 
 
             if (!isFirstInput)
             {
@@ -264,6 +264,19 @@ namespace RD
 
                     MovePlayer();
                 }
+            }
+        }
+
+        void AnimateFoodScale()
+        {
+            float baseScale = 0.65f;
+            float oscillation = Mathf.Sin(Time.time * 5f) * 0.05f;
+            Vector3 scale = Vector3.one * (baseScale + oscillation);
+
+            for (int i = 0; i < animatedFoodList.Count; i++)
+            {
+                if (animatedFoodList[i] != null)
+                    animatedFoodList[i].localScale = scale;
             }
         }
 
@@ -454,6 +467,7 @@ namespace RD
                 onGameOver.Invoke();
                 return;
             }
+
             if (targetNode == null)
             {
                 onGameOver.Invoke();
@@ -466,16 +480,11 @@ namespace RD
 
             if (foodMap.TryGetValue(targetNode, out consumed))
             {
-                if (runningFoodTweens.TryGetValue(consumed, out var tween))
-                {
-                    StopCoroutine(tween);
-                    runningFoodTweens.Remove(consumed);
-                }
+                // Remove from animated list since this food is now gone
+                animatedFoodList.Remove(consumed.transform);
 
                 foodPosition = consumed.transform.position;
-
                 consumed.SetActive(false);
-
                 foodPool.Enqueue(consumed);
                 foodMap.Remove(targetNode);
 
@@ -518,7 +527,6 @@ namespace RD
                     ps.Play();
                     StartCoroutine(RecycleAfter(ps, 2f));
                 }
-
 
                 if (cameraStartedAtMax && _mainCam.orthographicSize < 12f)
                     _mainCam.orthographicSize = Mathf.Min(_mainCam.orthographicSize + 0.005f, 12f);
@@ -777,29 +785,9 @@ namespace RD
                 validNodesBuffer.RemoveAt(idx);
                 availableNodes.Remove(node);
 
-                GameObject f = foodPool.Count > 0
-                    ? foodPool.Dequeue()
-                    : CreatePooledFood();
+                GameObject f = foodPool.Count > 0 ? foodPool.Dequeue() : CreatePooledFood();
 
-                f.SetActive(true);
-
-                var sr = f.GetComponent<SpriteRenderer>();
-                sr.sprite = customFoodSprite ?? CreateSprite(Color.white);
-                sr.color = foodColour;
-                sr.enabled = true;
-
-                f.transform.position = node.worldPosition + Vector3.one * 0.5f;
-                f.transform.localScale = Vector3.one * 0.6f;
-
-                foodMap[node] = f;
-
-                if (runningFoodTweens.ContainsKey(f))
-                {
-                    StopCoroutine(runningFoodTweens[f]);
-                    runningFoodTweens.Remove(f);
-                }
-                var tween = StartCoroutine(TweenFoodScale(f));
-                runningFoodTweens[f] = tween;
+                SetupFoodObject(f, node, 0.6f);
             }
         }
 
@@ -812,36 +800,31 @@ namespace RD
                 if (!isTailNode(n))
                     validNodesBuffer.Add(n);
             }
+
             if (validNodesBuffer.Count == 0) return;
 
             Node node = validNodesBuffer[Random.Range(0, validNodesBuffer.Count)];
-
-
             availableNodes.Remove(node);
 
-            GameObject f = foodPool.Count > 0
-                ? foodPool.Dequeue()
-                : CreatePooledFood();
+            GameObject f = foodPool.Count > 0 ? foodPool.Dequeue() : CreatePooledFood();
 
-            f.SetActive(true);
+            SetupFoodObject(f, node, 0.7f);
+        }
 
-            var sr = f.GetComponent<SpriteRenderer>();
+        void SetupFoodObject(GameObject food, Node node, float scale)
+        {
+            food.SetActive(true);
+
+            var sr = food.GetComponent<SpriteRenderer>();
             sr.sprite = customFoodSprite ?? CreateSprite(Color.white);
             sr.color = foodColour;
             sr.enabled = true;
 
-            f.transform.position = node.worldPosition + Vector3.one * 0.5f;
-            f.transform.localScale = Vector3.one * 0.7f;
+            food.transform.position = node.worldPosition + Vector3.one * 0.5f;
+            food.transform.localScale = Vector3.one * scale;
 
-            foodMap[node] = f;
-
-            if (runningFoodTweens.ContainsKey(f))
-            {
-                StopCoroutine(runningFoodTweens[f]);
-                runningFoodTweens.Remove(f);
-            }
-            var tween = StartCoroutine(TweenFoodScale(f));
-            runningFoodTweens[f] = tween;
+            foodMap[node] = food;
+            animatedFoodList.Add(food.transform);
         }
 
         void PlaceFood()
@@ -1012,10 +995,8 @@ namespace RD
 
         bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
         {
-            // Check grid boundaries
             if (x < 0 || y < 0 || x >= maxWidth || y >= maxHeight) return true;
 
-            // Check if the node is an obstacle or part of the snake (using the temporary obstacles set)
             Node node = grid[x, y];
             for (int i = 0; i < tail.Count; i++)
             {
@@ -1142,41 +1123,7 @@ namespace RD
             return Sprite.Create(txt, rect, Vector2.one * 0.5f, 1, 0, SpriteMeshType.FullRect);
         }
 
-        IEnumerator TweenFoodScale(GameObject foodObject)
-        {
-            Vector3 minScale = Vector3.one * 0.6f;
-            Vector3 maxScale = Vector3.one * 0.7f;
-            float duration = 0.5f;
-
-            while (foodObject != null && foodObject.transform != null)
-            {
-                yield return TweenScale(foodObject.transform, minScale, maxScale, duration);
-
-                if (foodObject == null || foodObject.transform == null)
-                    yield break;
-
-                yield return TweenScale(foodObject.transform, maxScale, minScale, duration);
-            }
-        }
-
-        IEnumerator TweenScale(Transform target, Vector3 start, Vector3 end, float duration)
-        {
-            float elapsedTime = 0f;
-
-            while (elapsedTime < duration)
-            {
-                if (target == null)
-                    yield break;
-
-                target.localScale = Vector3.Lerp(start, end, elapsedTime / duration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            if (target != null)
-                target.localScale = end;
-        }
-
+        
         void FetchColours()
         {
             int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
