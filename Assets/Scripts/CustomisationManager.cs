@@ -110,11 +110,10 @@ public class CustomisationManager : MonoBehaviour
             int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
             int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
            
-            //backgroundCycleButton.onClick.AddListener(CycleBackgroundColor);
             backgroundIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
             if (backgroundIndex >= backgroundColors.Count) backgroundIndex = 0;
 
-            backgroundText.text = backgroundNames[backgroundIndex];
+            backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
 
             SelectMapPrimaryColor(mapPrimaryColorIndex);
             SelectMapSecondaryColor(mapSecondaryColorIndex);

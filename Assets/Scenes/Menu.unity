@@ -75944,6 +75944,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 519420031}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: spriteManager
+      value: 
+      objectReference: {fileID: 1909078579}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: backgroundText
       value: 
       objectReference: {fileID: 1765266194}
