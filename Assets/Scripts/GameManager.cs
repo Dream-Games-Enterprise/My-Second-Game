@@ -157,7 +157,6 @@ namespace RD
         Material foodParticleMaterial;
         private readonly List<Transform> animatedFoodList = new List<Transform>();
 
-
         void Awake()
         {
             LoadPlayerPrefs();
@@ -490,7 +489,6 @@ namespace RD
                 isFood = true;
             }
 
-            // Safety cleanup in case food is still in the world but shouldn't be
             foreach (Transform food in animatedFoodList.ToList())
             {
                 if (food == null || !food.gameObject.activeSelf)
@@ -789,10 +787,18 @@ namespace RD
             int foodToSpawn = Mathf.Max(Mathf.FloorToInt(totalTiles * 0.05f), 1);
 
             validNodesBuffer.Clear();
+
             for (int i = 0; i < availableNodes.Count; i++)
             {
-                var node = availableNodes[i];
-                if (!isTailNode(node))
+                Node node = availableNodes[i];
+
+                bool isValid =
+                    !isTailNode(node) &&
+                    !isObstacleNode(node) &&
+                    !foodMap.ContainsKey((node.x, node.y)) &&
+                    node != playerNode;
+
+                if (isValid)
                     validNodesBuffer.Add(node);
             }
 
@@ -804,18 +810,26 @@ namespace RD
                 availableNodes.Remove(node);
 
                 GameObject f = foodPool.Count > 0 ? foodPool.Dequeue() : CreatePooledFood();
-
                 SetupFoodObject(f, node, 0.6f);
             }
         }
 
+
         void CreateFood()
         {
             validNodesBuffer.Clear();
+
             for (int i = 0; i < availableNodes.Count; i++)
             {
-                var n = availableNodes[i];
-                if (!isTailNode(n))
+                Node n = availableNodes[i];
+
+                bool isValid =
+                    !isTailNode(n) &&
+                    !isObstacleNode(n) &&
+                    !foodMap.ContainsKey((n.x, n.y)) &&
+                    n != playerNode;
+
+                if (isValid)
                     validNodesBuffer.Add(n);
             }
 
@@ -946,7 +960,6 @@ namespace RD
                 potentialNodes.RemoveAt(randomIndex);
             }
         }
-
 
         bool CreatesDeadEnd(Node candidateNode)
         {
@@ -1140,7 +1153,6 @@ namespace RD
             Rect rect = new Rect(0, 0, 1, 1);
             return Sprite.Create(txt, rect, Vector2.one * 0.5f, 1, 0, SpriteMeshType.FullRect);
         }
-
         
         void FetchColours()
         {
