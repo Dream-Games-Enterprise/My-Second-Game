@@ -87,10 +87,11 @@ public class ScoreManager : MonoBehaviour
         {
             highScore = currentScore;
             PlayerPrefs.SetInt("highScore", highScore);
+            PlayerPrefs.Save();
             Debug.Log("HIGH SCORE: " + highScore);
         }
         else
-        { 
+        {
             Debug.Log("High Score not beaten...OLD HIGH SCORE: " + highScore);
         }
     }
