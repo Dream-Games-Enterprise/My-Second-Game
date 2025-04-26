@@ -37,6 +37,7 @@ public class TrapSkin
 
 public class CustomisationManager : MonoBehaviour
 {
+    [SerializeField] Camera targetCamera;
     [SerializeField] SpriteManager spriteManager;
     public List<SnakeSkin> snakeSkins;
     public List<TailSkin> tailSkins;
@@ -126,10 +127,19 @@ public class CustomisationManager : MonoBehaviour
 
     public void CycleBackgroundColor()
     {
-        Debug.Log("SHould be cyclcing here");
         backgroundIndex = (backgroundIndex + 1) % backgroundColors.Count;
 
+        Color selectedColor = backgroundColors[backgroundIndex];
         backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
+
+        if (targetCamera != null)
+        {
+            targetCamera.backgroundColor = selectedColor;
+        }
+        else
+        {
+            Debug.LogWarning("Camera reference not set on CustomisationManager.");
+        }
 
         PlayerPrefs.SetInt("SelectedBackgroundIndex", backgroundIndex);
         PlayerPrefs.Save();

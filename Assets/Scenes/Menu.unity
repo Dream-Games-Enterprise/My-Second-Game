@@ -75940,6 +75940,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1284100134}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: backgroundText
       value: 
       objectReference: {fileID: 1765266194}
@@ -75971,114 +75975,6 @@ PrefabInstance:
       propertyPath: backgroundCycleButton
       value: 
       objectReference: {fileID: 890764684}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundNames.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: 'backgroundNames.Array.data[2]'
-      value: BLUE
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: 'backgroundNames.Array.data[3]'
-      value: PINK
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: 'backgroundNames.Array.data[4]'
-      value: RED
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: 'backgroundNames.Array.data[5]'
-      value: GREEN
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: 'backgroundNames.Array.data[6]'
-      value: COFFEE
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[2].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[2].b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[2].g
-      value: 0.75686276
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[2].r
-      value: 0.49411765
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[3].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[3].b
-      value: 0.79607844
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[3].g
-      value: 0.7529412
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[3].r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[4].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[4].b
-      value: 0.42745098
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[4].g
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[4].r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[5].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[5].b
-      value: 0.38431373
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[5].g
-      value: 0.7372549
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[5].r
-      value: 0.5921569
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[6].a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[6].b
-      value: 0.5882353
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[6].g
-      value: 0.69411767
-      objectReference: {fileID: 0}
-    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
-      propertyPath: backgroundColors.Array.data[6].r
-      value: 0.7529412
-      objectReference: {fileID: 0}
     - target: {fileID: 2329680655283942787, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: m_Name
       value: Customisation_Manager
