@@ -10,7 +10,6 @@ namespace LeaderboardCreatorDemo
     public class LeaderboardManager : MonoBehaviour
     {
         [SerializeField] GameObject leaderboardPanel;
-        [SerializeField] GameObject bottomPanel;
         [SerializeField] UIPanelAnimator uiPanelAnimator;
 
         [SerializeField] TMP_Text[] nameFields;
@@ -113,6 +112,19 @@ namespace LeaderboardCreatorDemo
                     Debug.LogWarning("Failed to upload score.");
                 }
             });
+        }
+
+        public void ToggleLeaderboard()
+        {
+            isLeaderboardActive = !isLeaderboardActive;
+            if (isLeaderboardActive)
+            {
+                uiPanelAnimator.AnimateIn(leaderboardPanel);
+                LoadPersonalBest();
+                LoadScores();
+            }
+            else
+                uiPanelAnimator.AnimateOut(leaderboardPanel);
         }
 
         public void LoadPersonalBest()

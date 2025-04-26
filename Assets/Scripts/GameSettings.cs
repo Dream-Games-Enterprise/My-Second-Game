@@ -36,7 +36,6 @@ public class GameSettings : MonoBehaviour
 
     [SerializeField] UIPanelAnimator panelAnimator;
 
-
     void Start()
     {
         Time.timeScale = 1f;
@@ -110,7 +109,6 @@ public class GameSettings : MonoBehaviour
         trapSpriteSelector.SetActive(isOn);
         Debug.Log("Obstacles enabled: " + obstacles);
     }
-
 
     void ToggleInputType()
     {

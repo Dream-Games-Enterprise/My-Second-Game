@@ -59800,7 +59800,7 @@ MonoBehaviour:
     m_Left: 150
     m_Right: 0
     m_Top: 20
-    m_Bottom: 0
+    m_Bottom: 25
   m_ChildAlignment: 1
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
@@ -63819,7 +63819,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leaderboardPanel: {fileID: 454780897}
-  bottomPanel: {fileID: 533785205}
   uiPanelAnimator: {fileID: 1320675193}
   nameFields:
   - {fileID: 999897051}

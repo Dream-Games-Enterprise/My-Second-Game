@@ -6,6 +6,7 @@ using TMPro;
 
 public class UIHandler : MonoBehaviour
 {
+    [SerializeField] LeaderboardCreatorDemo.LeaderboardManager leaderboardManager;
     [SerializeField] Button pauseButton;
     [SerializeField] GameObject pauseMenu;
     [SerializeField] Image pauseAndResume;
@@ -127,5 +128,11 @@ public class UIHandler : MonoBehaviour
         }
 
         target.localScale = end;
+    }
+
+    public void OnLeaderboardButtonClicked()
+    {
+        Debug.Log("Leaderboard button clicked!");
+        leaderboardManager.ToggleLeaderboard();
     }
 }
