@@ -88,7 +88,7 @@ public class CustomisationManager : MonoBehaviour
     [SerializeField] Button backgroundCycleButton;
     [SerializeField] TMP_Text backgroundText;
     int backgroundIndex = 0;
-
+    [SerializeField] List<Image> backgroundTintImages;
 
     void Start()
     {
@@ -114,6 +114,20 @@ public class CustomisationManager : MonoBehaviour
            
             backgroundIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
             if (backgroundIndex >= backgroundColors.Count) backgroundIndex = 0;
+            if (targetCamera != null && backgroundIndex < backgroundColors.Count)
+            {
+                targetCamera.backgroundColor = backgroundColors[backgroundIndex];
+            }
+            else
+            {
+                Debug.LogWarning("Camera reference is missing or index out of range.");
+            }
+
+            foreach (var img in backgroundTintImages)
+            {
+                if (img != null)
+                    img.color = backgroundColors[backgroundIndex];
+            }
 
             backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
 
@@ -129,17 +143,19 @@ public class CustomisationManager : MonoBehaviour
     public void CycleBackgroundColor()
     {
         backgroundIndex = (backgroundIndex + 1) % backgroundColors.Count;
-
         Color selectedColor = backgroundColors[backgroundIndex];
+
         backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
 
         if (targetCamera != null)
         {
             targetCamera.backgroundColor = selectedColor;
         }
-        else
+
+        foreach (var img in backgroundTintImages)
         {
-            Debug.LogWarning("Camera reference not set on CustomisationManager.");
+            if (img != null)
+                img.color = selectedColor;
         }
 
         PlayerPrefs.SetInt("SelectedBackgroundIndex", backgroundIndex);
