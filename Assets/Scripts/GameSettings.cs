@@ -5,8 +5,7 @@ using TMPro;
 
 public class GameSettings : MonoBehaviour
 {
-    [SerializeField] Leaderboard leaderboard;
-
+    [SerializeField] LeaderboardCreatorDemo.LeaderboardManager leaderboardManager;
     [SerializeField] TMP_Text widthValue;
     [SerializeField] TMP_Text heightValue;
     [SerializeField] TMP_Text speedValue;
@@ -151,7 +150,8 @@ public class GameSettings : MonoBehaviour
         if (isLeaderboardActive)
         {
             panelAnimator.AnimateIn(leaderboardPanel);
-            leaderboard.LoadPersonalBest();
+            leaderboardManager.LoadPersonalBest();
+            leaderboardManager.LoadScores();
         }
         else
             panelAnimator.AnimateOut(leaderboardPanel);
