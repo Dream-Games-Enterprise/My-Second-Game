@@ -516,10 +516,8 @@ namespace RD
                         var psr = ps.GetComponent<ParticleSystemRenderer>();
                         if (psr != null)
                         {
-                            // Assign shared material
                             psr.material = foodParticleMaterial;
 
-                            // Update main texture to match the consumed food's sprite
                             psr.material.mainTexture = consumedSR.sprite.texture;
                         }
                     }
@@ -707,10 +705,14 @@ namespace RD
             grid = new Node[maxWidth, maxHeight];
             availableNodes.Clear();
 
-            for (int x = 0; x < maxWidth; x++)
+            Color[] colorBuffer = new Color[maxWidth * maxHeight];
+
+            for (int y = 0; y < maxHeight; y++)
             {
-                for (int y = 0; y < maxHeight; y++)
+                for (int x = 0; x < maxWidth; x++)
                 {
+                    int index = y * maxWidth + x;
+
                     Vector3 worldPos = new Vector3(x, y, 0);
                     Node n = new Node()
                     {
@@ -721,15 +723,16 @@ namespace RD
                     grid[x, y] = n;
                     availableNodes.Add(n);
 
-                    // Set pixel color (checkerboard)
                     bool odd = (x + y) % 2 != 0;
-                    _mapTex.SetPixel(x, y, odd ? colour1 : colour2);
+                    colorBuffer[index] = odd ? colour1 : colour2;
                 }
             }
 
-            _mapTex.Apply(); // Apply new color changes
+            _mapTex.SetPixels(colorBuffer);
+            _mapTex.Apply();
             mapRenderer.sprite = _mapSprite;
         }
+
 
         void PlacePlayer()
         {
