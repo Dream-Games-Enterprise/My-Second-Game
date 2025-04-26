@@ -16,12 +16,14 @@ public class GameSettings : MonoBehaviour
 
     [SerializeField] GameObject settingsPanel;
     [SerializeField] GameObject widgetPanel;
+    [SerializeField] GameObject leaderboardPanel;
     [SerializeField] GameObject bottomPanel;
     [SerializeField] TMP_Text inputTypeText;
     [SerializeField] Button toggleInputTypeButton;
 
-    private bool isSettingsActive = false;
-    private bool isWidgetActive = false;
+    bool isSettingsActive = false;
+    bool isWidgetActive = false;
+    bool isLeaderboardActive = false;
 
     int widthInt;
     int heightInt;
@@ -139,5 +141,14 @@ public class GameSettings : MonoBehaviour
             panelAnimator.AnimateIn(widgetPanel);
         else
             panelAnimator.AnimateOut(widgetPanel);
+    }   
+    
+    public void ToggleLeaderboard()
+    {
+        isLeaderboardActive = !isLeaderboardActive;
+        if (isLeaderboardActive)
+            panelAnimator.AnimateIn(leaderboardPanel);
+        else
+            panelAnimator.AnimateOut(leaderboardPanel);
     }
 }

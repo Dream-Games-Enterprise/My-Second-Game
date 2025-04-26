@@ -22,7 +22,7 @@ public class Leaderboard : MonoBehaviour
     {
         isLeaderboardActive = !isLeaderboardActive;
 
-        personalBest.text = "HIGH SCORE\n" + PlayerPrefs.GetInt("highScore");
+        personalBest.text = "HIGH SCORE  " + PlayerPrefs.GetInt("highScore");
 
         if (isLeaderboardActive)
         {
