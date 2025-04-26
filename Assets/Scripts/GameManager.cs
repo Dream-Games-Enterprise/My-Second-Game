@@ -910,15 +910,21 @@ namespace RD
             obstacleParent = new GameObject("Obstacles");
 
             int obstacleCount = Mathf.FloorToInt(maxWidth * maxHeight * 0.05f);
-            // Exclude edge nodes from potential placement
-            List<Node> potentialNodes = availableNodes.Where(node => !IsEdge(node)).ToList();
+
+            // Replace LINQ with a manual loop
+            List<Node> potentialNodes = new List<Node>(availableNodes.Count);
+            for (int i = 0; i < availableNodes.Count; i++)
+            {
+                Node node = availableNodes[i];
+                if (!IsEdge(node))
+                    potentialNodes.Add(node);
+            }
 
             while (obstacleCount > 0 && potentialNodes.Count > 0)
             {
                 int randomIndex = Random.Range(0, potentialNodes.Count);
                 Node candidateNode = potentialNodes[randomIndex];
 
-                // Only place the obstacle if it does not create a dead end
                 if (!CreatesDeadEnd(candidateNode))
                 {
                     obstacleNodes.Add(candidateNode);
@@ -936,32 +942,60 @@ namespace RD
                     obstacleObj.transform.localScale = Vector3.one * 0.9f;
                 }
 
-                potentialNodes.Remove(candidateNode);
+                potentialNodes.RemoveAt(randomIndex);
             }
         }
+
 
         bool CreatesDeadEnd(Node candidateNode)
         {
             HashSet<Node> tempObstacles = new HashSet<Node>(obstacleNodes);
             tempObstacles.Add(candidateNode);
 
-            foreach (var (dx, dy) in EightDirections)
+            for (int i = 0; i < EightDirections.Length; i++)
             {
+                int dx = EightDirections[i].dx;
+                int dy = EightDirections[i].dy;
                 Node neighbor = GetNode(candidateNode.x + dx, candidateNode.y + dy);
                 if (neighbor == null)
                     continue;
 
-                if (!tempObstacles.Contains(neighbor) && !tail.Any(t => t.node == neighbor))
+                bool isTailNeighbor = false;
+                for (int t = 0; t < tail.Count; t++)
+                {
+                    if (tail[t].node == neighbor)
+                    {
+                        isTailNeighbor = true;
+                        break;
+                    }
+                }
+
+                if (!tempObstacles.Contains(neighbor) && !isTailNeighbor)
                 {
                     int freeCount = 0;
 
-                    foreach (var (dx2, dy2) in EightDirections)
+                    for (int j = 0; j < EightDirections.Length; j++)
                     {
+                        int dx2 = EightDirections[j].dx;
+                        int dy2 = EightDirections[j].dy;
                         Node adjacent = GetNode(neighbor.x + dx2, neighbor.y + dy2);
 
-                        if (adjacent != null && !tempObstacles.Contains(adjacent) && !tail.Any(t => t.node == adjacent))
+                        if (adjacent != null && !tempObstacles.Contains(adjacent))
                         {
-                            freeCount++;
+                            bool isTailAdjacent = false;
+                            for (int t = 0; t < tail.Count; t++)
+                            {
+                                if (tail[t].node == adjacent)
+                                {
+                                    isTailAdjacent = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isTailAdjacent)
+                            {
+                                freeCount++;
+                            }
                         }
                     }
 
@@ -975,6 +1009,7 @@ namespace RD
             return false;
         }
 
+
         bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
         {
             // Check grid boundaries
@@ -982,7 +1017,13 @@ namespace RD
 
             // Check if the node is an obstacle or part of the snake (using the temporary obstacles set)
             Node node = grid[x, y];
-            return tempObstacles.Contains(node) || tail.Any(t => t.node == node);
+            for (int i = 0; i < tail.Count; i++)
+            {
+                if (tail[i].node == node)
+                    return true;
+            }
+
+            return tempObstacles.Contains(node);
         }
 
         void PlacePlayerObject(GameObject obj, Vector3 pos)
