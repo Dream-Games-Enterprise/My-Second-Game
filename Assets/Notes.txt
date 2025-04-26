@@ -1,10 +1,8 @@
 NEXT
 Sound for buttons, food eating and obstacle - if can find something suitable. food one will probably need to be vague just a nice sound to listen to  (make similar to collisions/bounces from Wrong Pong where slightly varied between each call of the sound) with toggle from settings/options
-Expand leaderboard
-Clean up end of game scoreboard - add leaderboard button at end next to other buttons - then have another button in player options so there are two places to see the leaderboard
 Border colour/camera colour selection (put within player options)
 some death animation or screen fade
-Add widget
+Add widget- need logo, add link to wrong pong store too
 
 
 Add rotating bit to the tail - so it rotates to the direction of the next node in the tail. (this is a bit tricky since it needs to be done for each node in the tail and not just the head)
