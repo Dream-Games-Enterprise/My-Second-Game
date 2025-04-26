@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -79,6 +80,13 @@ public class CustomisationManager : MonoBehaviour
 
     [SerializeField] bool isInCustomizationScene;
 
+    [SerializeField] List<Color> backgroundColors;
+    [SerializeField] List<string> backgroundNames;
+    [SerializeField] Button backgroundCycleButton;
+    [SerializeField] TMP_Text backgroundText;
+    int backgroundIndex = 0;
+
+
     void Start()
     {
         currency = PlayerPrefs.GetInt("currency");
@@ -100,6 +108,12 @@ public class CustomisationManager : MonoBehaviour
             int trapColorIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
             int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
             int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
+           
+            //backgroundCycleButton.onClick.AddListener(CycleBackgroundColor);
+            backgroundIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
+            if (backgroundIndex >= backgroundColors.Count) backgroundIndex = 0;
+
+            backgroundText.text = backgroundNames[backgroundIndex];
 
             SelectMapPrimaryColor(mapPrimaryColorIndex);
             SelectMapSecondaryColor(mapSecondaryColorIndex);
@@ -108,6 +122,17 @@ public class CustomisationManager : MonoBehaviour
             SelectFoodColour(foodColorIndex);
             SelectTrapColour(trapColorIndex);
         }
+    }
+
+    public void CycleBackgroundColor()
+    {
+        Debug.Log("SHould be cyclcing here");
+        backgroundIndex = (backgroundIndex + 1) % backgroundColors.Count;
+
+        backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
+
+        PlayerPrefs.SetInt("SelectedBackgroundIndex", backgroundIndex);
+        PlayerPrefs.Save();
     }
 
     public void SelectMapPrimaryColor(int index)
@@ -131,7 +156,6 @@ public class CustomisationManager : MonoBehaviour
             PlayerPrefs.SetInt("SelectedMapSecondaryColorIndex", index);
             PlayerPrefs.Save();
 
-            // Apply to preview
             previewSecondary.color = mapSecondaryColor;
         }
     }
