@@ -71,7 +71,7 @@ namespace RD
         }
 
         [SerializeField] GameObject buttonControl;
-        public bool isButtonControl; // Must be public to access from SwipeInput
+        public bool isButtonControl; 
 
         public float moveRate = 0.05f;
         float timer;
@@ -101,8 +101,7 @@ namespace RD
         Node prevPlayerNode;
         Node foodNode;
 
-        // Map each occupied node to its food GameObject
-        private Dictionary<Node, GameObject> foodMap = new Dictionary<Node, GameObject>();
+        private Dictionary<Vector2Int, GameObject> foodMap = new Dictionary<Vector2Int, GameObject>();
 
         Queue<GameObject> foodPool = new Queue<GameObject>();
 
