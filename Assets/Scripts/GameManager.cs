@@ -101,7 +101,7 @@ namespace RD
         Node prevPlayerNode;
         Node foodNode;
 
-        private Dictionary<Vector2Int, GameObject> foodMap = new Dictionary<Vector2Int, GameObject>();
+        private Dictionary<(int, int), GameObject> foodMap = new Dictionary<(int, int), GameObject>();
 
         Queue<GameObject> foodPool = new Queue<GameObject>();
 
@@ -477,18 +477,36 @@ namespace RD
             Vector3 foodPosition = Vector3.zero;
             GameObject consumed = null;
 
-            if (foodMap.TryGetValue(targetNode, out consumed))
+            if (foodMap.TryGetValue((targetNode.x, targetNode.y), out consumed))
             {
-                // Remove from animated list since this food is now gone
                 animatedFoodList.Remove(consumed.transform);
 
                 foodPosition = consumed.transform.position;
                 consumed.SetActive(false);
                 foodPool.Enqueue(consumed);
-                foodMap.Remove(targetNode);
+                foodMap.Remove((targetNode.x, targetNode.y));
 
                 scoreManager.AddScore();
                 isFood = true;
+            }
+
+            // Safety cleanup in case food is still in the world but shouldn't be
+            foreach (Transform food in animatedFoodList.ToList())
+            {
+                if (food == null || !food.gameObject.activeSelf)
+                {
+                    animatedFoodList.Remove(food);
+                    continue;
+                }
+
+                Vector3 dist = food.position - (targetNode.worldPosition + Vector3.one * 0.5f);
+                if (dist.magnitude < 0.01f)
+                {
+                    Debug.LogWarning("Force removing stuck food.");
+                    food.gameObject.SetActive(false);
+                    animatedFoodList.Remove(food);
+                    foodPool.Enqueue(food.gameObject);
+                }
             }
 
             Node previousNode = playerNode;
@@ -516,7 +534,6 @@ namespace RD
                         if (psr != null)
                         {
                             psr.material = foodParticleMaterial;
-
                             psr.material.mainTexture = consumedSR.sprite.texture;
                         }
                     }
@@ -824,7 +841,7 @@ namespace RD
             food.transform.position = node.worldPosition + Vector3.one * 0.5f;
             food.transform.localScale = Vector3.one * scale;
 
-            foodMap[node] = food;
+            foodMap[(node.x, node.y)] = food;
             animatedFoodList.Add(food.transform);
         }
 
