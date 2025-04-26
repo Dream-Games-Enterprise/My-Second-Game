@@ -37,6 +37,8 @@ public class TrapSkin
 
 public class CustomisationManager : MonoBehaviour
 {
+    //Ensure isCustomisationScene is set to true in the inspector for the customisation scene and to false for the game scene.
+
     [SerializeField] Camera targetCamera;
     [SerializeField] SpriteManager spriteManager;
     public List<SnakeSkin> snakeSkins;
@@ -79,7 +81,7 @@ public class CustomisationManager : MonoBehaviour
 
     int currency;
 
-    [SerializeField] bool isInCustomizationScene;
+    [SerializeField] bool isInCustomisationScene;
 
     [SerializeField] List<Color> backgroundColors;
     [SerializeField] List<string> backgroundNames;
@@ -94,7 +96,7 @@ public class CustomisationManager : MonoBehaviour
         Debug.Log(currency);
         spriteManager = Object.FindFirstObjectByType<SpriteManager>();
 
-        if (isInCustomizationScene)
+        if (isInCustomisationScene)
         {
             InitializePanels();
 
