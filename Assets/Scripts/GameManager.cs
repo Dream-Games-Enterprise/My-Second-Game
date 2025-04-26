@@ -729,10 +729,9 @@ namespace RD
             }
 
             _mapTex.SetPixels(colorBuffer);
-            _mapTex.Apply();
+            _mapTex.Apply(); 
             mapRenderer.sprite = _mapSprite;
         }
-
 
         void PlacePlayer()
         {
