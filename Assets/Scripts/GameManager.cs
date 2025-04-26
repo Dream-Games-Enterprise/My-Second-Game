@@ -814,7 +814,6 @@ namespace RD
             }
         }
 
-
         void CreateFood()
         {
             validNodesBuffer.Clear();
