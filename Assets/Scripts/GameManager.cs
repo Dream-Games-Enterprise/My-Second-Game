@@ -1119,11 +1119,11 @@ namespace RD
             // Store original colors
             List<Color> originalColors = renderers.Select(r => r.color).ToList();
 
-            // Flash effect
+            // Blink effect (invisible and visible)
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < renderers.Count; j++)
-                    renderers[j].color = Color.white;
+                    renderers[j].color = Color.clear;
 
                 yield return new WaitForSeconds(0.1f);
 
@@ -1146,7 +1146,7 @@ namespace RD
                 if (ps != null)
                 {
                     var main = ps.main;
-                    main.startColor = originalColors[i]; // Use stored color
+                    main.startColor = originalColors[i];
 
                     ps.Play();
                 }
@@ -1162,9 +1162,6 @@ namespace RD
             if (playerObject != null)
                 playerObject.SetActive(false);
         }
-
-
-
 
         void TriggerVictory()
         {
