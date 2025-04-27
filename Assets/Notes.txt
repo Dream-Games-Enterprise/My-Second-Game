@@ -1,5 +1,4 @@
 NEXT
-Sound for buttons, food eating and obstacle - if can find something suitable. food one will probably need to be vague just a nice sound to listen to  (make similar to collisions/bounces from Wrong Pong where slightly varied between each call of the sound) with toggle from settings/options
 Add widget- need logo, add link to wrong pong store too
 
 
