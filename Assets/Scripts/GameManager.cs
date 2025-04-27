@@ -1167,8 +1167,12 @@ namespace RD
 
             List<Color> originalColors = renderers.Select(r => r.color).ToList();
 
+            AudioManager.Instance?.PlayFlash();
+
             for (int i = 0; i < 3; i++)
             {
+                AudioManager.Instance?.PlayFlash();
+
                 for (int j = 0; j < renderers.Count; j++)
                     renderers[j].color = Color.clear;
 
@@ -1179,6 +1183,9 @@ namespace RD
 
                 yield return new WaitForSeconds(0.1f);
             }
+
+
+            AudioManager.Instance?.PlayDeathExplosion();
 
             for (int i = 0; i < parts.Count; i++)
             {
@@ -1207,6 +1214,7 @@ namespace RD
             if (playerObject != null)
                 playerObject.SetActive(false);
         }
+
 
         void TriggerVictory()
         {

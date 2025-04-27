@@ -8494,6 +8494,8 @@ MonoBehaviour:
   foodPickupClip: {fileID: 8300000, guid: 41c5c2b983676c14abbebce504e00d9a, type: 3}
   gameOverClip: {fileID: 0}
   buttonClickClip: {fileID: 8300000, guid: e49874f19fdb7114bbf776cb9e5f53c0, type: 3}
+  flashStartClip: {fileID: 8300000, guid: 32d4b1811dda14a6cb9e059ee8ad17d2, type: 3}
+  deathExplosionClip: {fileID: 8300000, guid: ddd16025d5ef32249bf91ac485f99fd8, type: 3}
 --- !u!82 &291619422
 AudioSource:
   m_ObjectHideFlags: 0

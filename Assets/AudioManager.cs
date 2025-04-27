@@ -8,6 +8,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip foodPickupClip;
     public AudioClip gameOverClip;
     public AudioClip buttonClickClip;
+    public AudioClip flashStartClip;
+    public AudioClip deathExplosionClip;
 
     void Awake()
     {
@@ -40,7 +42,14 @@ public class AudioManager : MonoBehaviour
 
     public void PlayFlash()
     {
-        
+        if (flashStartClip != null)
+            PlaySFX(flashStartClip);
+    }
+
+    public void PlayDeathExplosion()
+    {
+        if (deathExplosionClip != null)
+            PlaySFX(deathExplosionClip);
     }
 
     public void PlayGameOver() => PlaySFX(gameOverClip);
