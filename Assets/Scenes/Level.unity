@@ -6818,6 +6818,7 @@ MonoBehaviour:
   isGameOver: 0
   isFirstInput: 0
   foodPickupParticlePrefab: {fileID: 5746655709339930147, guid: 7af6863b7415ce84bbbb0b1b0d141b45, type: 3}
+  snakeDeathParticlePrefab: {fileID: 5746655709339930147, guid: d1d877a14b7f6dd4db6ea56902e1ed17, type: 3}
 --- !u!4 &1447539186
 Transform:
   m_ObjectHideFlags: 0

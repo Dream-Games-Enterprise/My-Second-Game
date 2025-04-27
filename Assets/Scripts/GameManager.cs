@@ -157,6 +157,8 @@ namespace RD
         Material foodParticleMaterial;
         private readonly List<Transform> animatedFoodList = new List<Transform>();
 
+        [SerializeField] GameObject snakeDeathParticlePrefab;
+
         void Awake()
         {
             LoadPlayerPrefs();
@@ -1095,6 +1097,7 @@ namespace RD
         public void GameOver()
         {
             isGameOver = true;
+            StartCoroutine(PlayDeathAnimation());
             Time.timeScale = 1f;
             isFirstInput = false;
             scoreManager.ApplyEndMultipliers();
@@ -1102,6 +1105,63 @@ namespace RD
             gameOverUI.ActivateUI();
             inputPanel.SetActive(false);
         }
+
+        IEnumerator PlayDeathAnimation()
+        {
+            List<GameObject> tailObjects = tail.Select(t => t.obj).ToList();
+            List<GameObject> parts = new List<GameObject> { playerObject };
+            parts.AddRange(tailObjects);
+
+            List<SpriteRenderer> renderers = parts
+                .Select(p => p != null ? p.GetComponent<SpriteRenderer>() : null)
+                .Where(r => r != null).ToList();
+
+            for (int i = 0; i < 3; i++)
+            {
+                foreach (var r in renderers)
+                    r.color = Color.white;
+
+                yield return new WaitForSeconds(0.1f);
+
+                foreach (var r in renderers)
+                    r.color = Color.clear;
+
+                yield return new WaitForSeconds(0.1f);
+            }
+
+            for (int i = 0; i < parts.Count; i++)
+            {
+                GameObject part = parts[i];
+                if (part == null) continue;
+
+                GameObject particleObj = Instantiate(snakeDeathParticlePrefab);
+                particleObj.transform.position = part.transform.position;
+
+                var ps = particleObj.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    var main = ps.main;
+
+                    if (i == 0)
+                        main.startColor = playerColour;
+                    else
+                        main.startColor = snakeTailColour;
+
+                    ps.Play();
+                }
+
+                Destroy(particleObj, 2f);
+            }
+
+            foreach (var t in tail)
+                if (t.obj != null)
+                    t.obj.SetActive(false);
+
+            if (playerObject != null)
+                playerObject.SetActive(false);
+        }
+
+
 
         void TriggerVictory()
         {
