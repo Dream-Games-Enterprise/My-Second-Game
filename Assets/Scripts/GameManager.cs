@@ -1116,19 +1116,24 @@ namespace RD
                 .Select(p => p != null ? p.GetComponent<SpriteRenderer>() : null)
                 .Where(r => r != null).ToList();
 
+            // Store original colors
+            List<Color> originalColors = renderers.Select(r => r.color).ToList();
+
+            // Flash effect
             for (int i = 0; i < 3; i++)
             {
-                foreach (var r in renderers)
-                    r.color = Color.white;
+                for (int j = 0; j < renderers.Count; j++)
+                    renderers[j].color = Color.white;
 
                 yield return new WaitForSeconds(0.1f);
 
-                foreach (var r in renderers)
-                    r.color = Color.clear;
+                for (int j = 0; j < renderers.Count; j++)
+                    renderers[j].color = originalColors[j];
 
                 yield return new WaitForSeconds(0.1f);
             }
 
+            // Particle explosion
             for (int i = 0; i < parts.Count; i++)
             {
                 GameObject part = parts[i];
@@ -1141,11 +1146,7 @@ namespace RD
                 if (ps != null)
                 {
                     var main = ps.main;
-
-                    if (i == 0)
-                        main.startColor = playerColour;
-                    else
-                        main.startColor = snakeTailColour;
+                    main.startColor = originalColors[i]; // Use stored color
 
                     ps.Play();
                 }
@@ -1153,6 +1154,7 @@ namespace RD
                 Destroy(particleObj, 2f);
             }
 
+            // Cleanup
             foreach (var t in tail)
                 if (t.obj != null)
                     t.obj.SetActive(false);
@@ -1160,6 +1162,7 @@ namespace RD
             if (playerObject != null)
                 playerObject.SetActive(false);
         }
+
 
 
 
