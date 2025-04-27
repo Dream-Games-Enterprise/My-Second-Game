@@ -546,14 +546,22 @@ MonoBehaviour:
   - {r: 1, g: 0.4, b: 0.42745098, a: 1}
   - {r: 0.5921569, g: 0.7372549, b: 0.38431373, a: 1}
   - {r: 0.7529412, g: 0.69411767, b: 0.5882353, a: 1}
+  - {r: 0.8396226, g: 0.5683692, b: 0.13069598, a: 1}
+  - {r: 0.8392157, g: 0.12941177, b: 0.7635399, a: 1}
+  - {r: 0.12941177, g: 0.16443942, b: 0.8392157, a: 1}
+  - {r: 0.8392157, g: 0.76615155, b: 0.12941177, a: 1}
   backgroundNames:
   - BLACK
   - GREY
-  - BLUE
+  - LIGHT BLUE
   - PINK
   - RED
   - GREEN
   - COFFEE
+  - ORANGE
+  - PURPLE
+  - DARK BLUE
+  - YELLOW
   backgroundCycleButton: {fileID: 0}
   backgroundText: {fileID: 0}
   backgroundTintImages:
