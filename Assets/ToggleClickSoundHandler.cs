@@ -1,17 +1,29 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 [RequireComponent(typeof(Toggle))]
 public class ToggleClickSoundHandler : MonoBehaviour
 {
+    bool initialised = false;
+
     void Awake()
     {
-        GetComponent<Toggle>().onValueChanged.AddListener(OnToggleChanged);
+        Toggle toggle = GetComponent<Toggle>();
+        toggle.onValueChanged.AddListener(OnToggleChanged);
+        StartCoroutine(DelayInit());
+    }
+
+    IEnumerator DelayInit()
+    {
+        yield return null;
+        initialised = true;
     }
 
     void OnToggleChanged(bool _)
     {
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.PlayButtonClick();
+        if (!initialised) return;
+
+        AudioManager.Instance?.PlayButtonClick();
     }
 }
