@@ -159,13 +159,15 @@ namespace RD
 
         [SerializeField] GameObject snakeDeathParticlePrefab;
 
+        AudioManager audioManager;
+
         void Awake()
         {
             LoadPlayerPrefs();
             LoadSpritesBits();
             FetchColours();
             foodParticleMaterial = new Material(Shader.Find("Sprites/Default"));
-
+            audioManager = FindFirstObjectByType<AudioManager>();
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
@@ -489,6 +491,7 @@ namespace RD
 
                 scoreManager.AddScore();
                 isFood = true;
+                audioManager?.PlayFoodPickup();
             }
 
             foreach (Transform food in animatedFoodList.ToList())

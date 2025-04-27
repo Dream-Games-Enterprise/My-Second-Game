@@ -28,7 +28,16 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip);
     }
 
-    public void PlayFoodPickup() => PlaySFX(foodPickupClip);
+    public void PlayFoodPickup()
+    {
+        if (foodPickupClip != null)
+        {
+            sfxSource.pitch = Random.Range(0.9f, 1.1f);
+            sfxSource.PlayOneShot(foodPickupClip);
+            sfxSource.pitch = 1f;
+        }
+    }
+
     public void PlayGameOver() => PlaySFX(gameOverClip);
     public void PlayButtonClick() => PlaySFX(buttonClickClip);
 }
