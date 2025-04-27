@@ -9,26 +9,37 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
+        #region REFERENCES
         ScoreManager scoreManager;
         [SerializeField] CustomisationManager customisationManager;
         [SerializeField] UIHandler uiHandler;
         GameOverUI gameOverUI;
+        AudioManager audioManager;
+        #endregion
 
+        #region SCENE OBJECTS
         public Transform cameraHolder;
+        [SerializeField] GameObject inputPanel;
+        [SerializeField] GameObject buttonControl;
+        [SerializeField] GameObject foodPickupParticlePrefab;
+        [SerializeField] GameObject snakeDeathParticlePrefab;
         GameObject playerObject;
         GameObject foodObject;
         GameObject tailParent;
         GameObject obstacleParent;
+        GameObject mapObject;
+        SpriteRenderer mapRenderer;
+        public SpriteRenderer tailSpriteRenderer;
+        public SpriteRenderer foodSpriteRenderer;
+        #endregion
 
-        bool isCameraAdjusting = false;
-
-        #region CUSTOMISATION 
-
+        #region CUSTOMISATION
         Sprite customPlayerSprite;
         public Sprite customTailSprite;
         public Sprite customFoodSprite;
         public Sprite customObstacleSprite;
         public Sprite customTrapSprite;
+        Sprite playerSprite;
 
         public Color colour1;
         public Color colour2;
@@ -36,11 +47,6 @@ namespace RD
         public Color playerColour;
         public Color snakeTailColour;
         public Color trapColour = Color.black;
-
-        Sprite playerSprite;
-
-        public SpriteRenderer tailSpriteRenderer;
-        public SpriteRenderer foodSpriteRenderer;
 
         public List<Sprite> tailSprites;
         public List<Sprite> foodSprites;
@@ -50,91 +56,6 @@ namespace RD
         int trapIndexGetter;
         int foodIndex;
 
-        #endregion
-
-        #region INPUT VARIABLES
-
-        [SerializeField] GameObject inputPanel;
-        public Button upButton;
-        public Button downButton;
-        public Button leftButton;
-        public Button rightButton;
-        bool up, left, right, down;
-
-        Direction targetDirection;
-        Direction curDirection;
-        Direction prevDirection;
-
-        public enum Direction
-        {
-            None, up, left, right, down
-        }
-
-        [SerializeField] GameObject buttonControl;
-        public bool isButtonControl; 
-
-        public float moveRate = 0.05f;
-        float timer;
-
-        Vector2 touchStartPos;
-        Vector2 touchEndPos;
-        float minSwipeDistance = 25f;
-
-        public float smoothSpeed = 0.5f;
-
-        bool isMoving = false;
-        float moveDuration = 0.09f;
-
-        #endregion
-
-        #region MAP
-        GameObject mapObject;
-        SpriteRenderer mapRenderer;
-        public int maxHeight = 16;
-        public int maxWidth = 16;
-
-        Node[,] grid;
-        List<Node> availableNodes = new List<Node>();
-        List<SpecialNode> tail = new List<SpecialNode>();
-        List<Node> obstacleNodes = new List<Node>();
-        Node playerNode;
-        Node prevPlayerNode;
-        Node foodNode;
-
-        private Dictionary<(int, int), GameObject> foodMap = new Dictionary<(int, int), GameObject>();
-
-        Queue<GameObject> foodPool = new Queue<GameObject>();
-
-        bool obstaclesToggle;
-
-        #endregion
-
-        #region EVENTS
-
-        public UnityEvent onStart;
-        public UnityEvent onGameOver;
-        public UnityEvent firstInput;
-        public bool isGameOver;
-        public bool isFirstInput;
-        bool isPaused = false;
-
-        #endregion
-
-        bool cameraStartedAtMax = false;
-
-        int initialFoodPoolSize;
-        [SerializeField] GameObject foodPickupParticlePrefab;
-
-        Camera _mainCam;
-        Dictionary<Direction, Vector2Int> _dirVectors;
-        Dictionary<Direction, float> _dirAngles;
-
-        List<Node> validNodesBuffer = new List<Node>();
-
-        Texture2D _mapTex;
-        Sprite _mapSprite;
-
-        int _speedInt;
         int _snakeSkinIndex;
         int _tailSkinIndex;
         int _foodSkinIndex;
@@ -146,20 +67,87 @@ namespace RD
         int _trapColourIndex;
         int _mapPrimaryColourIndex;
         int _mapSecondaryColourIndex;
+        #endregion
 
+        #region INPUT
+        public Button upButton;
+        public Button downButton;
+        public Button leftButton;
+        public Button rightButton;
+        bool up, left, right, down;
+
+        Direction targetDirection;
+        Direction curDirection;
+        Direction prevDirection;
+
+        public enum Direction { None, up, left, right, down }
+
+        public bool isButtonControl;
+        public float moveRate = 0.05f;
+        public float smoothSpeed = 0.5f;
+
+        float timer;
+        bool isMoving = false;
+        float moveDuration = 0.09f;
+        float minSwipeDistance = 25f;
+        Vector2 touchStartPos;
+        Vector2 touchEndPos;
+
+        List<Direction> inputBuffer = new List<Direction>();
+        #endregion
+
+        #region MAP / GRID
+        public int maxHeight = 16;
+        public int maxWidth = 16;
         int _mapWidth;
         int _mapHeight;
-
         bool _obstaclesEnabled;
         bool _isButtonControl;
+        bool obstaclesToggle;
 
-        Queue<ParticleSystem> particlePool = new Queue<ParticleSystem>();
+        Node[,] grid;
+        Node playerNode;
+        Node prevPlayerNode;
+        Node foodNode;
+
+        List<Node> availableNodes = new List<Node>();
+        List<SpecialNode> tail = new List<SpecialNode>();
+        List<Node> obstacleNodes = new List<Node>();
+        Dictionary<(int, int), GameObject> foodMap = new Dictionary<(int, int), GameObject>();
+        Queue<GameObject> foodPool = new Queue<GameObject>();
+        List<Node> validNodesBuffer = new List<Node>();
+
+        Texture2D _mapTex;
+        Sprite _mapSprite;
+        #endregion
+
+        #region EVENTS / GAME STATE
+        public UnityEvent onStart;
+        public UnityEvent onGameOver;
+        public UnityEvent firstInput;
+        public bool isGameOver;
+        public bool isFirstInput;
+        bool isPaused = false;
+        #endregion
+
+        #region RUNTIME / MOVEMENT CONTROL
+        int initialFoodPoolSize;
+        int _speedInt;
+        bool isCameraAdjusting = false;
+        bool cameraStartedAtMax = false;
+        #endregion
+
+        #region INTERNAL HELPERS
+        Camera _mainCam;
+        Dictionary<Direction, Vector2Int> _dirVectors;
+        Dictionary<Direction, float> _dirAngles;
+        #endregion
+
+        #region PARTICLES
         Material foodParticleMaterial;
+        Queue<ParticleSystem> particlePool = new Queue<ParticleSystem>();
         private readonly List<Transform> animatedFoodList = new List<Transform>();
-
-        [SerializeField] GameObject snakeDeathParticlePrefab;
-
-        AudioManager audioManager;
+        #endregion
 
         void Awake()
         {
@@ -269,22 +257,7 @@ namespace RD
             }
         }
 
-        void AnimateFoodScale()
-        {
-            float baseScale = 0.65f;
-            float oscillation = Mathf.Sin(Time.time * 5f) * 0.05f;
-            Vector3 scale = Vector3.one * (baseScale + oscillation);
-
-            for (int i = 0; i < animatedFoodList.Count; i++)
-            {
-                if (animatedFoodList[i] != null)
-                    animatedFoodList[i].localScale = scale;
-            }
-        }
-
         #region INPUT
-
-        List<Direction> inputBuffer = new List<Direction>();
 
         void ToggleInputType(bool useButtons)
         {
@@ -306,7 +279,6 @@ namespace RD
             // Clear and override swipe buffer with just the swipe (like a fresh input)
             inputBuffer.Insert(0, direction);
         }
-
 
         float GetMoveRateFromSpeed(int speed)
         {
@@ -1027,7 +999,6 @@ namespace RD
             return false;
         }
 
-
         bool IsBlocked(int x, int y, HashSet<Node> tempObstacles)
         {
             if (x < 0 || y < 0 || x >= maxWidth || y >= maxHeight) return true;
@@ -1046,6 +1017,81 @@ namespace RD
         {
             pos += Vector3.one * 0.5f;
             obj.transform.position = pos;
+        }
+
+        void FetchColours()
+        {
+            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
+            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
+            {
+                playerColour = customisationManager.snakeColours[playerColourIndex];
+                Debug.Log("Player color loaded: " + playerColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid player color index. Using default color.");
+                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
+            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
+            {
+                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
+                Debug.Log("Tail color loaded: " + snakeTailColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid tail color index. Using default color.");
+                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
+            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
+            {
+                foodColour = customisationManager.snakeColours[foodColourIndex];
+                Debug.Log("Food color loaded: " + foodColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid food color index. Using default color.");
+                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int trapColourIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
+            if (trapColourIndex >= 0 && trapColourIndex < customisationManager.snakeColours.Count)
+            {
+                trapColour = customisationManager.snakeColours[trapColourIndex];
+                Debug.Log("Trap color loaded: " + trapColour);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid trap color index. Using default color.");
+                trapColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
+            }
+
+            int mapPrimaryIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
+            if (mapPrimaryIndex >= 0 && mapPrimaryIndex < customisationManager.mapColours.Count)
+            {
+                colour1 = customisationManager.mapColours[mapPrimaryIndex];
+                Debug.Log("Map Primary color loaded: " + colour1);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid map primary color index. Using default color.");
+                colour1 = Color.gray;
+            }
+
+            int mapSecondaryIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
+            if (mapSecondaryIndex >= 0 && mapSecondaryIndex < customisationManager.mapColours.Count)
+            {
+                colour2 = customisationManager.mapColours[mapSecondaryIndex];
+                Debug.Log("Map Secondary color loaded: " + colour2);
+            }
+            else
+            {
+                Debug.LogWarning("Invalid map secondary color index. Using default color.");
+                colour2 = Color.black;
+            }
         }
 
         #endregion
@@ -1212,80 +1258,6 @@ namespace RD
             return Sprite.Create(txt, rect, Vector2.one * 0.5f, 1, 0, SpriteMeshType.FullRect);
         }
         
-        void FetchColours()
-        {
-            int playerColourIndex = PlayerPrefs.GetInt("SelectedColourIndex", 0);
-            if (playerColourIndex >= 0 && playerColourIndex < customisationManager.snakeColours.Count)
-            {
-                playerColour = customisationManager.snakeColours[playerColourIndex];
-                Debug.Log("Player color loaded: " + playerColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid player color index. Using default color.");
-                playerColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-
-            int tailColourIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
-            if (tailColourIndex >= 0 && tailColourIndex < customisationManager.snakeColours.Count)
-            {
-                snakeTailColour = customisationManager.snakeColours[tailColourIndex];
-                Debug.Log("Tail color loaded: " + snakeTailColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid tail color index. Using default color.");
-                snakeTailColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-
-            int foodColourIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
-            if (foodColourIndex >= 0 && foodColourIndex < customisationManager.snakeColours.Count)
-            {
-                foodColour = customisationManager.snakeColours[foodColourIndex];
-                Debug.Log("Food color loaded: " + foodColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid food color index. Using default color.");
-                foodColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-
-            int trapColourIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
-            if (trapColourIndex >= 0 && trapColourIndex < customisationManager.snakeColours.Count)
-            {
-                trapColour = customisationManager.snakeColours[trapColourIndex];
-                Debug.Log("Trap color loaded: " + trapColour);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid trap color index. Using default color.");
-                trapColour = new Color(0.980f, 0.976f, 0.965f, 1.000f);
-            }
-
-            int mapPrimaryIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
-            if (mapPrimaryIndex >= 0 && mapPrimaryIndex < customisationManager.mapColours.Count)
-            {
-                colour1 = customisationManager.mapColours[mapPrimaryIndex];
-                Debug.Log("Map Primary color loaded: " + colour1);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid map primary color index. Using default color.");
-                colour1 = Color.gray;
-            }
-
-            int mapSecondaryIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
-            if (mapSecondaryIndex >= 0 && mapSecondaryIndex < customisationManager.mapColours.Count)
-            {
-                colour2 = customisationManager.mapColours[mapSecondaryIndex];
-                Debug.Log("Map Secondary color loaded: " + colour2);
-            }
-            else
-            {
-                Debug.LogWarning("Invalid map secondary color index. Using default color.");
-                colour2 = Color.black;
-            }
-        }
 
         ParticleSystem GetPooledParticle()
         {
@@ -1377,6 +1349,19 @@ namespace RD
         #endregion
 
         #region REFACTORS
+
+        void AnimateFoodScale()
+        {
+            float baseScale = 0.65f;
+            float oscillation = Mathf.Sin(Time.time * 5f) * 0.05f;
+            Vector3 scale = Vector3.one * (baseScale + oscillation);
+
+            for (int i = 0; i < animatedFoodList.Count; i++)
+            {
+                if (animatedFoodList[i] != null)
+                    animatedFoodList[i].localScale = scale;
+            }
+        }
 
         void LoadSpritesBits()
         {
