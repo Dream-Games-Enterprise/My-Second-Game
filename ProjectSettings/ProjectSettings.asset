@@ -170,7 +170,11 @@ PlayerSettings:
     Standalone: 0
     VisionOS: 0
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     iPhone: 4
+=======
+    iPhone: 3
+>>>>>>> Stashed changes
 =======
     iPhone: 3
 >>>>>>> Stashed changes
