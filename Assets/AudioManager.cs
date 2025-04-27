@@ -32,12 +32,11 @@ public class AudioManager : MonoBehaviour
     {
         if (foodPickupClip != null)
         {
-            sfxSource.pitch = Random.Range(0.95f, 1.05f);
+            sfxSource.pitch = Random.Range(0.92f, 1.08f);
             sfxSource.clip = foodPickupClip;
             sfxSource.Play();
         }
     }
-
 
     public void PlayGameOver() => PlaySFX(gameOverClip);
     public void PlayButtonClick() => PlaySFX(buttonClickClip);
