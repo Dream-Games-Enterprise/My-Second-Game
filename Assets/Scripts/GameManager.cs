@@ -1119,10 +1119,8 @@ namespace RD
                 .Select(p => p != null ? p.GetComponent<SpriteRenderer>() : null)
                 .Where(r => r != null).ToList();
 
-            // Store original colors
             List<Color> originalColors = renderers.Select(r => r.color).ToList();
 
-            // Blink effect (invisible and visible)
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < renderers.Count; j++)
@@ -1136,7 +1134,6 @@ namespace RD
                 yield return new WaitForSeconds(0.1f);
             }
 
-            // Particle explosion
             for (int i = 0; i < parts.Count; i++)
             {
                 GameObject part = parts[i];
@@ -1157,7 +1154,6 @@ namespace RD
                 Destroy(particleObj, 2f);
             }
 
-            // Cleanup
             foreach (var t in tail)
                 if (t.obj != null)
                     t.obj.SetActive(false);

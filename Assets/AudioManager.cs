@@ -38,6 +38,11 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void PlayFlash()
+    {
+        
+    }
+
     public void PlayGameOver() => PlaySFX(gameOverClip);
     public void PlayButtonClick() => PlaySFX(buttonClickClip);
 }
