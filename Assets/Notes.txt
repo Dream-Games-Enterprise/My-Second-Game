@@ -4,7 +4,6 @@ GET IMAGES FOR GOOGLE AND APPLE
 Add ads?
 Add widget- need logo, add link to wrong pong store too
 
-Add rotating bit to the tail - so it rotates to the direction of the next node in the tail. (this is a bit tricky since it needs to be done for each node in the tail and not just the head)
 
 Jess Minecraft coords for Nether
 -45, 73, 82
@@ -14,10 +13,8 @@ EXTRA
 
 
 BUG
-Food is not disappearing when picked up - i assume its being picked up since a see a new food spawns somewhere 
+I think a food can sometimes spawn on the exact spot it gets picked up on 
 HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
-Tail sprites all turn to current direction when they should slither and finish the direction they're going in before turning to follow the tail node/object in front if that makes sense?
-Player can swipe when paused and when unpause the player changes to the direction, exploit that needs fixing
 
 
 Update in Future If Played:

@@ -272,6 +272,8 @@ namespace RD
 
         void OnArrowButtonPressed(Direction direction)
         {
+            if (UIHandler.IsPaused) return;
+
             if (!isFirstInput)
             {
                 isFirstInput = true;
@@ -308,6 +310,8 @@ namespace RD
 
         void HandleTouchInput()
         {
+            if (UIHandler.IsPaused) return;
+
             if (!isButtonControl)
             {
                 if (Input.touchCount > 0)
@@ -373,6 +377,8 @@ namespace RD
 
         void GetInput()
         {
+            if (UIHandler.IsPaused) return;
+
             up = Input.GetButtonDown("Up");
             down = Input.GetButtonDown("Down");
             left = Input.GetButtonDown("Left");

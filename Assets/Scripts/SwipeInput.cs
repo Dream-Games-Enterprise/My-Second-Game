@@ -32,7 +32,7 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void OnDrag(PointerEventData eventData)
     {
-        currentTargetPos = eventData.position; // Update the desired end point
+        currentTargetPos = eventData.position; 
     }
 
     public void OnPointerUp(PointerEventData eventData)

@@ -17,7 +17,7 @@ public class UIHandler : MonoBehaviour
     [SerializeField] TMP_Text swipeText;
     [SerializeField] GameObject leaderboardButton;
 
-    bool isPaused = false;
+    public static bool IsPaused { get; private set; }
     Coroutine swipeTextTweenCoroutine;
 
     void Start()
@@ -33,41 +33,35 @@ public class UIHandler : MonoBehaviour
 
     void TogglePause()
     {
-        isPaused = !isPaused;
-
-        if (isPaused)
+        if (IsPaused)
         {
-            PauseGame();
+            ResumeGame();
         }
         else
         {
-            ResumeGame();
+            PauseGame();
         }
     }
 
     void PauseGame()
     {
-        Time.timeScale = 0f; 
+        Time.timeScale = 0f;
+        IsPaused = true;
 
         pauseMenuButtons.SetActive(true);
-
         if (pauseAndResume != null)
-        {
             pauseAndResume.sprite = resumeIcon;
-        }
     }
 
     public void ResumeGame()
     {
         Time.timeScale = 1f;
+        IsPaused = false;
 
         pauseMenuButtons.SetActive(false);
         pauseObject.SetActive(true);
-
         if (pauseAndResume != null)
-        {
             pauseAndResume.sprite = pauseIcon;
-        }
     }
 
     public void GameEndMenu()
