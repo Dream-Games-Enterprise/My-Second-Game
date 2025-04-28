@@ -570,12 +570,26 @@ namespace RD
                 }
 
                 Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
-                tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(curDirection));
+                Direction segmentDir = GetDirectionFromTo(tailSegment.node, prevNode);
+                tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(segmentDir));
 
                 availableNodes.Remove(tailSegment.node);
                 PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
             }
         }
+
+        Direction GetDirectionFromTo(Node from, Node to)
+        {
+            Vector2Int diff = new Vector2Int(to.x - from.x, to.y - from.y);
+
+            if (diff == Vector2Int.up) return Direction.up;
+            if (diff == Vector2Int.down) return Direction.down;
+            if (diff == Vector2Int.left) return Direction.left;
+            if (diff == Vector2Int.right) return Direction.right;
+
+            return Direction.None;
+        }
+
 
         #endregion
 
