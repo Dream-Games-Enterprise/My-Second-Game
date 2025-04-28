@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class GameSettings : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class GameSettings : MonoBehaviour
     [SerializeField] GameObject bottomPanel;
     [SerializeField] TMP_Text inputTypeText;
     [SerializeField] Button toggleInputTypeButton;
+    [SerializeField] Button soundToggleButton;
+    [SerializeField] TMP_Text soundButtonLabel;
+    bool soundEnabled;
 
     bool isSettingsActive = false;
     bool isWidgetActive = false;
@@ -53,8 +57,28 @@ public class GameSettings : MonoBehaviour
         obstaclesToggle.isOn = obstacles;
         trapSpriteSelector.SetActive(obstacles);
 
+        soundEnabled = PlayerPrefs.GetInt("sound", 1) == 1;
+        AudioManager.Instance.SetSoundEnabled(soundEnabled);
+        UpdateSoundButtonUI();
+
+        soundToggleButton.onClick.AddListener(OnSoundButtonClicked);
+
         toggleInputTypeButton.onClick.AddListener(ToggleInputType);
         UpdateInputTypeText();
+    }
+
+    void OnSoundButtonClicked()
+    {
+        soundEnabled = !soundEnabled;
+        PlayerPrefs.SetInt("sound", soundEnabled ? 1 : 0);
+        AudioManager.Instance.SetSoundEnabled(soundEnabled);
+        UpdateSoundButtonUI();
+    }
+
+    void UpdateSoundButtonUI()
+    {
+        if (soundButtonLabel != null)
+            soundButtonLabel.text = "SFX " + (soundEnabled ? "ON" : "OFF");
     }
 
     void LoadData()
