@@ -213,10 +213,12 @@ namespace RD
                 isCameraAdjusting = false;
             }
 
-            HandleTouchInput();
-            GetInput();
+            if (isButtonControl)
+                GetInput();
+            else
+                HandleTouchInput();
 
-            AnimateFoodScale(); 
+            AnimateFoodScale();
 
             if (!isFirstInput)
             {
@@ -276,7 +278,7 @@ namespace RD
                 firstInput.Invoke();
             }
 
-            // Clear and override swipe buffer with just the swipe (like a fresh input)
+            inputBuffer.Clear();
             inputBuffer.Insert(0, direction);
         }
 
@@ -322,11 +324,6 @@ namespace RD
                         DetectSwipe(touchStartPos, touchEndPos);
                         touchStartPos = Vector2.zero;
                     }
-
-                    else if (touch.phase == TouchPhase.Ended)
-                    {
-                        touchStartPos = Vector2.zero;
-                    }
                 }
 
                 #region MOUSE
@@ -337,7 +334,6 @@ namespace RD
                 else if (Input.GetMouseButton(0))
                 {
                     touchEndPos = Input.mousePosition;
-                    DetectSwipe(touchStartPos, touchEndPos);
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
@@ -414,6 +410,8 @@ namespace RD
 
         void QueueImmediateInput()
         {
+            if (inputBuffer.Count > 2) return;
+
             if (up) inputBuffer.Add(Direction.up);
             else if (down) inputBuffer.Add(Direction.down);
             else if (left) inputBuffer.Add(Direction.left);
