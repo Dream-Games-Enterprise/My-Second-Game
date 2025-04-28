@@ -1,5 +1,7 @@
 NEXT
+SORT OUT SWIPING - from one swipe motion the player seems to qeueue multiple turns - so if the player needs to turn it won't happen insntalt since that turn gets added onto the end of all the other turns
 GET IMAGES FOR GOOGLE AND APPLE
+Link up audio manager with SFX options
 Add ads?
 Add widget- need logo, add link to wrong pong store too
 
