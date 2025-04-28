@@ -32,8 +32,6 @@ public class GameOverUI : MonoBehaviour
 
     void UpdateText()
     {
-        //totalScoreText.text = "TOTAL SCORE  " + scoreManager.GetScore().ToString();
-
         int rawScore = scoreManager.GetRawScore();
         int pickups = scoreManager.GetPiecesEaten();
 

@@ -5103,12 +5103,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: backgroundTintImages.Array.size
-      value: 10
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: 'backgroundTintImages.Array.data[9]'
       value: 
       objectReference: {fileID: 1536425634}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: 'backgroundTintImages.Array.data[10]'
+      value: 
+      objectReference: {fileID: 1795670020}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: 'backgroundTintImages.Array.data[11]'
+      value: 
+      objectReference: {fileID: 1633455640}
     - target: {fileID: 2329680655283942787, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: m_Name
       value: Customisation_Manager_Object
@@ -6849,6 +6857,12 @@ MonoBehaviour:
   customisationManager: {fileID: 1079950693}
   uiHandler: {fileID: 389438042}
   cameraHolder: {fileID: 1867295740}
+  inputPanel: {fileID: 2145919914}
+  buttonControl: {fileID: 2145919914}
+  foodPickupParticlePrefab: {fileID: 5746655709339930147, guid: 7af6863b7415ce84bbbb0b1b0d141b45, type: 3}
+  snakeDeathParticlePrefab: {fileID: 5746655709339930147, guid: d1d877a14b7f6dd4db6ea56902e1ed17, type: 3}
+  tailSpriteRenderer: {fileID: 0}
+  foodSpriteRenderer: {fileID: 0}
   customTailSprite: {fileID: 21300000, guid: e1c73ee7e0b319049ad17170aa723521, type: 3}
   customFoodSprite: {fileID: 0}
   customObstacleSprite: {fileID: 21300000, guid: 4e2c3d46e61395e4cbb9f2e8263198b8, type: 3}
@@ -6859,16 +6873,12 @@ MonoBehaviour:
   playerColour: {r: 0, g: 0, b: 0, a: 1}
   snakeTailColour: {r: 0, g: 0, b: 0, a: 0}
   trapColour: {r: 0, g: 0, b: 0, a: 1}
-  tailSpriteRenderer: {fileID: 0}
-  foodSpriteRenderer: {fileID: 0}
   tailSprites: []
   foodSprites: []
-  inputPanel: {fileID: 2145919914}
   upButton: {fileID: 1529164099}
   downButton: {fileID: 251471596}
   leftButton: {fileID: 1516301358}
   rightButton: {fileID: 613573457}
-  buttonControl: {fileID: 2145919914}
   isButtonControl: 0
   moveRate: 0.2
   smoothSpeed: 0.1
@@ -6921,8 +6931,6 @@ MonoBehaviour:
         m_CallState: 2
   isGameOver: 0
   isFirstInput: 0
-  foodPickupParticlePrefab: {fileID: 5746655709339930147, guid: 7af6863b7415ce84bbbb0b1b0d141b45, type: 3}
-  snakeDeathParticlePrefab: {fileID: 5746655709339930147, guid: d1d877a14b7f6dd4db6ea56902e1ed17, type: 3}
 --- !u!4 &1447539186
 Transform:
   m_ObjectHideFlags: 0

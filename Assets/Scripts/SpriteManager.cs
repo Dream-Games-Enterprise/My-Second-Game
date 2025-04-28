@@ -56,8 +56,8 @@ public class SpriteManager : MonoBehaviour
 
     public void OpenPanel(GameObject panelToOpen)
     {
-        DisablePanels(); // Animate out to top
-        uiPanelAnimator.AnimateInFromTop(panelToOpen); // Animate in from top
+        DisablePanels(); 
+        uiPanelAnimator.AnimateInFromTop(panelToOpen); 
         bottomPanel.SetActive(false);
 
         int currency = PlayerPrefs.GetInt("currency");
