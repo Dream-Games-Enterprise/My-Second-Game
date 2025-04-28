@@ -169,15 +169,7 @@ PlayerSettings:
   buildNumber:
     Standalone: 0
     VisionOS: 0
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    iPhone: 4
-=======
-    iPhone: 3
->>>>>>> Stashed changes
-=======
-    iPhone: 3
->>>>>>> Stashed changes
+    iPhone: 11
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
