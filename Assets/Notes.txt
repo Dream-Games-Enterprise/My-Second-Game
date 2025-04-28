@@ -3,6 +3,7 @@ POTENTIALYL FIXED (TESTING IN 0.1.2) SORT OUT SWIPING - from one swipe motion th
 GET IMAGES FOR GOOGLE AND APPLE
 Add ads?
 Add widget- need logo, add link to wrong pong store too
+INPUT PANEL ON GAME SCENE NEEDS TO MATCH BACKGROUND COLOUR
 
 
 Jess Minecraft coords for Nether

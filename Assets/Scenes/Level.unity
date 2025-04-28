@@ -6889,7 +6889,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+        m_MethodName: 
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7506,6 +7506,9 @@ MonoBehaviour:
   - {r: 0.8392157, g: 0.76615155, b: 0.12941177, a: 1}
   backgroundTintImages:
   - {fileID: 1536425634}
+  - {fileID: 1633455640}
+  - {fileID: 1795670020}
+  - {fileID: 696714484}
 --- !u!1001 &1575918571
 PrefabInstance:
   m_ObjectHideFlags: 0
