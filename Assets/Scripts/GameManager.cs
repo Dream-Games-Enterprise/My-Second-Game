@@ -185,11 +185,10 @@ namespace RD
     { Direction.None,   0f }
 };
 
-            // Normalize swipe distance based on screen DPI
             if (Screen.dpi > 0)
-                minSwipeDistance = Screen.dpi * 0.3f; // About 5% of an inch
+                minSwipeDistance = Screen.dpi * 0.3f;
             else
-                minSwipeDistance = 8f; // Fallback for devices with no DPI info
+                minSwipeDistance = 8f;
 
         }
 
@@ -339,12 +338,12 @@ namespace RD
                     if (swipeDelta.magnitude >= minSwipeDistance)
                     {
                         DetectSwipe(touchStartPos, touchEndPos);
-                        swipeDetected = true; // LOCK after one swipe
+                        swipeDetected = true;
                     }
                 }
                 else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
                 {
-                    swipeDetected = false; // UNLOCK when touch ends
+                    swipeDetected = false;
                 }
             }
 
@@ -362,12 +361,12 @@ namespace RD
                 if (swipeDelta.magnitude >= minSwipeDistance)
                 {
                     DetectSwipe(touchStartPos, touchEndPos);
-                    swipeDetected = true; // LOCK after one swipe
+                    swipeDetected = true;
                 }
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                swipeDetected = false; // UNLOCK when mouse lifted
+                swipeDetected = false;
             }
             #endregion
         }
@@ -376,7 +375,7 @@ namespace RD
         {
             Vector2 swipeDirection = endPos - startPos;
 
-            if (swipeDirection.sqrMagnitude >= minSwipeDistance * minSwipeDistance) // use sqrMagnitude for speed
+            if (swipeDirection.sqrMagnitude >= minSwipeDistance * minSwipeDistance) 
             {
                 swipeDirection.Normalize();
 
