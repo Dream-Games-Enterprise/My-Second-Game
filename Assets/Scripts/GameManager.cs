@@ -182,6 +182,12 @@ namespace RD
     { Direction.None,   0f }
 };
 
+            // Normalize swipe distance based on screen DPI
+            if (Screen.dpi > 0)
+                minSwipeDistance = Screen.dpi * 0.05f; // About 5% of an inch
+            else
+                minSwipeDistance = 8f; // Fallback for devices with no DPI info
+
         }
 
         void Start()
@@ -311,50 +317,53 @@ namespace RD
         void HandleTouchInput()
         {
             if (UIHandler.IsPaused) return;
+            if (isButtonControl) return;
 
-            if (!isButtonControl)
+            if (Input.touchCount > 0)
             {
-                if (Input.touchCount > 0)
-                {
-                    Touch touch = Input.GetTouch(0);
+                Touch touch = Input.GetTouch(0);
 
-                    if (touch.phase == TouchPhase.Began)
+                if (touch.phase == TouchPhase.Began)
+                {
+                    touchStartPos = touch.position;
+                }
+                else if (touch.phase == TouchPhase.Moved)
+                {
+                    touchEndPos = touch.position;
+                    Vector2 swipeDelta = touchEndPos - touchStartPos;
+
+                    if (swipeDelta.magnitude >= minSwipeDistance)
                     {
-                        touchStartPos = touch.position;
-                    }
-                    else if (touch.phase == TouchPhase.Ended)
-                    {
-                        touchEndPos = touch.position;
                         DetectSwipe(touchStartPos, touchEndPos);
-                        touchStartPos = Vector2.zero;
+                        touchStartPos = touchEndPos; // Reset for smooth chained swipes
                     }
                 }
-
-                #region MOUSE
-                if (Input.GetMouseButtonDown(0))
-                {
-                    touchStartPos = Input.mousePosition;
-                }
-                else if (Input.GetMouseButton(0))
-                {
-                    touchEndPos = Input.mousePosition;
-                }
-                else if (Input.GetMouseButtonUp(0))
-                {
-                    touchEndPos = Input.mousePosition;
-                    DetectSwipe(touchStartPos, touchEndPos);
-                    touchStartPos = Vector2.zero;
-                }
-
-                #endregion
             }
+
+            #region MOUSE (PC Testing Only)
+            if (Input.GetMouseButtonDown(0))
+            {
+                touchStartPos = Input.mousePosition;
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                touchEndPos = Input.mousePosition;
+                Vector2 swipeDelta = touchEndPos - touchStartPos;
+
+                if (swipeDelta.magnitude >= minSwipeDistance)
+                {
+                    DetectSwipe(touchStartPos, touchEndPos);
+                    touchStartPos = touchEndPos;
+                }
+            }
+            #endregion
         }
 
         public void DetectSwipe(Vector2 startPos, Vector2 endPos)
         {
             Vector2 swipeDirection = endPos - startPos;
 
-            if (swipeDirection.magnitude >= minSwipeDistance)
+            if (swipeDirection.sqrMagnitude >= minSwipeDistance * minSwipeDistance) // use sqrMagnitude for speed
             {
                 swipeDirection.Normalize();
 
