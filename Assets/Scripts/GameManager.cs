@@ -89,7 +89,7 @@ namespace RD
         float timer;
         bool isMoving = false;
         float moveDuration = 0.09f;
-        float minSwipeDistance = 25f;
+        float minSwipeDistance = 5f;
         Vector2 touchStartPos;
         Vector2 touchEndPos;
 
@@ -186,7 +186,7 @@ namespace RD
 };
 
             if (Screen.dpi > 0)
-                minSwipeDistance = Screen.dpi * 0.3f;
+                minSwipeDistance = Screen.dpi * 0.15f;
             else
                 minSwipeDistance = 8f;
 
