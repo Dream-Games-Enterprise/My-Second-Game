@@ -149,6 +149,9 @@ namespace RD
         private readonly List<Transform> animatedFoodList = new List<Transform>();
         #endregion
 
+        bool swipeDetected = false;
+
+
         void Awake()
         {
             LoadPlayerPrefs();
@@ -184,7 +187,7 @@ namespace RD
 
             // Normalize swipe distance based on screen DPI
             if (Screen.dpi > 0)
-                minSwipeDistance = Screen.dpi * 0.05f; // About 5% of an inch
+                minSwipeDistance = Screen.dpi * 0.3f; // About 5% of an inch
             else
                 minSwipeDistance = 8f; // Fallback for devices with no DPI info
 
@@ -326,8 +329,9 @@ namespace RD
                 if (touch.phase == TouchPhase.Began)
                 {
                     touchStartPos = touch.position;
+                    swipeDetected = false;
                 }
-                else if (touch.phase == TouchPhase.Moved)
+                else if (touch.phase == TouchPhase.Moved && !swipeDetected)
                 {
                     touchEndPos = touch.position;
                     Vector2 swipeDelta = touchEndPos - touchStartPos;
@@ -335,17 +339,22 @@ namespace RD
                     if (swipeDelta.magnitude >= minSwipeDistance)
                     {
                         DetectSwipe(touchStartPos, touchEndPos);
-                        touchStartPos = touchEndPos; // Reset for smooth chained swipes
+                        swipeDetected = true; // LOCK after one swipe
                     }
+                }
+                else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+                {
+                    swipeDetected = false; // UNLOCK when touch ends
                 }
             }
 
-            #region MOUSE (PC Testing Only)
+            #region MOUSE (for PC testing)
             if (Input.GetMouseButtonDown(0))
             {
                 touchStartPos = Input.mousePosition;
+                swipeDetected = false;
             }
-            else if (Input.GetMouseButton(0))
+            else if (Input.GetMouseButton(0) && !swipeDetected)
             {
                 touchEndPos = Input.mousePosition;
                 Vector2 swipeDelta = touchEndPos - touchStartPos;
@@ -353,8 +362,12 @@ namespace RD
                 if (swipeDelta.magnitude >= minSwipeDistance)
                 {
                     DetectSwipe(touchStartPos, touchEndPos);
-                    touchStartPos = touchEndPos;
+                    swipeDetected = true; // LOCK after one swipe
                 }
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                swipeDetected = false; // UNLOCK when mouse lifted
             }
             #endregion
         }
