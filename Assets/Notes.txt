@@ -1,6 +1,6 @@
 NEXT
-Add ads?
-Make buttons bigger
+Add ads at top of menu
+Make buttons bigger on game scene
 Add widget- need logo, add link to wrong pong store too
 
 Jess Minecraft coords for Nether
