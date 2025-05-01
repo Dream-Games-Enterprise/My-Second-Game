@@ -1,14 +1,10 @@
 NEXT
-POTENTIALYL FIXED (TESTING IN 0.1.2) SORT OUT SWIPING - from one swipe motion the player seems to qeueue multiple turns - so if the player needs to turn it won't happen insntalt since that turn gets added onto the end of all the other turns
 Add ads?
 Make buttons bigger
 Add widget- need logo, add link to wrong pong store too
 
 Jess Minecraft coords for Nether
 -45, 73, 82
-
-
-EXTRA
 
 
 BUG
