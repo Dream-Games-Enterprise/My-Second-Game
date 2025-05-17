@@ -2,6 +2,7 @@ NEXT
 Add ads at top of menu
 Make buttons bigger on game scene
 Add widget- need logo, add link to wrong pong store too
+MAKE IT SO THE TAIL NODES SHRINK the further back they are so the player can see where they have to turn when the tail starts to take up most of the map
 
 Jess Minecraft coords for Nether
 -45, 73, 82
