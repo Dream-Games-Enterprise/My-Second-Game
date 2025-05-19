@@ -2,6 +2,7 @@ NEXT
 Add ads at top of menu
 Make buttons bigger on game scene  -- use crosshair asset to create a circular bit for the buttons to higlight the ssections more clearly
 Add widget- need logo, add link to wrong pong store too
+Remove camera follow and just fit to map, otherwise there needs to be a background behind the map
 
 Jess Minecraft coords for Nether
 -45, 73, 82
