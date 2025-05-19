@@ -293,7 +293,7 @@ namespace RD
             PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
             PlayerPrefs.Save();
         }
-
+/*
         void OnArrowButtonPressed(Direction direction)
         {
             if (UIHandler.IsPaused) return;
@@ -306,7 +306,7 @@ namespace RD
 
             inputBuffer.Clear();
             inputBuffer.Insert(0, direction);
-        }
+        }*/
 
         float GetMoveRateFromSpeed(int speed)
         {
@@ -601,7 +601,7 @@ namespace RD
 
             float headSectionScale = 0.75f;
             float midSectionScale = 0.65f; 
-            float tailSectionScale = 0.55f;
+            float tailSectionScale = 0.6f;
 
             for (int i = 0; i < tailCount; i++)
             {
@@ -1491,13 +1491,85 @@ namespace RD
             }
         }
 
+        [SerializeField] private bool useFourButtonControl = false; // THIS WILL EVENTUALLY BE LOADED FROM PLAYERPREFS
+
         void ApplyInputListeners()
         {
-            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
-            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
-            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
-            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+            // FULL RESET: only clear what exists
+            if (upButton != null) upButton.onClick.RemoveAllListeners();
+            if (downButton != null) downButton.onClick.RemoveAllListeners();
+            if (leftButton != null) leftButton.onClick.RemoveAllListeners();
+            if (rightButton != null) rightButton.onClick.RemoveAllListeners();
+
+            if (useFourButtonControl)
+            {
+                if (upButton != null) upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+                if (downButton != null) downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+                if (leftButton != null) leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+                if (rightButton != null) rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+            }
+            else
+            {
+                if (leftButton != null) leftButton.onClick.AddListener(() => OnTurnButtonPressed(false));
+                if (rightButton != null) rightButton.onClick.AddListener(() => OnTurnButtonPressed(true));
+            }
         }
+
+
+        void OnArrowButtonPressed(Direction d)
+        {
+            if (UIHandler.IsPaused) return;
+
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();
+            }
+
+            inputBuffer.Clear();
+            inputBuffer.Insert(0, d);
+        }
+
+        void OnTurnButtonPressed(bool turnRight)
+        {
+            if (UIHandler.IsPaused) return;
+
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();
+            }
+
+            inputBuffer.Clear();
+            var newDir = turnRight ? GetRightOf(curDirection) : GetLeftOf(curDirection);
+            inputBuffer.Insert(0, newDir);
+        }
+
+        Direction GetLeftOf(Direction d)
+        {
+            switch (d)
+            {
+                case Direction.up: return Direction.left;
+                case Direction.left: return Direction.down;
+                case Direction.down: return Direction.right;
+                case Direction.right: return Direction.up;
+                default: return Direction.up;
+            }
+        }
+
+        Direction GetRightOf(Direction d)
+        {
+            switch (d)
+            {
+                case Direction.up: return Direction.right;
+                case Direction.right: return Direction.down;
+                case Direction.down: return Direction.left;
+                case Direction.left: return Direction.up;
+                default: return Direction.up;
+            }
+        }
+
+
 
         void LoadPlayerPrefs()
         {
