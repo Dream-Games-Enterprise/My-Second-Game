@@ -151,6 +151,9 @@ namespace RD
 
         bool swipeDetected = false;
 
+
+        private List<Vector3> tailTargetPositions = new List<Vector3>();
+
         void Awake()
         {
             LoadPlayerPrefs();
@@ -263,6 +266,20 @@ namespace RD
 
                     MovePlayer();
                 }
+            }
+        }
+
+        void LateUpdate()
+        {
+            float followSpeed = 20f;
+
+            for (int i = 0; i < tail.Count; i++)
+            {
+                if (tail[i].obj == null || i >= tailTargetPositions.Count)
+                    continue;
+
+                Vector3 targetPos = tailTargetPositions[i];
+                tail[i].obj.transform.position = Vector3.Lerp(tail[i].obj.transform.position, targetPos, followSpeed * Time.deltaTime);
             }
         }
 
@@ -579,6 +596,9 @@ namespace RD
             Node prevNode = null;
             int tailCount = tail.Count;
 
+            while (tailTargetPositions.Count < tailCount)
+                tailTargetPositions.Add(Vector3.zero);
+
             for (int i = 0; i < tailCount; i++)
             {
                 SpecialNode tailSegment = tail[i];
@@ -598,12 +618,18 @@ namespace RD
 
                 Direction segmentDir = GetDirectionFromTo(tailSegment.node, prevNode);
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(segmentDir));
-                PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
+
                 availableNodes.Remove(tailSegment.node);
+
+                Vector3 centrePos = tailSegment.node.worldPosition + Vector3.one * 0.5f;
+                tailTargetPositions[i] = centrePos;
 
                 float t = (float)i / tailCount;
                 float scale = Mathf.Lerp(0.75f, 0.6f, t);
                 tailSegment.obj.transform.localScale = new Vector3(scale, scale, 1f);
+
+                if (i == tailCount - 1)
+                    tailSegment.obj.transform.position = centrePos;
             }
         }
 
@@ -618,7 +644,6 @@ namespace RD
 
             return Direction.None;
         }
-
 
         #endregion
 
@@ -1284,7 +1309,7 @@ namespace RD
             s.node = GetNode(x, y);
             s.obj = new GameObject();
             s.obj.transform.parent = tailParent.transform;
-            s.obj.transform.position = s.node.worldPosition;
+            PlacePlayerObject(s.obj, s.node.worldPosition);
             s.obj.transform.localScale = Vector3.one * 0.75f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
 
