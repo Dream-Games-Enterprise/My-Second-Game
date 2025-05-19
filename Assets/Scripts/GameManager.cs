@@ -151,7 +151,6 @@ namespace RD
 
         bool swipeDetected = false;
 
-
         void Awake()
         {
             LoadPlayerPrefs();
@@ -578,8 +577,9 @@ namespace RD
         void MoveTail()
         {
             Node prevNode = null;
+            int tailCount = tail.Count;
 
-            for (int i = 0; i < tail.Count; i++)
+            for (int i = 0; i < tailCount; i++)
             {
                 SpecialNode tailSegment = tail[i];
                 availableNodes.Add(tailSegment.node);
@@ -596,12 +596,14 @@ namespace RD
                     prevNode = previousSegmentNode;
                 }
 
-                Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
                 Direction segmentDir = GetDirectionFromTo(tailSegment.node, prevNode);
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(segmentDir));
-
-                availableNodes.Remove(tailSegment.node);
                 PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
+                availableNodes.Remove(tailSegment.node);
+
+                float t = (float)i / tailCount;
+                float scale = Mathf.Lerp(0.75f, 0.6f, t);
+                tailSegment.obj.transform.localScale = new Vector3(scale, scale, 1f);
             }
         }
 
