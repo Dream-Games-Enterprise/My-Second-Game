@@ -599,6 +599,10 @@ namespace RD
             while (tailTargetPositions.Count < tailCount)
                 tailTargetPositions.Add(Vector3.zero);
 
+            float headSectionScale = 0.75f;
+            float midSectionScale = 0.65f; 
+            float tailSectionScale = 0.55f;
+
             for (int i = 0; i < tailCount; i++)
             {
                 SpecialNode tailSegment = tail[i];
@@ -618,14 +622,16 @@ namespace RD
 
                 Direction segmentDir = GetDirectionFromTo(tailSegment.node, prevNode);
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(segmentDir));
-
                 availableNodes.Remove(tailSegment.node);
 
                 Vector3 centrePos = tailSegment.node.worldPosition + Vector3.one * 0.5f;
                 tailTargetPositions[i] = centrePos;
 
-                float t = (float)i / tailCount;
-                float scale = Mathf.Lerp(0.75f, 0.6f, t);
+                int section = (i * 3) / tailCount;
+                float scale = section == 0
+                    ? headSectionScale
+                    : (section == 1 ? midSectionScale : tailSectionScale);
+
                 tailSegment.obj.transform.localScale = new Vector3(scale, scale, 1f);
 
                 if (i == tailCount - 1)
