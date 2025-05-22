@@ -74,6 +74,9 @@ namespace RD
         public Button downButton;
         public Button leftButton;
         public Button rightButton;
+        public Button twoLeftButton;
+        public Button twoRightButton;
+
         bool up, left, right, down;
 
         Direction targetDirection;
@@ -165,8 +168,12 @@ namespace RD
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
+            useFourButtonControl = PlayerPrefs.GetInt("useFourButtonControl", 1) == 1;
+            SetControlMode(useFourButtonControl);
+
             isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
             ToggleInputType(isButtonControl);
+
 
             _mainCam = Camera.main;
 
@@ -192,6 +199,12 @@ namespace RD
             else
                 minSwipeDistance = 8f;
 
+        }
+
+        public void OnFourWayToggleChanged(bool isOn)
+        {
+            PlayerPrefs.SetInt("useFourButtonControl", isOn ? 1 : 0);
+            SetControlMode(isOn);
         }
 
         void Start()
@@ -284,6 +297,20 @@ namespace RD
         }
 
         #region INPUT
+
+        public void SetControlMode(bool fourWay)
+        {
+            useFourButtonControl = fourWay;
+            ApplyInputListeners();
+
+            upButton.gameObject.SetActive(fourWay);
+            downButton.gameObject.SetActive(fourWay);
+            leftButton.gameObject.SetActive(fourWay);
+            rightButton.gameObject.SetActive(fourWay);
+
+            twoLeftButton.gameObject.SetActive(!fourWay);
+            twoRightButton.gameObject.SetActive(!fourWay);
+        }
 
         void ToggleInputType(bool useButtons)
         {
@@ -1287,7 +1314,6 @@ namespace RD
                 playerObject.SetActive(false);
         }
 
-
         void TriggerVictory()
         {
             isGameOver = true;
@@ -1491,29 +1517,41 @@ namespace RD
             }
         }
 
-        [SerializeField] private bool useFourButtonControl = false; // THIS WILL EVENTUALLY BE LOADED FROM PLAYERPREFS
+        [SerializeField] private bool useFourButtonControl = true; // THIS WILL EVENTUALLY BE LOADED FROM PLAYERPREFS
 
         void ApplyInputListeners()
         {
-            // FULL RESET: only clear what exists
+            // clear listeners
             if (upButton != null) upButton.onClick.RemoveAllListeners();
             if (downButton != null) downButton.onClick.RemoveAllListeners();
             if (leftButton != null) leftButton.onClick.RemoveAllListeners();
             if (rightButton != null) rightButton.onClick.RemoveAllListeners();
+            if (twoLeftButton != null) twoLeftButton.onClick.RemoveAllListeners();
+            if (twoRightButton != null) twoRightButton.onClick.RemoveAllListeners();
 
+            // show/hide the correct group
+            if (upButton != null) upButton.gameObject.SetActive(useFourButtonControl);
+            if (downButton != null) downButton.gameObject.SetActive(useFourButtonControl);
+            if (leftButton != null) leftButton.gameObject.SetActive(useFourButtonControl);
+            if (rightButton != null) rightButton.gameObject.SetActive(useFourButtonControl);
+            if (twoLeftButton != null) twoLeftButton.gameObject.SetActive(!useFourButtonControl);
+            if (twoRightButton != null) twoRightButton.gameObject.SetActive(!useFourButtonControl);
+
+            // hook up listeners
             if (useFourButtonControl)
             {
-                if (upButton != null) upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
-                if (downButton != null) downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
-                if (leftButton != null) leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
-                if (rightButton != null) rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+                upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+                downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+                leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+                rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
             }
             else
             {
-                if (leftButton != null) leftButton.onClick.AddListener(() => OnTurnButtonPressed(false));
-                if (rightButton != null) rightButton.onClick.AddListener(() => OnTurnButtonPressed(true));
+                twoLeftButton.onClick.AddListener(() => OnTurnButtonPressed(false));
+                twoRightButton.onClick.AddListener(() => OnTurnButtonPressed(true));
             }
         }
+
 
 
         void OnArrowButtonPressed(Direction d)
@@ -1568,8 +1606,6 @@ namespace RD
                 default: return Direction.up;
             }
         }
-
-
 
         void LoadPlayerPrefs()
         {

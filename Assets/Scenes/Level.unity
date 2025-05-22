@@ -7429,10 +7429,12 @@ MonoBehaviour:
   trapColour: {r: 0, g: 0, b: 0, a: 1}
   tailSprites: []
   foodSprites: []
-  upButton: {fileID: 0}
-  downButton: {fileID: 0}
-  leftButton: {fileID: 1516301358}
-  rightButton: {fileID: 613573457}
+  upButton: {fileID: 652085476}
+  downButton: {fileID: 605319481}
+  leftButton: {fileID: 235958659}
+  rightButton: {fileID: 688024151}
+  twoLeftButton: {fileID: 1516301358}
+  twoRightButton: {fileID: 613573457}
   isButtonControl: 0
   moveRate: 0.2
   smoothSpeed: 0.1
@@ -7485,7 +7487,7 @@ MonoBehaviour:
         m_CallState: 2
   isGameOver: 0
   isFirstInput: 0
-  useFourButtonControl: 0
+  useFourButtonControl: 1
 --- !u!4 &1447539186
 Transform:
   m_ObjectHideFlags: 0
@@ -10796,7 +10798,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2145919915
 RectTransform:
   m_ObjectHideFlags: 0
