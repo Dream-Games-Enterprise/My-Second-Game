@@ -41571,6 +41571,7 @@ MonoBehaviour:
   toggleInputTypeButton: {fileID: 358603736}
   soundToggleButton: {fileID: 1070979790}
   soundButtonLabel: {fileID: 203522773}
+  fourButtonModeToggle: {fileID: 0}
   panelAnimator: {fileID: 1320675193}
 --- !u!4 &1290690119
 Transform:

@@ -9,6 +9,7 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
+        #region Inspector Stuff
         #region REFERENCES
         ScoreManager scoreManager;
         [SerializeField] CustomisationManager customisationManager;
@@ -107,6 +108,7 @@ namespace RD
         bool _obstaclesEnabled;
         bool _isButtonControl;
         bool obstaclesToggle;
+        bool isFourButtons;
 
         Node[,] grid;
         Node playerNode;
@@ -154,58 +156,54 @@ namespace RD
 
         bool swipeDetected = false;
 
-
         private List<Vector3> tailTargetPositions = new List<Vector3>();
 
+        #endregion
         void Awake()
         {
             LoadPlayerPrefs();
             LoadSpritesBits();
             FetchColours();
+
             foodParticleMaterial = new Material(Shader.Find("Sprites/Default"));
             audioManager = FindFirstObjectByType<AudioManager>();
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
-            useFourButtonControl = PlayerPrefs.GetInt("useFourButtonControl", 1) == 1;
-            SetControlMode(useFourButtonControl);
+            currentInputType = (InputType)PlayerPrefs.GetInt(
+                "inputType",
+                (int)InputType.Swipe
+            );
 
-            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
-            ToggleInputType(isButtonControl);
+            isButtonControl = currentInputType != InputType.Swipe;
+            useFourButtonControl = currentInputType == InputType.FourButtons;
 
+            ApplyInputMode(currentInputType);
 
             _mainCam = Camera.main;
-
             _dirVectors = new Dictionary<Direction, Vector2Int>
-{
-    { Direction.up,    new Vector2Int( 0,  1) },
-    { Direction.down,  new Vector2Int( 0, -1) },
-    { Direction.left,  new Vector2Int(-1,  0) },
-    { Direction.right, new Vector2Int( 1,  0) }
-};
-
+    {
+        { Direction.up,    new Vector2Int( 0,  1) },
+        { Direction.down,  new Vector2Int( 0, -1) },
+        { Direction.left,  new Vector2Int(-1,  0) },
+        { Direction.right, new Vector2Int( 1,  0) }
+    };
             _dirAngles = new Dictionary<Direction, float>
-{
-    { Direction.up,     0f },
-    { Direction.left,  90f },
-    { Direction.down, 180f },
-    { Direction.right,270f },
-    { Direction.None,   0f }
-};
+    {
+        { Direction.up,     0f },
+        { Direction.left,  90f },
+        { Direction.down, 180f },
+        { Direction.right,270f },
+        { Direction.None,   0f }
+    };
 
             if (Screen.dpi > 0)
                 minSwipeDistance = Screen.dpi * 0.15f;
             else
                 minSwipeDistance = 8f;
-
         }
 
-        public void OnFourWayToggleChanged(bool isOn)
-        {
-            PlayerPrefs.SetInt("useFourButtonControl", isOn ? 1 : 0);
-            SetControlMode(isOn);
-        }
 
         void Start()
         {
@@ -220,8 +218,6 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
-
-            ApplyInputListeners();
         }
 
         void Update()
@@ -296,7 +292,29 @@ namespace RD
             }
         }
 
+        void ApplyInputMode(InputType mode)
+        {
+            bool swipe = mode == InputType.Swipe;
+            bool twoBtn = mode == InputType.TwoButtons;
+            bool fourBtn = mode == InputType.FourButtons;
+
+            inputPanel.SetActive(swipe);
+            buttonControl.SetActive(!swipe);
+
+            twoLeftButton.gameObject.SetActive(twoBtn);
+            twoRightButton.gameObject.SetActive(twoBtn);
+
+            upButton.gameObject.SetActive(fourBtn);
+            downButton.gameObject.SetActive(fourBtn);
+            leftButton.gameObject.SetActive(fourBtn);
+            rightButton.gameObject.SetActive(fourBtn);
+
+            ApplyInputListeners();
+        }
+
         #region INPUT
+        public enum InputType { Swipe = 0, TwoButtons = 1, FourButtons = 2 }
+        private InputType currentInputType;
 
         public void SetControlMode(bool fourWay)
         {
@@ -316,9 +334,6 @@ namespace RD
         {
             isButtonControl = useButtons;
             buttonControl.SetActive(useButtons);
-
-            PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
-            PlayerPrefs.Save();
         }
 /*
         void OnArrowButtonPressed(Direction direction)
@@ -1517,29 +1532,29 @@ namespace RD
             }
         }
 
-        [SerializeField] private bool useFourButtonControl = true; // THIS WILL EVENTUALLY BE LOADED FROM PLAYERPREFS
+        [SerializeField] bool useFourButtonControl = true; // THIS SHOULD NOW BE FETCHED FROM PLAYERPREFS whether to use two or four or ignore if swipe is being used
 
         void ApplyInputListeners()
         {
-            // clear listeners
-            if (upButton != null) upButton.onClick.RemoveAllListeners();
-            if (downButton != null) downButton.onClick.RemoveAllListeners();
-            if (leftButton != null) leftButton.onClick.RemoveAllListeners();
-            if (rightButton != null) rightButton.onClick.RemoveAllListeners();
-            if (twoLeftButton != null) twoLeftButton.onClick.RemoveAllListeners();
-            if (twoRightButton != null) twoRightButton.onClick.RemoveAllListeners();
+            Debug.Log($"[GameManager] ApplyInputListeners(): currentInputType={currentInputType}, useFourButtonControl={useFourButtonControl}");
 
-            // show/hide the correct group
-            if (upButton != null) upButton.gameObject.SetActive(useFourButtonControl);
-            if (downButton != null) downButton.gameObject.SetActive(useFourButtonControl);
-            if (leftButton != null) leftButton.gameObject.SetActive(useFourButtonControl);
-            if (rightButton != null) rightButton.gameObject.SetActive(useFourButtonControl);
-            if (twoLeftButton != null) twoLeftButton.gameObject.SetActive(!useFourButtonControl);
-            if (twoRightButton != null) twoRightButton.gameObject.SetActive(!useFourButtonControl);
+            if (upButton != null) { upButton.onClick.RemoveAllListeners(); upButton.gameObject.SetActive(false); }
+            if (downButton != null) { downButton.onClick.RemoveAllListeners(); downButton.gameObject.SetActive(false); }
+            if (leftButton != null) { leftButton.onClick.RemoveAllListeners(); leftButton.gameObject.SetActive(false); }
+            if (rightButton != null) { rightButton.onClick.RemoveAllListeners(); rightButton.gameObject.SetActive(false); }
+            if (twoLeftButton != null) { twoLeftButton.onClick.RemoveAllListeners(); twoLeftButton.gameObject.SetActive(false); }
+            if (twoRightButton != null) { twoRightButton.onClick.RemoveAllListeners(); twoRightButton.gameObject.SetActive(false); }
 
-            // hook up listeners
+            if (currentInputType == InputType.Swipe)
+                return;
+
             if (useFourButtonControl)
             {
+                upButton.gameObject.SetActive(true);
+                downButton.gameObject.SetActive(true);
+                leftButton.gameObject.SetActive(true);
+                rightButton.gameObject.SetActive(true);
+
                 upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
                 downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
                 leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
@@ -1547,12 +1562,13 @@ namespace RD
             }
             else
             {
+                twoLeftButton.gameObject.SetActive(true);
+                twoRightButton.gameObject.SetActive(true);
+
                 twoLeftButton.onClick.AddListener(() => OnTurnButtonPressed(false));
                 twoRightButton.onClick.AddListener(() => OnTurnButtonPressed(true));
             }
         }
-
-
 
         void OnArrowButtonPressed(Direction d)
         {

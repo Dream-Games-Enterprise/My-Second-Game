@@ -35,7 +35,7 @@ public class GameSettings : MonoBehaviour
     int speedInt;
     bool obstacles;
 
-    enum InputType { Swipe, Buttons }
+    enum InputType { Swipe = 0, TwoButtons = 1, FourButtons = 2 }
     InputType currentInputType;
 
     [SerializeField] UIPanelAnimator panelAnimator;
@@ -88,7 +88,9 @@ public class GameSettings : MonoBehaviour
         speedInt = PlayerPrefs.GetInt("speed", 5);
         obstacles = PlayerPrefs.GetInt("obstacles", 1) == 1;
 
-        currentInputType = (InputType)PlayerPrefs.GetInt("inputType", (int)InputType.Swipe);
+        int raw = PlayerPrefs.GetInt("inputType", (int)InputType.Swipe);
+        currentInputType = (InputType)raw;
+        Debug.Log($"[GameSettings] Loaded inputType = {raw} ({currentInputType})");
 
         widthSlider.value = widthInt;
         heightSlider.value = heightInt;
@@ -136,17 +138,31 @@ public class GameSettings : MonoBehaviour
 
     void ToggleInputType()
     {
-        currentInputType = currentInputType == InputType.Swipe ? InputType.Buttons : InputType.Swipe;
-
+        currentInputType = (InputType)(((int)currentInputType + 1)
+                             % System.Enum.GetValues(typeof(InputType)).Length);
         PlayerPrefs.SetInt("inputType", (int)currentInputType);
-
+        PlayerPrefs.Save();
+        Debug.Log($"[GameSettings] Saved inputType = {(int)currentInputType} ({currentInputType})");
         UpdateInputTypeText();
     }
 
+
     void UpdateInputTypeText()
     {
-        inputTypeText.text = "INPUT TYPE\n" + (currentInputType == InputType.Swipe ? "SWIPING" : "BUTTONS");
+        switch (currentInputType)
+        {
+            case InputType.Swipe:
+                inputTypeText.text = "INPUT TYPE\nSWIPING";
+                break;
+            case InputType.TwoButtons:
+                inputTypeText.text = "INPUT TYPE\n2 BUTTONS";
+                break;
+            case InputType.FourButtons:
+                inputTypeText.text = "INPUT TYPE\n4 BUTTONS";
+                break;
+        }
     }
+
 
     public void ToggleSettings()
     {
