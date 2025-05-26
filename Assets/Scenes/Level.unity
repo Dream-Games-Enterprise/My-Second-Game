@@ -7411,8 +7411,9 @@ MonoBehaviour:
   customisationManager: {fileID: 1079950693}
   uiHandler: {fileID: 389438042}
   cameraHolder: {fileID: 1867295740}
-  inputPanel: {fileID: 2145919914}
-  buttonControl: {fileID: 2145919914}
+  inputPanel: {fileID: 2144663211}
+  twoButtonControl: {fileID: 2145919914}
+  fourButtonControl: {fileID: 266321740}
   foodPickupParticlePrefab: {fileID: 5746655709339930147, guid: 7af6863b7415ce84bbbb0b1b0d141b45, type: 3}
   snakeDeathParticlePrefab: {fileID: 5746655709339930147, guid: d1d877a14b7f6dd4db6ea56902e1ed17, type: 3}
   tailSpriteRenderer: {fileID: 0}
@@ -7487,6 +7488,7 @@ MonoBehaviour:
         m_CallState: 2
   isGameOver: 0
   isFirstInput: 0
+  swipePrompt: {fileID: 2125027034}
   useFourButtonControl: 0
 --- !u!4 &1447539186
 Transform:
@@ -8517,7 +8519,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 539622236}
-  - {fileID: 2125027035}
   - {fileID: 1273238793}
   - {fileID: 2144663212}
   - {fileID: 2145919915}
@@ -10374,7 +10375,7 @@ RectTransform:
   m_LocalScale: {x: 2.4581997, y: 2.4581997, z: 2.4581997}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1633455639}
+  m_Father: {fileID: 2144663212}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -10722,7 +10723,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2125027035}
   m_Father: {fileID: 1633455639}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}

@@ -21,7 +21,8 @@ namespace RD
         #region SCENE OBJECTS
         public Transform cameraHolder;
         [SerializeField] GameObject inputPanel;
-        [SerializeField] GameObject buttonControl;
+        [SerializeField] GameObject twoButtonControl;
+        [SerializeField] GameObject fourButtonControl;
         [SerializeField] GameObject foodPickupParticlePrefab;
         [SerializeField] GameObject snakeDeathParticlePrefab;
         GameObject playerObject;
@@ -204,7 +205,6 @@ namespace RD
                 minSwipeDistance = 8f;
         }
 
-
         void Start()
         {
             SetSpeed(GetMoveRateFromSpeed(_speedInt));
@@ -292,22 +292,19 @@ namespace RD
             }
         }
 
+        [SerializeField] GameObject swipePrompt;
+
         void ApplyInputMode(InputType mode)
         {
             bool swipe = mode == InputType.Swipe;
-            bool twoBtn = mode == InputType.TwoButtons;
-            bool fourBtn = mode == InputType.FourButtons;
+            bool two = mode == InputType.TwoButtons;
+            bool four = mode == InputType.FourButtons;
 
             inputPanel.SetActive(swipe);
-            buttonControl.SetActive(!swipe);
+            twoButtonControl.SetActive(two);
+            fourButtonControl.SetActive(four);
 
-            twoLeftButton.gameObject.SetActive(twoBtn);
-            twoRightButton.gameObject.SetActive(twoBtn);
-
-            upButton.gameObject.SetActive(fourBtn);
-            downButton.gameObject.SetActive(fourBtn);
-            leftButton.gameObject.SetActive(fourBtn);
-            rightButton.gameObject.SetActive(fourBtn);
+            swipePrompt.SetActive(swipe);
 
             ApplyInputListeners();
         }
@@ -330,26 +327,6 @@ namespace RD
             twoRightButton.gameObject.SetActive(!fourWay);
         }
 
-        void ToggleInputType(bool useButtons)
-        {
-            isButtonControl = useButtons;
-            buttonControl.SetActive(useButtons);
-        }
-/*
-        void OnArrowButtonPressed(Direction direction)
-        {
-            if (UIHandler.IsPaused) return;
-
-            if (!isFirstInput)
-            {
-                isFirstInput = true;
-                firstInput.Invoke();
-            }
-
-            inputBuffer.Clear();
-            inputBuffer.Insert(0, direction);
-        }*/
-
         float GetMoveRateFromSpeed(int speed)
         {
             switch (speed)
@@ -367,11 +344,6 @@ namespace RD
                 default:
                     return 0.2f / 1.5f;  // fallback
             }
-        }
-
-        public void ToggleInputButtonPressed()
-        {
-            ToggleInputType(!isButtonControl);
         }
 
         void HandleTouchInput()
@@ -1266,8 +1238,14 @@ namespace RD
             scoreManager.ApplyEndMultipliers();
             uiHandler.GameEndMenu();
             gameOverUI.ActivateUI();
+
             inputPanel.SetActive(false);
+            twoButtonControl.SetActive(false);
+            fourButtonControl.SetActive(false);
+
+            swipePrompt.SetActive(false);
         }
+
 
         IEnumerator PlayDeathAnimation()
         {
