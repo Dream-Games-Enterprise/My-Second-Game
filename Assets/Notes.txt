@@ -1,7 +1,6 @@
 NEXT
 Add ads at top of menu
 Add widget- need logo, add link to wrong pong store too
-Camera or something is changing size when a food is picked up
 
 Jess Minecraft coords for Nether
 -45, 73, 82
@@ -9,10 +8,10 @@ Jess Minecraft coords for Nether
 
 BUG
 I think a food can sometimes spawn on the exact spot it gets picked up on 
-HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 
 
 Update in Future If Played:
+- Maybe figure out a way to make slower speeds be more responsive, similar to how reactive/responsive the fastest speed is.
 - Add a toggle for different camera options e.g. follow on big maps or just fit.
 - Increase map size slider.
 - Moving obstacle nodes?
@@ -21,4 +20,3 @@ Update in Future If Played:
 - Make the colour scroll within sprite selections symmetrical. Left end has more padding than the very end of the scroll on the right (only by a few pixels).
 - Add camera options e.g. zoom in/out, follow player, etc. show whole map from start.
 - Leaderboard with time on map size completion.
-

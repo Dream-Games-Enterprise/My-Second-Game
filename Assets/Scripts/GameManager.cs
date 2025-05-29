@@ -577,8 +577,9 @@ namespace RD
                     StartCoroutine(RecycleAfter(ps, 2f));
                 }
 
-                if (cameraStartedAtMax && _mainCam.orthographicSize < 12f)
-                    _mainCam.orthographicSize = Mathf.Min(_mainCam.orthographicSize + 0.005f, 12f);
+                /*THIS INCREMENTS THE CAMERA (making it zoom out)
+                 * if (cameraStartedAtMax && _mainCam.orthographicSize < 12f)
+                    _mainCam.orthographicSize = Mathf.Min(_mainCam.orthographicSize + 0.005f, 12f);*/
             }
 
             MoveTail();
@@ -619,8 +620,8 @@ namespace RD
                 tailTargetPositions.Add(Vector3.zero);
 
             float headSectionScale = 0.75f;
-            float midSectionScale = 0.65f; 
-            float tailSectionScale = 0.6f;
+            float midSectionScale = 0.7f; 
+            float tailSectionScale = 0.65f;
 
             for (int i = 0; i < tailCount; i++)
             {
@@ -1361,7 +1362,6 @@ namespace RD
             Rect rect = new Rect(0, 0, 1, 1);
             return Sprite.Create(txt, rect, Vector2.one * 0.5f, 1, 0, SpriteMeshType.FullRect);
         }
-        
 
         ParticleSystem GetPooledParticle()
         {
