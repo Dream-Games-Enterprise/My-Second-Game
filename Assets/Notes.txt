@@ -1,6 +1,5 @@
 NEXT
 Add ads at top of menu
-Add widget- need logo, add link to wrong pong store too
 
 Jess Minecraft coords for Nether
 -45, 73, 82
