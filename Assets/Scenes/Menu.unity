@@ -18306,7 +18306,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 313538773}
   m_Direction: 0
   m_MinValue: 5
-  m_MaxValue: 15
+  m_MaxValue: 10
   m_WholeNumbers: 1
   m_Value: 5
   m_OnValueChanged:
@@ -41571,7 +41571,6 @@ MonoBehaviour:
   toggleInputTypeButton: {fileID: 358603736}
   soundToggleButton: {fileID: 1070979790}
   soundButtonLabel: {fileID: 203522773}
-  fourButtonModeToggle: {fileID: 0}
   panelAnimator: {fileID: 1320675193}
 --- !u!4 &1290690119
 Transform:
@@ -48114,7 +48113,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 728915835}
   m_Direction: 0
   m_MinValue: 5
-  m_MaxValue: 15
+  m_MaxValue: 10
   m_WholeNumbers: 1
   m_Value: 5
   m_OnValueChanged:

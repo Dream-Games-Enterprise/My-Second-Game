@@ -1,7 +1,6 @@
 NEXT
 Add ads at top of menu
 Add widget- need logo, add link to wrong pong store too
-Remove camera follow and just fit to map, otherwise there needs to be a background behind the map
 
 Jess Minecraft coords for Nether
 -45, 73, 82
@@ -13,9 +12,12 @@ HAVE SNAKE SPEED EFFECT IF ON HIGHEST 3/2 SPEEDS
 
 
 Update in Future If Played:
+- Add a toggle for different camera options e.g. follow on big maps or just fit.
+- Increase map size slider.
 - Moving obstacle nodes?
-- Death particle system have it match the sprites of the snake
-- Have speed up on food pick up
+- Death particle system have it match the sprites of the snake.
+- Have speed up on food pick up.
 - Make the colour scroll within sprite selections symmetrical. Left end has more padding than the very end of the scroll on the right (only by a few pixels).
 - Add camera options e.g. zoom in/out, follow player, etc. show whole map from start.
-- Leaderboard with time on map size completion
+- Leaderboard with time on map size completion.
+

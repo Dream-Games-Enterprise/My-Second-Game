@@ -83,8 +83,8 @@ public class GameSettings : MonoBehaviour
 
     void LoadData()
     {
-        widthInt = PlayerPrefs.GetInt("width", 10);
-        heightInt = PlayerPrefs.GetInt("height", 10);
+        widthInt = PlayerPrefs.GetInt("width", 5);
+        heightInt = PlayerPrefs.GetInt("height", 5);
         speedInt = PlayerPrefs.GetInt("speed", 5);
         obstacles = PlayerPrefs.GetInt("obstacles", 1) == 1;
 
@@ -146,7 +146,6 @@ public class GameSettings : MonoBehaviour
         UpdateInputTypeText();
     }
 
-
     void UpdateInputTypeText()
     {
         switch (currentInputType)
@@ -162,7 +161,6 @@ public class GameSettings : MonoBehaviour
                 break;
         }
     }
-
 
     public void ToggleSettings()
     {

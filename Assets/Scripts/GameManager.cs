@@ -1406,27 +1406,8 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            if (!cameraStartedAtMax)
-            {
-                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
-                return;
-            }
-
-            float cameraSize = Camera.main.orthographicSize;
-            Vector3 playerPosition = playerObject.transform.position;
-            Vector3 desiredPosition = playerPosition;
-
-            float halfWidth = maxWidth * 0.5f;
-            float halfHeight = maxHeight * 0.5f;
-
-            float cameraHorizontalLimit = halfWidth - cameraSize;
-            float cameraVerticalLimit = halfHeight - cameraSize;
-
-            desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-            desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
-
-            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+            Vector3 mapCentre = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+            cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCentre, smoothSpeed);
         }
 
         void AdjustCameraSize()
@@ -1438,17 +1419,65 @@ namespace RD
             float padding = 0.5f;
             float adjustedSize = requiredSize + padding;
 
-            if (adjustedSize > 8.2f)
-            {
-                Camera.main.orthographicSize = 8.2f;
-                cameraStartedAtMax = true;
-            }
-            else
-            {
-                Camera.main.orthographicSize = adjustedSize;
-                cameraStartedAtMax = false;
-            }
+            Camera.main.orthographicSize = adjustedSize;
+
+            cameraStartedAtMax = true;
         }
+
+        /* OLD CAMERA LOGIC WITH FOLLOW ON LARGER MAPS
+         void PlaceCamera()
+         {
+             Node n = GetNode(maxWidth / 2, maxHeight / 2);
+             Vector3 p = n.worldPosition;
+             p += Vector3.one * 0.5f;
+             cameraHolder.position = p;
+         }
+
+         void UpdateCameraPosition()
+         {
+             if (!cameraStartedAtMax)
+             {
+                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
+                 return;
+             }
+
+             float cameraSize = Camera.main.orthographicSize;
+             Vector3 playerPosition = playerObject.transform.position;
+             Vector3 desiredPosition = playerPosition;
+
+             float halfWidth = maxWidth * 0.5f;
+             float halfHeight = maxHeight * 0.5f;
+
+             float cameraHorizontalLimit = halfWidth - cameraSize;
+             float cameraVerticalLimit = halfHeight - cameraSize;
+
+             desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+             desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+
+             cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+         }
+
+         void AdjustCameraSize()
+         {
+             float verticalSize = maxHeight / 2f;
+             float horizontalSize = (maxWidth / Camera.main.aspect) / 2f;
+             float requiredSize = Mathf.Max(verticalSize, horizontalSize);
+
+             float padding = 0.5f;
+             float adjustedSize = requiredSize + padding;
+
+             if (adjustedSize > 8.2f)
+             {
+                 Camera.main.orthographicSize = 8.2f;
+                 cameraStartedAtMax = true;
+             }
+             else
+             {
+                 Camera.main.orthographicSize = adjustedSize;
+                 cameraStartedAtMax = false;
+             }
+         }*/
 
         #endregion
 
