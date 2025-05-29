@@ -1,6 +1,7 @@
 NEXT
 Add ads at top of menu
 Add widget- need logo, add link to wrong pong store too
+Camera or something is changing size when a food is picked up
 
 Jess Minecraft coords for Nether
 -45, 73, 82
