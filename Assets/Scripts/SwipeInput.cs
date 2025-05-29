@@ -66,7 +66,7 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     IEnumerator UpdateTrailSmoothly()
     {
         Vector2 currentEnd = startTouchPosition;
-        float lerpSpeed = 10f;
+        float lerpSpeed = 50f;
 
         while (true)
         {
