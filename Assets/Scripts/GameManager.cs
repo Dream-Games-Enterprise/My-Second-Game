@@ -162,6 +162,11 @@ namespace RD
         #endregion
         void Awake()
         {
+            if (!PlayerPrefs.HasKey("inputType"))
+            {
+                PlayerPrefs.SetInt("inputType", (int)InputType.Swipe);
+                PlayerPrefs.Save();
+            }
             LoadPlayerPrefs();
             LoadSpritesBits();
             FetchColours();
