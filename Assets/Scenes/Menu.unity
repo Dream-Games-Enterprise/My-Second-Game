@@ -19231,7 +19231,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: A big gracias to all of you who spent your time, helping test the game
-    and suggesting improvents!
+    and suggesting improvements!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 36d7e58b15c75be429e8874ed2473bfc, type: 2}
   m_sharedMaterial: {fileID: 505118300493600828, guid: 36d7e58b15c75be429e8874ed2473bfc, type: 2}
@@ -71684,6 +71684,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1644370778}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: backgroundTintImages.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: 'backgroundTintImages.Array.data[0]'
       value: 
       objectReference: {fileID: 827687904}
@@ -71719,6 +71723,14 @@ PrefabInstance:
       propertyPath: 'backgroundTintImages.Array.data[8]'
       value: 
       objectReference: {fileID: 1527777966}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: 'backgroundTintImages.Array.data[9]'
+      value: 
+      objectReference: {fileID: 1676073044}
+    - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
+      propertyPath: 'backgroundTintImages.Array.data[10]'
+      value: 
+      objectReference: {fileID: 737700344}
     - target: {fileID: 2329680655283942787, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: m_Name
       value: Customisation_Manager
