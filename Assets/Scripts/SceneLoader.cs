@@ -26,7 +26,7 @@ public class SceneLoader : MonoBehaviour
     void Update()
     {
         if (currentSceneInt == 0 && Input.anyKeyDown)
-            LoadSceneWithFade(1);
+            LoadScene(1);
     }
 
     void UpdateCurrentSceneInfo()
