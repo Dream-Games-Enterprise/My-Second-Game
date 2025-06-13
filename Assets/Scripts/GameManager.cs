@@ -160,6 +160,7 @@ namespace RD
         List<Vector3> tailTargetPositions = new List<Vector3>();
 
         [SerializeField] SpriteRenderer borderRenderer;
+        [SerializeField] Image leaderBoardBackground;
 
         #endregion
         void Awake()
@@ -222,6 +223,9 @@ namespace RD
             
             if (Camera.main != null)
                 Camera.main.backgroundColor = bgColour;
+            // set leaderboard bg
+            if (leaderBoardBackground != null)
+                leaderBoardBackground.color = bgColour;
 
             int borderOption = PlayerPrefs.GetInt("SelectedBorderOption", 0);
             switch (borderOption)
@@ -243,6 +247,7 @@ namespace RD
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
             trapIndexGetter = customisationManager.GetSelectedTrapIndex();
+
             customPlayerSprite = customisationManager.snakeSkins[playerSkinIndex].sprite;
 
             onStart.Invoke();

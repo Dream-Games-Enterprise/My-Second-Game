@@ -5882,7 +5882,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: backgroundTintImages.Array.size
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: uiPanelColours.Array.data[10].a
@@ -5919,7 +5919,7 @@ PrefabInstance:
     - target: {fileID: 1652440920237746544, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: 'backgroundTintImages.Array.data[13]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1536425634}
     - target: {fileID: 2329680655283942787, guid: 9daa75c224d37cd45b480593ad647d8f, type: 3}
       propertyPath: m_Name
       value: Customisation_Manager_Object
@@ -7825,6 +7825,7 @@ MonoBehaviour:
   isGameOver: 0
   isFirstInput: 0
   borderRenderer: {fileID: 1387146843}
+  leaderBoardBackground: {fileID: 1536425634}
   swipePrompt: {fileID: 2125027034}
   useFourButtonControl: 0
 --- !u!4 &1447539186

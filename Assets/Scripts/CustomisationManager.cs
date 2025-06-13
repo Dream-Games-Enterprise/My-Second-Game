@@ -164,7 +164,10 @@ public class CustomisationManager : MonoBehaviour
             }
 
             if (inputPanelBackground != null)
+            {
+                Debug.Log("THIS IS GETTING CALLED");
                 inputPanelBackground.color = uiPanelColours[savedIndex];
+            }
             else
                 Debug.LogWarning("InputPanelBackground reference is missing.");
 
