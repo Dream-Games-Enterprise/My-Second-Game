@@ -217,21 +217,28 @@ namespace RD
         {
             SetSpeed(GetMoveRateFromSpeed(_speedInt));
 
+            int bgIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
+            bgIndex = Mathf.Clamp(bgIndex, 0, customisationManager.backgroundColors.Count - 1);
+            Color bgColour = customisationManager.backgroundColors[bgIndex];
+            
+            if (Camera.main != null)
+                Camera.main.backgroundColor = bgColour;
+
+
             int borderOption = PlayerPrefs.GetInt("SelectedBorderOption", 0);
             switch (borderOption)
             {
-                case 0:  // White
+                case 0:
                     borderRenderer.color = Color.white;
                     break;
 
-                case 1:  // Match background
-                         // (falls back to white if no main camera)
+                case 1:  
                     borderRenderer.color = Camera.main != null
                         ? Camera.main.backgroundColor
                         : Color.white;
                     break;
 
-                case 2:  // Match obstacles/traps
+                case 2:  
                     borderRenderer.color = trapColour;
                     break;
             }

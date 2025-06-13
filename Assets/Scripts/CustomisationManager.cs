@@ -83,7 +83,7 @@ public class CustomisationManager : MonoBehaviour
     int currency;
     [SerializeField] bool isInCustomisationScene;
 
-    [SerializeField] List<Color> backgroundColors;
+    [SerializeField] public List<Color> backgroundColors;
     [SerializeField] List<string> backgroundNames;
     [SerializeField] Button backgroundCycleButton;
     [SerializeField] TMP_Text backgroundText;
@@ -93,11 +93,11 @@ public class CustomisationManager : MonoBehaviour
     [SerializeField] Image inputPanelBackground;
     [SerializeField] Image pausePanelBackground;
 
-    [SerializeField] private TMP_Text borderText;   
-    [SerializeField] private Color obstacleColor;
+    [SerializeField] TMP_Text borderText;   
+    [SerializeField] Color obstacleColor;
 
-    private int borderOptionIndex = 0;
-    private const string BorderPrefKey = "SelectedBorderOption";
+    int borderOptionIndex = 0;
+    const string BorderPrefKey = "SelectedBorderOption";
 
     void Start()
     {
