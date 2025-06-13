@@ -11,13 +11,13 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
     public float fadeOutDuration = 0.5f;
     public float lineThickness = 10f;
 
-    private RectTransform swipeEffectInstance;
-    private Vector2 startTouchPosition;
-    private Vector2 currentTargetPos;
-    private Coroutine fadeCoroutine;
-    private Coroutine trailCoroutine;
-    private Canvas parentCanvas;
-    private RectTransform canvasRectTransform;
+    RectTransform swipeEffectInstance;
+    Vector2 startTouchPosition;
+    Vector2 currentTargetPos;
+    Coroutine fadeCoroutine;
+    Coroutine trailCoroutine;
+    Canvas parentCanvas;
+    RectTransform canvasRectTransform;
 
     void Start()
     {
@@ -27,7 +27,6 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Convert screen position to canvas local position
         Vector2 localPoint;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRectTransform,
@@ -39,7 +38,6 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         startTouchPosition = localPoint;
         currentTargetPos = startTouchPosition;
 
-        // Create or reuse swipe effect
         if (swipeEffectInstance == null)
         {
             swipeEffectInstance = Instantiate(swipeEffectPrefab, canvasRectTransform);
@@ -48,14 +46,12 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             swipeEffectInstance.anchorMax = new Vector2(0.5f, 0.5f);
         }
 
-        // Stop any existing fade coroutine
         if (fadeCoroutine != null)
         {
             StopCoroutine(fadeCoroutine);
             fadeCoroutine = null;
         }
 
-        // Activate and reset the swipe effect
         swipeEffectInstance.gameObject.SetActive(true);
         var img = swipeEffectInstance.GetComponent<Image>();
         if (img != null)
@@ -63,10 +59,8 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             img.color = new Color(img.color.r, img.color.g, img.color.b, 1f);
         }
 
-        // Initialize the effect at starting position
         UpdateSwipeEffect(startTouchPosition, startTouchPosition);
 
-        // Start the smooth trail update
         if (trailCoroutine != null)
             StopCoroutine(trailCoroutine);
         trailCoroutine = StartCoroutine(UpdateTrailSmoothly());
@@ -74,7 +68,6 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void OnDrag(PointerEventData eventData)
     {
-        // Convert screen position to canvas local position
         Vector2 localPoint;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRectTransform,
@@ -88,7 +81,6 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // Convert final position to canvas local position
         Vector2 localPoint;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvasRectTransform,
@@ -99,17 +91,14 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         currentTargetPos = localPoint;
 
-        // Stop the trail update
         if (trailCoroutine != null)
         {
             StopCoroutine(trailCoroutine);
             trailCoroutine = null;
         }
 
-        // Final update to ensure we reach the end position
         UpdateSwipeEffect(startTouchPosition, currentTargetPos);
 
-        // Start fade out
         if (swipeEffectInstance != null)
         {
             var img = swipeEffectInstance.GetComponent<Image>();
@@ -129,8 +118,7 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
         Vector2 direction = end - start;
         float distance = direction.magnitude;
 
-        // Only show effect if there's actual distance
-        if (distance < 0.1f)
+         if (distance < 0.1f)
         {
             swipeEffectInstance.sizeDelta = new Vector2(0f, lineThickness);
             return;
@@ -138,11 +126,9 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         direction.Normalize();
 
-        // Set size and rotation
         swipeEffectInstance.sizeDelta = new Vector2(distance, lineThickness);
         swipeEffectInstance.rotation = Quaternion.FromToRotation(Vector3.right, direction);
 
-        // Set position using anchoredPosition (relative to canvas center)
         swipeEffectInstance.anchoredPosition = start;
     }
 
@@ -152,7 +138,6 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
 
         while (true)
         {
-            // Smooth interpolation towards target
             currentEnd = Vector2.Lerp(currentEnd, currentTargetPos, Time.deltaTime * trailSmoothness);
             UpdateSwipeEffect(startTouchPosition, currentEnd);
 
@@ -175,7 +160,6 @@ public class SwipeInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoi
             yield return null;
         }
 
-        // Ensure fully transparent and deactivate
         img.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
         swipeEffectInstance.gameObject.SetActive(false);
     }
