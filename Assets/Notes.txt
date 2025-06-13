@@ -1,7 +1,6 @@
 NEXT
 Add ads at top of menu
 Swipe thing feedback is too long
-leaderboard doesn't have the right coloru
 
 Jess Minecraft coords for Nether
 -45, 73, 82

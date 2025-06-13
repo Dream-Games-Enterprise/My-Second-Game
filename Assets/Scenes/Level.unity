@@ -5618,7 +5618,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1014671736
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11226,6 +11226,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   swipeEffectPrefab: {fileID: 166288615633955644, guid: 29e7a5932d1230a4db50d5097de25dc5, type: 3}
+  trailSmoothness: 50
+  fadeOutDuration: 0.5
+  lineThickness: 10
 --- !u!1 &2145919914
 GameObject:
   m_ObjectHideFlags: 0
