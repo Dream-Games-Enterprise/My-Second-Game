@@ -159,7 +159,6 @@ namespace RD
 
         List<Vector3> tailTargetPositions = new List<Vector3>();
 
-
         [SerializeField] SpriteRenderer borderRenderer;
 
         #endregion
