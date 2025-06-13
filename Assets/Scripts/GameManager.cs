@@ -157,7 +157,10 @@ namespace RD
 
         bool swipeDetected = false;
 
-        private List<Vector3> tailTargetPositions = new List<Vector3>();
+        List<Vector3> tailTargetPositions = new List<Vector3>();
+
+
+        [SerializeField] SpriteRenderer borderRenderer;
 
         #endregion
         void Awake()
@@ -214,6 +217,24 @@ namespace RD
         {
             SetSpeed(GetMoveRateFromSpeed(_speedInt));
 
+            int borderOption = PlayerPrefs.GetInt("SelectedBorderOption", 0);
+            switch (borderOption)
+            {
+                case 0:  // White
+                    borderRenderer.color = Color.white;
+                    break;
+
+                case 1:  // Match background
+                         // (falls back to white if no main camera)
+                    borderRenderer.color = Camera.main != null
+                        ? Camera.main.backgroundColor
+                        : Color.white;
+                    break;
+
+                case 2:  // Match obstacles/traps
+                    borderRenderer.color = trapColour;
+                    break;
+            }
             playerSkinIndex = customisationManager.GetSelectedSnakeIndex();
             playerTailIndex = customisationManager.GetSelectedTailIndex();
             trapIndexGetter = customisationManager.GetSelectedTrapIndex();

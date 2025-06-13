@@ -37,14 +37,15 @@ public class TrapSkin
 
 public class CustomisationManager : MonoBehaviour
 {
-    //Ensure isCustomisationScene is set to true in the inspector for the customisation scene and to false for the game scene.
-
+    // Ensure isInCustomisationScene is set appropriately in the Inspector.
     [SerializeField] Camera targetCamera;
     [SerializeField] SpriteManager spriteManager;
+
     public List<SnakeSkin> snakeSkins;
     public List<TailSkin> tailSkins;
     public List<FoodSkin> foodSkins;
     public List<TrapSkin> trapSkins;
+
     public Transform skinPanelContainer;
     public Transform tailPanelContainer;
     public Transform foodPanelContainer;
@@ -80,7 +81,6 @@ public class CustomisationManager : MonoBehaviour
     [SerializeField] public List<Color> mapColours;
 
     int currency;
-
     [SerializeField] bool isInCustomisationScene;
 
     [SerializeField] List<Color> backgroundColors;
@@ -92,6 +92,12 @@ public class CustomisationManager : MonoBehaviour
     [SerializeField] List<Color> uiPanelColours;
     [SerializeField] Image inputPanelBackground;
     [SerializeField] Image pausePanelBackground;
+
+    [SerializeField] private TMP_Text borderText;   
+    [SerializeField] private Color obstacleColor;
+
+    private int borderOptionIndex = 0;
+    private const string BorderPrefKey = "SelectedBorderOption";
 
     void Start()
     {
@@ -127,19 +133,15 @@ public class CustomisationManager : MonoBehaviour
                 Debug.LogWarning("Camera reference is missing or index out of range.");
 
             foreach (var img in backgroundTintImages)
-            {
                 if (img != null)
                     img.color = backgroundColors[backgroundIndex];
-            }
 
             backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
 
             if (inputPanelBackground != null &&
                 backgroundIndex >= 0 &&
                 backgroundIndex < uiPanelColours.Count)
-            {
                 inputPanelBackground.color = uiPanelColours[backgroundIndex];
-            }
 
             SelectMapPrimaryColor(mapPrimaryColorIndex);
             SelectMapSecondaryColor(mapSecondaryColorIndex);
@@ -148,45 +150,35 @@ public class CustomisationManager : MonoBehaviour
             SelectFoodColour(foodColorIndex);
             SelectTrapColour(trapColorIndex);
 
+            // ——— load border choice ———
+            borderOptionIndex = PlayerPrefs.GetInt(BorderPrefKey, 0);
+            ApplyBorderOption(borderOptionIndex);
         }
-
         else
         {
             Debug.Log("== APPLYING UI PANEL COLOURS ==");
-            int savedIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
 
+            int savedIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
             if (savedIndex < 0 || savedIndex >= uiPanelColours.Count)
             {
-                Debug.LogWarning($"Saved background index {savedIndex} is out of range (0 to {uiPanelColours.Count - 1}). Forcing to 0.");
+                Debug.LogWarning($"Saved background index {savedIndex} is out of range; forcing to 0.");
                 savedIndex = 0;
             }
 
-            Debug.Log($"backgroundColours.Count = {backgroundColors.Count}, uiPanelColours.Count = {uiPanelColours.Count}");
-            Debug.Log($"Using index = {savedIndex}");
-            Debug.Log($" backgroundColours[{savedIndex}] = {backgroundColors[savedIndex]}");
-            Debug.Log($" uiPanelColours[{savedIndex}] = {uiPanelColours[savedIndex]}");
-
             if (inputPanelBackground != null)
-            {
                 inputPanelBackground.color = uiPanelColours[savedIndex];
-                Debug.Log($" → inputPanelBackground.color set to {inputPanelBackground.color}");
-            }
             else
-            {
-                Debug.LogWarning("InputPanelBackground reference is missing in Inspector.");
-            }
+                Debug.LogWarning("InputPanelBackground reference is missing.");
 
             if (pausePanelBackground != null)
-            {
                 pausePanelBackground.color = uiPanelColours[savedIndex];
-                Debug.Log($" → pausePanelBackground.color set to {pausePanelBackground.color}");
-            }
             else
-            {
-                Debug.LogWarning("PausePanelBackground reference is missing in Inspector.");
-            }
-        }
+                Debug.LogWarning("PausePanelBackground reference is missing.");
 
+            // ——— load border choice ———
+            borderOptionIndex = PlayerPrefs.GetInt(BorderPrefKey, 0);
+            ApplyBorderOption(borderOptionIndex);
+        }
     }
 
     public void CycleBackgroundColor()
@@ -200,24 +192,42 @@ public class CustomisationManager : MonoBehaviour
             targetCamera.backgroundColor = selectedColor;
 
         foreach (var img in backgroundTintImages)
-        {
             if (img != null)
                 img.color = selectedColor;
-        }
 
         if (inputPanelBackground != null &&
             backgroundIndex >= 0 &&
             backgroundIndex < uiPanelColours.Count)
-        {
             inputPanelBackground.color = uiPanelColours[backgroundIndex];
-        }
 
         PlayerPrefs.SetInt("SelectedBackgroundIndex", backgroundIndex);
         PlayerPrefs.Save();
-
     }
 
+    public void CycleBorderOption()
+    {
+        borderOptionIndex = (borderOptionIndex + 1) % 3;
+        ApplyBorderOption(borderOptionIndex);
 
+        PlayerPrefs.SetInt(BorderPrefKey, borderOptionIndex);
+        PlayerPrefs.Save();
+    }
+
+    void ApplyBorderOption(int idx)
+    {
+        switch (idx)
+        {
+            case 0:
+                borderText.text = "Border: White";
+                break;
+            case 1:
+                borderText.text = "Border: Match Background";
+                break;
+            case 2:
+                borderText.text = "Border: Match Obstacles";
+                break;
+        }
+    }
 
     public void SelectMapPrimaryColor(int index)
     {
@@ -226,7 +236,6 @@ public class CustomisationManager : MonoBehaviour
             mapPrimaryColor = mapColours[index];
             PlayerPrefs.SetInt("SelectedMapPrimaryColorIndex", index);
             PlayerPrefs.Save();
-
             previewPrimary.color = mapPrimaryColor;
         }
     }
@@ -238,7 +247,6 @@ public class CustomisationManager : MonoBehaviour
             mapSecondaryColor = mapColours[index];
             PlayerPrefs.SetInt("SelectedMapSecondaryColorIndex", index);
             PlayerPrefs.Save();
-
             previewSecondary.color = mapSecondaryColor;
         }
     }
@@ -248,47 +256,48 @@ public class CustomisationManager : MonoBehaviour
         for (int i = 0; i < snakeSkins.Count; i++)
         {
             snakeSkins[i].isUnlocked = PlayerPrefs.GetInt("SnakeSkinUnlocked_" + i, 0) == 1;
-            GameObject panelObj = Instantiate(skinPanelPrefab, skinPanelContainer);
-            SkinPanel panel = panelObj.GetComponent<SkinPanel>();
+            var obj = Instantiate(skinPanelPrefab, skinPanelContainer);
+            var panel = obj.GetComponent<SkinPanel>();
             panel.SkinSetup(snakeSkins[i], snakeSkins[i].isUnlocked);
-            int index = skinPanels.Count;
-            panel.selectButton.onClick.AddListener(() => TryUnlockSkin(index));
+            int idx = skinPanels.Count;
+            panel.selectButton.onClick.AddListener(() => TryUnlockSkin(idx));
             skinPanels.Add(panel);
         }
 
         for (int i = 0; i < tailSkins.Count; i++)
         {
             tailSkins[i].isUnlocked = PlayerPrefs.GetInt("TailSkinUnlocked_" + i, 0) == 1;
-            GameObject panelObj = Instantiate(tailPanelPrefab, tailPanelContainer);
-            TailPanel panel = panelObj.GetComponent<TailPanel>();
+            var obj = Instantiate(tailPanelPrefab, tailPanelContainer);
+            var panel = obj.GetComponent<TailPanel>();
             panel.TailSetup(tailSkins[i], tailSkins[i].isUnlocked);
-            int index = tailPanels.Count;
-            panel.selectButton.onClick.AddListener(() => TryUnlockTail(index));
+            int idx = tailPanels.Count;
+            panel.selectButton.onClick.AddListener(() => TryUnlockTail(idx));
             tailPanels.Add(panel);
         }
 
         for (int i = 0; i < foodSkins.Count; i++)
         {
             foodSkins[i].isUnlocked = PlayerPrefs.GetInt("FoodSkinUnlocked_" + i, 0) == 1;
-            GameObject panelObj = Instantiate(foodPanelPrefab, foodPanelContainer);
-            FoodPanel panel = panelObj.GetComponent<FoodPanel>();
+            var obj = Instantiate(foodPanelPrefab, foodPanelContainer);
+            var panel = obj.GetComponent<FoodPanel>();
             panel.FoodSetup(foodSkins[i], foodSkins[i].isUnlocked);
-            int index = foodPanels.Count;
-            panel.selectButton.onClick.AddListener(() => TryUnlockFood(index));
+            int idx = foodPanels.Count;
+            panel.selectButton.onClick.AddListener(() => TryUnlockFood(idx));
             foodPanels.Add(panel);
         }
 
         for (int i = 0; i < trapSkins.Count; i++)
         {
             trapSkins[i].isUnlocked = PlayerPrefs.GetInt("TrapSkinUnlocked_" + i, 0) == 1;
-            GameObject panelObj = Instantiate(trapPanelPrefab, trapPanelContainer);
-            TrapPanel panel = panelObj.GetComponent<TrapPanel>();
+            var obj = Instantiate(trapPanelPrefab, trapPanelContainer);
+            var panel = obj.GetComponent<TrapPanel>();
             panel.TrapSetup(trapSkins[i], trapSkins[i].isUnlocked);
-            int index = trapPanels.Count;
-            panel.selectButton.onClick.AddListener(() => TryUnlockTrap(index));
+            int idx = trapPanels.Count;
+            panel.selectButton.onClick.AddListener(() => TryUnlockTrap(idx));
             trapPanels.Add(panel);
         }
     }
+
 
     public void TryUnlockSkin(int index)
     {

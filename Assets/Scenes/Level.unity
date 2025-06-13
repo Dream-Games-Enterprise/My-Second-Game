@@ -7896,6 +7896,7 @@ MonoBehaviour:
         m_CallState: 2
   isGameOver: 0
   isFirstInput: 0
+  borderRenderer: {fileID: 1387146843}
   swipePrompt: {fileID: 2125027034}
   useFourButtonControl: 0
 --- !u!4 &1447539186
