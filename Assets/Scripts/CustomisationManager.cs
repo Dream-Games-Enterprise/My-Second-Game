@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -89,6 +89,9 @@ public class CustomisationManager : MonoBehaviour
     [SerializeField] TMP_Text backgroundText;
     int backgroundIndex = 0;
     [SerializeField] List<Image> backgroundTintImages;
+    [SerializeField] List<Color> uiPanelColours;
+    [SerializeField] Image inputPanelBackground;
+    [SerializeField] Image pausePanelBackground;
 
     void Start()
     {
@@ -113,17 +116,15 @@ public class CustomisationManager : MonoBehaviour
             if (mapPrimaryColorIndex < 0 || mapPrimaryColorIndex >= mapColours.Count)
                 mapPrimaryColorIndex = 2;
             int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
-           
+
             backgroundIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
-            if (backgroundIndex >= backgroundColors.Count) backgroundIndex = 0;
-            if (targetCamera != null && backgroundIndex < backgroundColors.Count)
-            {
+            if (backgroundIndex >= backgroundColors.Count)
+                backgroundIndex = 0;
+
+            if (targetCamera != null)
                 targetCamera.backgroundColor = backgroundColors[backgroundIndex];
-            }
             else
-            {
                 Debug.LogWarning("Camera reference is missing or index out of range.");
-            }
 
             foreach (var img in backgroundTintImages)
             {
@@ -133,13 +134,59 @@ public class CustomisationManager : MonoBehaviour
 
             backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
 
+            if (inputPanelBackground != null &&
+                backgroundIndex >= 0 &&
+                backgroundIndex < uiPanelColours.Count)
+            {
+                inputPanelBackground.color = uiPanelColours[backgroundIndex];
+            }
+
             SelectMapPrimaryColor(mapPrimaryColorIndex);
             SelectMapSecondaryColor(mapSecondaryColorIndex);
             SelectColour(snakeColorIndex);
             SelectTailColour(tailColorIndex);
             SelectFoodColour(foodColorIndex);
             SelectTrapColour(trapColorIndex);
+
         }
+
+        else
+        {
+            Debug.Log("== APPLYING UI PANEL COLOURS ==");
+            int savedIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
+
+            if (savedIndex < 0 || savedIndex >= uiPanelColours.Count)
+            {
+                Debug.LogWarning($"Saved background index {savedIndex} is out of range (0 to {uiPanelColours.Count - 1}). Forcing to 0.");
+                savedIndex = 0;
+            }
+
+            Debug.Log($"backgroundColours.Count = {backgroundColors.Count}, uiPanelColours.Count = {uiPanelColours.Count}");
+            Debug.Log($"Using index = {savedIndex}");
+            Debug.Log($" backgroundColours[{savedIndex}] = {backgroundColors[savedIndex]}");
+            Debug.Log($" uiPanelColours[{savedIndex}] = {uiPanelColours[savedIndex]}");
+
+            if (inputPanelBackground != null)
+            {
+                inputPanelBackground.color = uiPanelColours[savedIndex];
+                Debug.Log($" → inputPanelBackground.color set to {inputPanelBackground.color}");
+            }
+            else
+            {
+                Debug.LogWarning("InputPanelBackground reference is missing in Inspector.");
+            }
+
+            if (pausePanelBackground != null)
+            {
+                pausePanelBackground.color = uiPanelColours[savedIndex];
+                Debug.Log($" → pausePanelBackground.color set to {pausePanelBackground.color}");
+            }
+            else
+            {
+                Debug.LogWarning("PausePanelBackground reference is missing in Inspector.");
+            }
+        }
+
     }
 
     public void CycleBackgroundColor()
@@ -150,9 +197,7 @@ public class CustomisationManager : MonoBehaviour
         backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
 
         if (targetCamera != null)
-        {
             targetCamera.backgroundColor = selectedColor;
-        }
 
         foreach (var img in backgroundTintImages)
         {
@@ -160,9 +205,19 @@ public class CustomisationManager : MonoBehaviour
                 img.color = selectedColor;
         }
 
+        if (inputPanelBackground != null &&
+            backgroundIndex >= 0 &&
+            backgroundIndex < uiPanelColours.Count)
+        {
+            inputPanelBackground.color = uiPanelColours[backgroundIndex];
+        }
+
         PlayerPrefs.SetInt("SelectedBackgroundIndex", backgroundIndex);
         PlayerPrefs.Save();
+
     }
+
+
 
     public void SelectMapPrimaryColor(int index)
     {

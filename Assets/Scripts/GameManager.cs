@@ -1252,7 +1252,6 @@ namespace RD
             swipePrompt.SetActive(false);
         }
 
-
         IEnumerator PlayDeathAnimation()
         {
             List<GameObject> tailObjects = tail.Select(t => t.obj).ToList();
