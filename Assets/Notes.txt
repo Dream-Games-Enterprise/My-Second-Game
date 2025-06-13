@@ -3,7 +3,7 @@ apply for production with language that suggests game has been tested and such, 
 Add ads at top of menu
 MAKE UI USE SEPARATE COLOUR LIST
 make sure this one isn't doing anything: Assets/Scripts/BackgroundColourApplier.cs
-Make camera and map fill the whole lot of the top half of the screen, so that the map is bigger and the camera is bigger.
+Make map border colour match obstacle colour, white or background colour
 
 Jess Minecraft coords for Nether
 -45, 73, 82

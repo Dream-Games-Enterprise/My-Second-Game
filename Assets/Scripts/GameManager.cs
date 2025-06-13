@@ -1421,7 +1421,20 @@ namespace RD
             Camera.main.orthographicSize = adjustedSize;
 
             cameraStartedAtMax = true;
+            //SetupSquareViewportCamera(anchorToTop: true);
+
         }
+
+        void SetupSquareViewportCamera(bool anchorToTop = true)
+        {
+            Camera cam = Camera.main;
+            float squareHeightFrac = (float)Screen.width / Screen.height;
+            float yPos = anchorToTop
+                ? (1f - squareHeightFrac)
+                : 0f;
+            cam.rect = new Rect(0f, yPos, 1f, squareHeightFrac);
+        }
+
 
         /* OLD CAMERA LOGIC WITH FOLLOW ON LARGER MAPS
          void PlaceCamera()
