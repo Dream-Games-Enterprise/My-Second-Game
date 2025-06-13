@@ -224,7 +224,6 @@ namespace RD
             if (Camera.main != null)
                 Camera.main.backgroundColor = bgColour;
 
-
             int borderOption = PlayerPrefs.GetInt("SelectedBorderOption", 0);
             switch (borderOption)
             {
