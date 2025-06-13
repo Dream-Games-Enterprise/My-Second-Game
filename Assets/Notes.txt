@@ -1,8 +1,5 @@
 NEXT
-apply for production with language that suggests game has been tested and such, post another reddit post for more testers
 Add ads at top of menu
-MAKE UI USE SEPARATE COLOUR LIST
-make sure this one isn't doing anything: Assets/Scripts/BackgroundColourApplier.cs
 Swipe thing feedback is too long
 
 

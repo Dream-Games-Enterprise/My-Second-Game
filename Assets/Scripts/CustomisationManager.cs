@@ -136,7 +136,7 @@ public class CustomisationManager : MonoBehaviour
                 if (img != null)
                     img.color = backgroundColors[backgroundIndex];
 
-            backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
+            backgroundText.text = "BACKGROUND\n" + backgroundNames[backgroundIndex];
 
             if (inputPanelBackground != null &&
                 backgroundIndex >= 0 &&
@@ -156,8 +156,6 @@ public class CustomisationManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("== APPLYING UI PANEL COLOURS ==");
-
             int savedIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
             if (savedIndex < 0 || savedIndex >= uiPanelColours.Count)
             {
@@ -175,7 +173,6 @@ public class CustomisationManager : MonoBehaviour
             else
                 Debug.LogWarning("PausePanelBackground reference is missing.");
 
-            // ——— load border choice ———
             borderOptionIndex = PlayerPrefs.GetInt(BorderPrefKey, 0);
             ApplyBorderOption(borderOptionIndex);
         }
@@ -186,7 +183,7 @@ public class CustomisationManager : MonoBehaviour
         backgroundIndex = (backgroundIndex + 1) % backgroundColors.Count;
         Color selectedColor = backgroundColors[backgroundIndex];
 
-        backgroundText.text = backgroundNames[backgroundIndex] + "\nBACKGROUND";
+        backgroundText.text = "BACKGROUND\n" + backgroundNames[backgroundIndex];
 
         if (targetCamera != null)
             targetCamera.backgroundColor = selectedColor;
@@ -218,13 +215,13 @@ public class CustomisationManager : MonoBehaviour
         switch (idx)
         {
             case 0:
-                borderText.text = "Border: White";
+                borderText.text = "BORDER\n WHITE";
                 break;
             case 1:
-                borderText.text = "Border: Match Background";
+                borderText.text = "BORDER\n MATCH BACKGROUND";
                 break;
             case 2:
-                borderText.text = "Border: Match Obstacles";
+                borderText.text = "BORDER\n MATCH OBSTACLES";
                 break;
         }
     }
@@ -297,7 +294,6 @@ public class CustomisationManager : MonoBehaviour
             trapPanels.Add(panel);
         }
     }
-
 
     public void TryUnlockSkin(int index)
     {
