@@ -2,6 +2,12 @@ NEXT
 Add ads at top of menu
 wish  me luck
 
+https://raw.githubusercontent.com/googlesamples/unity-jar-resolver/v1.2.183/external-dependency-manager-1.2.183.unitypackage 
+I installed this. Deleted the Mobile Resolver folder that comes with Mediation package, then when opening Unity again the JDK pop-up and gradle console errors went away.
+I have the Android JDK file pointed the the Java root folder that isn't nested within Unity folders.
+Now I just need to try implementing ads to see if they work now.
+
+
 Jess Minecraft coords for Nether
 -45, 73, 82
   
