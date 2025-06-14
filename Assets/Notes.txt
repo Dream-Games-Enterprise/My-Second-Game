@@ -1,5 +1,6 @@
 NEXT
 Add ads at top of menu
+wish  me luck
 
 Jess Minecraft coords for Nether
 -45, 73, 82
