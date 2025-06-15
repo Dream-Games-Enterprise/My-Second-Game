@@ -1,6 +1,5 @@
 NEXT
-TEST LEADERBOARD IS WORKING
-
+Clean up reference errors for border colours.
 
 Jess Minecraft coords for Nether
 -45, 73, 82
