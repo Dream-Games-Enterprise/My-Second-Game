@@ -42345,6 +42345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07dab313ac7b7d4f957e694e4b44495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  banner: {fileID: 1532369042}
   leaderboardManager: {fileID: 2028437651}
   widthValue: {fileID: 212894072}
   heightValue: {fileID: 589060570}
@@ -51494,7 +51495,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1532369040}
-  - component: {fileID: 1532369039}
+  - component: {fileID: 1532369042}
   m_Layer: 0
   m_Name: Ads_Manager
   m_TagString: Untagged
@@ -51502,18 +51503,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1532369039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1532369038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99ac25ab9f3311e4789a1616e3d8edde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1532369040
 Transform:
   m_ObjectHideFlags: 0
@@ -51529,6 +51518,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1532369042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532369038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b77780537260a4c459ed737e91bc0601, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1533213542
 GameObject:
   m_ObjectHideFlags: 0
@@ -64055,6 +64056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiPanelAnimator: {fileID: 1320675193}
+  banner: {fileID: 1532369042}
   snakePanel: {fileID: 827687902}
   tailPanel: {fileID: 105287979}
   foodPanel: {fileID: 2060114605}

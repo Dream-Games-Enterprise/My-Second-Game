@@ -11,7 +11,7 @@ public class UIPanelAnimator : MonoBehaviour
     private Dictionary<Transform, Vector3> onScreenPositions = new Dictionary<Transform, Vector3>();
     private Dictionary<Transform, Coroutine> activeAnimations = new Dictionary<Transform, Coroutine>();
 
-    public void AnimateIn(GameObject panel)
+    public void AnimateIn(GameObject panel, System.Action onStart = null)
     {
         var rt = panel.GetComponent<RectTransform>();
 
@@ -27,10 +27,11 @@ public class UIPanelAnimator : MonoBehaviour
         rt.localPosition = visiblePos + offset;
         panel.SetActive(true);
 
+        onStart?.Invoke(); // <-- NEW: trigger optional logic before animation
         activeAnimations[rt] = StartCoroutine(MovePanel(rt, visiblePos));
     }
 
-    public void AnimateOut(GameObject panel)
+    public void AnimateOut(GameObject panel, System.Action onComplete = null)
     {
         var rt = panel.GetComponent<RectTransform>();
 
@@ -44,10 +45,14 @@ public class UIPanelAnimator : MonoBehaviour
         Vector3 offset = new Vector3(0, -panelHeight, 0);
 
         Vector3 hiddenPos = visiblePos + offset;
-        activeAnimations[rt] = StartCoroutine(MovePanel(rt, hiddenPos, () => panel.SetActive(false)));
+        activeAnimations[rt] = StartCoroutine(MovePanel(rt, hiddenPos, () =>
+        {
+            panel.SetActive(false);
+            onComplete?.Invoke(); // <-- NEW: trigger optional logic after animation
+        }));
     }
 
-    public void AnimateInFromTop(GameObject panel)
+    public void AnimateInFromTop(GameObject panel, System.Action onStart = null)
     {
         var rt = panel.GetComponent<RectTransform>();
 
@@ -63,10 +68,11 @@ public class UIPanelAnimator : MonoBehaviour
         rt.localPosition = visiblePos + offset;
         panel.SetActive(true);
 
+        onStart?.Invoke();
         activeAnimations[rt] = StartCoroutine(MovePanel(rt, visiblePos));
     }
 
-    public void AnimateOutToTop(GameObject panel)
+    public void AnimateOutToTop(GameObject panel, System.Action onComplete = null)
     {
         var rt = panel.GetComponent<RectTransform>();
 
@@ -80,7 +86,11 @@ public class UIPanelAnimator : MonoBehaviour
         Vector3 offset = new Vector3(0, panelHeight, 0);
 
         Vector3 hiddenPos = visiblePos + offset;
-        activeAnimations[rt] = StartCoroutine(MovePanel(rt, hiddenPos, () => panel.SetActive(false)));
+        activeAnimations[rt] = StartCoroutine(MovePanel(rt, hiddenPos, () =>
+        {
+            panel.SetActive(false);
+            onComplete?.Invoke();
+        }));
     }
 
     private IEnumerator MovePanel(Transform panel, Vector3 targetPos, System.Action onComplete = null)
@@ -98,7 +108,6 @@ public class UIPanelAnimator : MonoBehaviour
 
         panel.localPosition = targetPos;
         onComplete?.Invoke();
-
         activeAnimations.Remove(panel);
     }
 

@@ -7,6 +7,7 @@ using TMPro;
 public class SpriteManager : MonoBehaviour
 {
     [SerializeField] UIPanelAnimator uiPanelAnimator;
+    [SerializeField] Banner banner;
 
     [SerializeField] GameObject snakePanel;
     [SerializeField] GameObject tailPanel;
@@ -52,12 +53,15 @@ public class SpriteManager : MonoBehaviour
             StopCoroutine(toggleCoroutine);
             toggleCoroutine = null;
         }
+
+        banner.ShowBanner(); 
     }
+
 
     public void OpenPanel(GameObject panelToOpen)
     {
-        DisablePanels(); 
-        uiPanelAnimator.AnimateInFromTop(panelToOpen); 
+        DisablePanels();
+        uiPanelAnimator.AnimateInFromTop(panelToOpen, () => banner.HideBanner());
         bottomPanel.SetActive(false);
 
         int currency = PlayerPrefs.GetInt("currency");
@@ -71,6 +75,7 @@ public class SpriteManager : MonoBehaviour
         else if (panelToOpen == trapPanel)
             trapHeader.text = "TRAP\nTOTAL POINTS: " + currency;
     }
+
 
     void StartToggle(TMP_Text header, string originalText)
     {

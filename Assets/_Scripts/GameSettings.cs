@@ -6,6 +6,8 @@ using Unity.VisualScripting;
 
 public class GameSettings : MonoBehaviour
 {
+    [SerializeField] Banner banner;
+
     [SerializeField] LeaderboardCreatorDemo.LeaderboardManager leaderboardManager;
     [SerializeField] TMP_Text widthValue;
     [SerializeField] TMP_Text heightValue;
@@ -166,30 +168,38 @@ public class GameSettings : MonoBehaviour
     {
         isSettingsActive = !isSettingsActive;
         if (isSettingsActive)
-            panelAnimator.AnimateIn(settingsPanel);
+            panelAnimator.AnimateIn(settingsPanel, () => banner.HideBanner());
         else
-            panelAnimator.AnimateOut(settingsPanel);
-    } 
-    
+            panelAnimator.AnimateOut(settingsPanel, () => banner.ShowBanner());
+    }
+
+
     public void ToggleWidget()
     {
         isWidgetActive = !isWidgetActive;
         if (isWidgetActive)
-            panelAnimator.AnimateIn(widgetPanel);
+            panelAnimator.AnimateIn(widgetPanel, () => banner.HideBanner());
         else
-            panelAnimator.AnimateOut(widgetPanel);
-    }   
-    
+            panelAnimator.AnimateOut(widgetPanel, () => banner.ShowBanner());
+    }
+
+
     public void ToggleLeaderboard()
     {
         isLeaderboardActive = !isLeaderboardActive;
         if (isLeaderboardActive)
         {
-            panelAnimator.AnimateIn(leaderboardPanel);
-            leaderboardManager.LoadPersonalBest();
-            leaderboardManager.LoadScores();
+            panelAnimator.AnimateIn(leaderboardPanel, () =>
+            {
+                banner.HideBanner();
+                leaderboardManager.LoadPersonalBest();
+                leaderboardManager.LoadScores();
+            });
         }
         else
-            panelAnimator.AnimateOut(leaderboardPanel);
+        {
+            panelAnimator.AnimateOut(leaderboardPanel, () => banner.ShowBanner());
+        }
     }
+
 }
