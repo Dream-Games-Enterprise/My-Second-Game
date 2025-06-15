@@ -109,7 +109,9 @@ public class CustomisationManager : MonoBehaviour
             int tailColorIndex = PlayerPrefs.GetInt("SelectedTailColourIndex", 0);
             int foodColorIndex = PlayerPrefs.GetInt("SelectedFoodColourIndex", 0);
             int trapColorIndex = PlayerPrefs.GetInt("SelectedTrapColourIndex", 0);
-            int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 0);
+            int mapPrimaryColorIndex = PlayerPrefs.GetInt("SelectedMapPrimaryColorIndex", 2);
+            if (mapPrimaryColorIndex < 0 || mapPrimaryColorIndex >= mapColours.Count)
+                mapPrimaryColorIndex = 2;
             int mapSecondaryColorIndex = PlayerPrefs.GetInt("SelectedMapSecondaryColorIndex", 1);
            
             backgroundIndex = PlayerPrefs.GetInt("SelectedBackgroundIndex", 0);
@@ -170,7 +172,6 @@ public class CustomisationManager : MonoBehaviour
             PlayerPrefs.SetInt("SelectedMapPrimaryColorIndex", index);
             PlayerPrefs.Save();
 
-            // Apply to preview
             previewPrimary.color = mapPrimaryColor;
         }
     }

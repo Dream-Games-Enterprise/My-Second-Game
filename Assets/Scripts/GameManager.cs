@@ -9,6 +9,7 @@ namespace RD
 {
     public class GameManager : MonoBehaviour
     {
+        #region Inspector Stuff
         #region REFERENCES
         ScoreManager scoreManager;
         [SerializeField] CustomisationManager customisationManager;
@@ -20,7 +21,8 @@ namespace RD
         #region SCENE OBJECTS
         public Transform cameraHolder;
         [SerializeField] GameObject inputPanel;
-        [SerializeField] GameObject buttonControl;
+        [SerializeField] GameObject twoButtonControl;
+        [SerializeField] GameObject fourButtonControl;
         [SerializeField] GameObject foodPickupParticlePrefab;
         [SerializeField] GameObject snakeDeathParticlePrefab;
         GameObject playerObject;
@@ -74,6 +76,9 @@ namespace RD
         public Button downButton;
         public Button leftButton;
         public Button rightButton;
+        public Button twoLeftButton;
+        public Button twoRightButton;
+
         bool up, left, right, down;
 
         Direction targetDirection;
@@ -104,6 +109,7 @@ namespace RD
         bool _obstaclesEnabled;
         bool _isButtonControl;
         bool obstaclesToggle;
+        bool isFourButtons;
 
         Node[,] grid;
         Node playerNode;
@@ -151,45 +157,57 @@ namespace RD
 
         bool swipeDetected = false;
 
+        private List<Vector3> tailTargetPositions = new List<Vector3>();
 
+        #endregion
         void Awake()
         {
+            if (!PlayerPrefs.HasKey("inputType"))
+            {
+                PlayerPrefs.SetInt("inputType", (int)InputType.Swipe);
+                PlayerPrefs.Save();
+            }
             LoadPlayerPrefs();
             LoadSpritesBits();
             FetchColours();
+
             foodParticleMaterial = new Material(Shader.Find("Sprites/Default"));
             audioManager = FindFirstObjectByType<AudioManager>();
 
             scoreManager = GetComponent<ScoreManager>();
             gameOverUI = GetComponent<GameOverUI>();
 
-            isButtonControl = PlayerPrefs.GetInt("inputType", 1) == 1;
-            ToggleInputType(isButtonControl);
+            currentInputType = (InputType)PlayerPrefs.GetInt(
+                "inputType",
+                (int)InputType.Swipe
+            );
+
+            isButtonControl = currentInputType != InputType.Swipe;
+            useFourButtonControl = currentInputType == InputType.FourButtons;
+
+            ApplyInputMode(currentInputType);
 
             _mainCam = Camera.main;
-
             _dirVectors = new Dictionary<Direction, Vector2Int>
-{
-    { Direction.up,    new Vector2Int( 0,  1) },
-    { Direction.down,  new Vector2Int( 0, -1) },
-    { Direction.left,  new Vector2Int(-1,  0) },
-    { Direction.right, new Vector2Int( 1,  0) }
-};
-
+    {
+        { Direction.up,    new Vector2Int( 0,  1) },
+        { Direction.down,  new Vector2Int( 0, -1) },
+        { Direction.left,  new Vector2Int(-1,  0) },
+        { Direction.right, new Vector2Int( 1,  0) }
+    };
             _dirAngles = new Dictionary<Direction, float>
-{
-    { Direction.up,     0f },
-    { Direction.left,  90f },
-    { Direction.down, 180f },
-    { Direction.right,270f },
-    { Direction.None,   0f }
-};
+    {
+        { Direction.up,     0f },
+        { Direction.left,  90f },
+        { Direction.down, 180f },
+        { Direction.right,270f },
+        { Direction.None,   0f }
+    };
 
             if (Screen.dpi > 0)
                 minSwipeDistance = Screen.dpi * 0.15f;
             else
                 minSwipeDistance = 8f;
-
         }
 
         void Start()
@@ -205,8 +223,6 @@ namespace RD
             maxWidth = PlayerPrefs.GetInt("width");
             maxHeight = PlayerPrefs.GetInt("height");
             StartNewGame();
-
-            ApplyInputListeners();
         }
 
         void Update()
@@ -267,29 +283,53 @@ namespace RD
             }
         }
 
-        #region INPUT
-
-        void ToggleInputType(bool useButtons)
+        void LateUpdate()
         {
-            isButtonControl = useButtons;
-            buttonControl.SetActive(useButtons);
+            float followSpeed = 20f;
 
-            PlayerPrefs.SetInt("inputType", useButtons ? 1 : 0);
-            PlayerPrefs.Save();
+            for (int i = 0; i < tail.Count; i++)
+            {
+                if (tail[i].obj == null || i >= tailTargetPositions.Count)
+                    continue;
+
+                Vector3 targetPos = tailTargetPositions[i];
+                tail[i].obj.transform.position = Vector3.Lerp(tail[i].obj.transform.position, targetPos, followSpeed * Time.deltaTime);
+            }
         }
 
-        void OnArrowButtonPressed(Direction direction)
+        [SerializeField] GameObject swipePrompt;
+
+        void ApplyInputMode(InputType mode)
         {
-            if (UIHandler.IsPaused) return;
+            bool swipe = mode == InputType.Swipe;
+            bool two = mode == InputType.TwoButtons;
+            bool four = mode == InputType.FourButtons;
 
-            if (!isFirstInput)
-            {
-                isFirstInput = true;
-                firstInput.Invoke();
-            }
+            inputPanel.SetActive(swipe);
+            twoButtonControl.SetActive(two);
+            fourButtonControl.SetActive(four);
 
-            inputBuffer.Clear();
-            inputBuffer.Insert(0, direction);
+            swipePrompt.SetActive(swipe);
+
+            ApplyInputListeners();
+        }
+
+        #region INPUT
+        public enum InputType { Swipe = 0, TwoButtons = 1, FourButtons = 2 }
+        private InputType currentInputType;
+
+        public void SetControlMode(bool fourWay)
+        {
+            useFourButtonControl = fourWay;
+            ApplyInputListeners();
+
+            upButton.gameObject.SetActive(fourWay);
+            downButton.gameObject.SetActive(fourWay);
+            leftButton.gameObject.SetActive(fourWay);
+            rightButton.gameObject.SetActive(fourWay);
+
+            twoLeftButton.gameObject.SetActive(!fourWay);
+            twoRightButton.gameObject.SetActive(!fourWay);
         }
 
         float GetMoveRateFromSpeed(int speed)
@@ -309,11 +349,6 @@ namespace RD
                 default:
                     return 0.2f / 1.5f;  // fallback
             }
-        }
-
-        public void ToggleInputButtonPressed()
-        {
-            ToggleInputType(!isButtonControl);
         }
 
         void HandleTouchInput()
@@ -578,8 +613,16 @@ namespace RD
         void MoveTail()
         {
             Node prevNode = null;
+            int tailCount = tail.Count;
 
-            for (int i = 0; i < tail.Count; i++)
+            while (tailTargetPositions.Count < tailCount)
+                tailTargetPositions.Add(Vector3.zero);
+
+            float headSectionScale = 0.75f;
+            float midSectionScale = 0.65f; 
+            float tailSectionScale = 0.6f;
+
+            for (int i = 0; i < tailCount; i++)
             {
                 SpecialNode tailSegment = tail[i];
                 availableNodes.Add(tailSegment.node);
@@ -596,12 +639,22 @@ namespace RD
                     prevNode = previousSegmentNode;
                 }
 
-                Vector2 direction = tailSegment.node.worldPosition - tail[i].node.worldPosition;
                 Direction segmentDir = GetDirectionFromTo(tailSegment.node, prevNode);
                 tailSegment.obj.transform.rotation = Quaternion.Euler(0, 0, GetRotationForDirection(segmentDir));
-
                 availableNodes.Remove(tailSegment.node);
-                PlacePlayerObject(tailSegment.obj, tailSegment.node.worldPosition);
+
+                Vector3 centrePos = tailSegment.node.worldPosition + Vector3.one * 0.5f;
+                tailTargetPositions[i] = centrePos;
+
+                int section = (i * 3) / tailCount;
+                float scale = section == 0
+                    ? headSectionScale
+                    : (section == 1 ? midSectionScale : tailSectionScale);
+
+                tailSegment.obj.transform.localScale = new Vector3(scale, scale, 1f);
+
+                if (i == tailCount - 1)
+                    tailSegment.obj.transform.position = centrePos;
             }
         }
 
@@ -616,7 +669,6 @@ namespace RD
 
             return Direction.None;
         }
-
 
         #endregion
 
@@ -1191,8 +1243,14 @@ namespace RD
             scoreManager.ApplyEndMultipliers();
             uiHandler.GameEndMenu();
             gameOverUI.ActivateUI();
+
             inputPanel.SetActive(false);
+            twoButtonControl.SetActive(false);
+            fourButtonControl.SetActive(false);
+
+            swipePrompt.SetActive(false);
         }
+
 
         IEnumerator PlayDeathAnimation()
         {
@@ -1254,7 +1312,6 @@ namespace RD
                 playerObject.SetActive(false);
         }
 
-
         void TriggerVictory()
         {
             isGameOver = true;
@@ -1282,7 +1339,7 @@ namespace RD
             s.node = GetNode(x, y);
             s.obj = new GameObject();
             s.obj.transform.parent = tailParent.transform;
-            s.obj.transform.position = s.node.worldPosition;
+            PlacePlayerObject(s.obj, s.node.worldPosition);
             s.obj.transform.localScale = Vector3.one * 0.75f;
             SpriteRenderer r = s.obj.AddComponent<SpriteRenderer>();
 
@@ -1349,27 +1406,8 @@ namespace RD
 
         void UpdateCameraPosition()
         {
-            if (!cameraStartedAtMax)
-            {
-                Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
-                cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
-                return;
-            }
-
-            float cameraSize = Camera.main.orthographicSize;
-            Vector3 playerPosition = playerObject.transform.position;
-            Vector3 desiredPosition = playerPosition;
-
-            float halfWidth = maxWidth * 0.5f;
-            float halfHeight = maxHeight * 0.5f;
-
-            float cameraHorizontalLimit = halfWidth - cameraSize;
-            float cameraVerticalLimit = halfHeight - cameraSize;
-
-            desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
-            desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
-
-            cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+            Vector3 mapCentre = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+            cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCentre, smoothSpeed);
         }
 
         void AdjustCameraSize()
@@ -1381,17 +1419,65 @@ namespace RD
             float padding = 0.5f;
             float adjustedSize = requiredSize + padding;
 
-            if (adjustedSize > 8.2f)
-            {
-                Camera.main.orthographicSize = 8.2f;
-                cameraStartedAtMax = true;
-            }
-            else
-            {
-                Camera.main.orthographicSize = adjustedSize;
-                cameraStartedAtMax = false;
-            }
+            Camera.main.orthographicSize = adjustedSize;
+
+            cameraStartedAtMax = true;
         }
+
+        /* OLD CAMERA LOGIC WITH FOLLOW ON LARGER MAPS
+         void PlaceCamera()
+         {
+             Node n = GetNode(maxWidth / 2, maxHeight / 2);
+             Vector3 p = n.worldPosition;
+             p += Vector3.one * 0.5f;
+             cameraHolder.position = p;
+         }
+
+         void UpdateCameraPosition()
+         {
+             if (!cameraStartedAtMax)
+             {
+                 Vector3 mapCenter = new Vector3(maxWidth / 2f, maxHeight / 2f, cameraHolder.position.z);
+                 cameraHolder.position = Vector3.Lerp(cameraHolder.position, mapCenter, smoothSpeed);
+                 return;
+             }
+
+             float cameraSize = Camera.main.orthographicSize;
+             Vector3 playerPosition = playerObject.transform.position;
+             Vector3 desiredPosition = playerPosition;
+
+             float halfWidth = maxWidth * 0.5f;
+             float halfHeight = maxHeight * 0.5f;
+
+             float cameraHorizontalLimit = halfWidth - cameraSize;
+             float cameraVerticalLimit = halfHeight - cameraSize;
+
+             desiredPosition.x = Mathf.Clamp(desiredPosition.x, cameraHorizontalLimit, halfWidth + cameraSize);
+             desiredPosition.y = Mathf.Clamp(desiredPosition.y, cameraVerticalLimit, halfHeight + cameraSize);
+
+             cameraHolder.position = Vector3.Lerp(cameraHolder.position, desiredPosition, smoothSpeed);
+         }
+
+         void AdjustCameraSize()
+         {
+             float verticalSize = maxHeight / 2f;
+             float horizontalSize = (maxWidth / Camera.main.aspect) / 2f;
+             float requiredSize = Mathf.Max(verticalSize, horizontalSize);
+
+             float padding = 0.5f;
+             float adjustedSize = requiredSize + padding;
+
+             if (adjustedSize > 8.2f)
+             {
+                 Camera.main.orthographicSize = 8.2f;
+                 cameraStartedAtMax = true;
+             }
+             else
+             {
+                 Camera.main.orthographicSize = adjustedSize;
+                 cameraStartedAtMax = false;
+             }
+         }*/
 
         #endregion
 
@@ -1458,12 +1544,95 @@ namespace RD
             }
         }
 
+        [SerializeField] bool useFourButtonControl = true; // THIS SHOULD NOW BE FETCHED FROM PLAYERPREFS whether to use two or four or ignore if swipe is being used
+
         void ApplyInputListeners()
         {
-            upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
-            downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
-            leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
-            rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+            Debug.Log($"[GameManager] ApplyInputListeners(): currentInputType={currentInputType}, useFourButtonControl={useFourButtonControl}");
+
+            if (upButton != null) { upButton.onClick.RemoveAllListeners(); upButton.gameObject.SetActive(false); }
+            if (downButton != null) { downButton.onClick.RemoveAllListeners(); downButton.gameObject.SetActive(false); }
+            if (leftButton != null) { leftButton.onClick.RemoveAllListeners(); leftButton.gameObject.SetActive(false); }
+            if (rightButton != null) { rightButton.onClick.RemoveAllListeners(); rightButton.gameObject.SetActive(false); }
+            if (twoLeftButton != null) { twoLeftButton.onClick.RemoveAllListeners(); twoLeftButton.gameObject.SetActive(false); }
+            if (twoRightButton != null) { twoRightButton.onClick.RemoveAllListeners(); twoRightButton.gameObject.SetActive(false); }
+
+            if (currentInputType == InputType.Swipe)
+                return;
+
+            if (useFourButtonControl)
+            {
+                upButton.gameObject.SetActive(true);
+                downButton.gameObject.SetActive(true);
+                leftButton.gameObject.SetActive(true);
+                rightButton.gameObject.SetActive(true);
+
+                upButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.up));
+                downButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.down));
+                leftButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.left));
+                rightButton.onClick.AddListener(() => OnArrowButtonPressed(Direction.right));
+            }
+            else
+            {
+                twoLeftButton.gameObject.SetActive(true);
+                twoRightButton.gameObject.SetActive(true);
+
+                twoLeftButton.onClick.AddListener(() => OnTurnButtonPressed(false));
+                twoRightButton.onClick.AddListener(() => OnTurnButtonPressed(true));
+            }
+        }
+
+        void OnArrowButtonPressed(Direction d)
+        {
+            if (UIHandler.IsPaused) return;
+
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();
+            }
+
+            inputBuffer.Clear();
+            inputBuffer.Insert(0, d);
+        }
+
+        void OnTurnButtonPressed(bool turnRight)
+        {
+            if (UIHandler.IsPaused) return;
+
+            if (!isFirstInput)
+            {
+                isFirstInput = true;
+                firstInput.Invoke();
+            }
+
+            inputBuffer.Clear();
+            var newDir = turnRight ? GetRightOf(curDirection) : GetLeftOf(curDirection);
+            inputBuffer.Insert(0, newDir);
+        }
+
+        Direction GetLeftOf(Direction d)
+        {
+            switch (d)
+            {
+                case Direction.up: return Direction.left;
+                case Direction.left: return Direction.down;
+                case Direction.down: return Direction.right;
+                case Direction.right: return Direction.up;
+                default: return Direction.up;
+            }
+        }
+
+        Direction GetRightOf(Direction d)
+        {
+            switch (d)
+            {
+                case Direction.up: return Direction.right;
+                case Direction.right: return Direction.down;
+                case Direction.down: return Direction.left;
+                case Direction.left: return Direction.up;
+                default: return Direction.up;
+            }
         }
 
         void LoadPlayerPrefs()

@@ -18306,7 +18306,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 313538773}
   m_Direction: 0
   m_MinValue: 5
-  m_MaxValue: 15
+  m_MaxValue: 10
   m_WholeNumbers: 1
   m_Value: 5
   m_OnValueChanged:
@@ -48113,7 +48113,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 728915835}
   m_Direction: 0
   m_MinValue: 5
-  m_MaxValue: 15
+  m_MaxValue: 10
   m_WholeNumbers: 1
   m_Value: 5
   m_OnValueChanged:
@@ -59829,6 +59829,100 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a4e401ec4950464489bda8a8ac3fb6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1820284944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1820284945}
+  - component: {fileID: 1820284949}
+  - component: {fileID: 1820284948}
+  - component: {fileID: 1820284947}
+  - component: {fileID: 1820284946}
+  m_Layer: 0
+  m_Name: AdsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1820284945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820284944}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1820284946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820284944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cd1256b464b21740bef2ffe22e32551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidAdUnitId: 5865238
+  iOSAdUnitId: 5865239
+  isTesting: 1
+--- !u!114 &1820284947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820284944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c8e6faf5687df54e8589b0d137d88ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidAdUnitId: 5865238
+  iOSAdUnitId: 5865239
+  isTesting: 1
+--- !u!114 &1820284948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820284944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c2ba9725d5b02d4ca334dbc9ae02948, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  androidGameID: 5865238
+  iOSGameID: 5865239
+--- !u!114 &1820284949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820284944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 375a67878973f8345bb4ed9a05f9eceb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialiseAds: {fileID: 1820284948}
+  bannerAds: {fileID: 1820284947}
+  interstitialAds: {fileID: 1820284946}
 --- !u!1 &1821053078
 GameObject:
   m_ObjectHideFlags: 0
@@ -70978,3 +71072,4 @@ SceneRoots:
   - {fileID: 1320675192}
   - {fileID: 702960314}
   - {fileID: 291619420}
+  - {fileID: 1820284945}
