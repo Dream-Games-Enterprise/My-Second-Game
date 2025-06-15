@@ -1,4 +1,6 @@
 NEXT
+TEST LEADERBOARD IS WORKING
+
 
 Jess Minecraft coords for Nether
 -45, 73, 82
